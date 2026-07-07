@@ -1,0 +1,47 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+yarn-error.log
+yarn-debug.log
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+build
+
+# misc
+.DS_Store
+*.pem
+.env*
+!.env.example
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# firebase service account
+*-firebase-adminsdk-*.json
+firebase-debug.log
+firebase-debug.*.log
+
+# python cache and envs
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env/
+
+# IDE
+.idea/
+.vscode/
+
+# Archive files
+*.zip
+*.tar.gz

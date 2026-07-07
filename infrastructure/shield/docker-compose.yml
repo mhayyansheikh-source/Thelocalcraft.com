@@ -1,0 +1,24 @@
+services:
+  bunkerweb:
+    image: bunkerity/bunkerweb:latest
+    ports:
+      - 80:8080
+      - 443:8443
+    environment:
+      - SERVER_NAME=thelocalcrafts.com admin.thelocalcrafts.com
+      - AUTO_LETS_ENCRYPT=yes
+      - USE_ANTIBOT=captcha   # Interactive challenge for suspicious bots
+      - USE_CROWDSEC=yes      # Link with CrowdSec for IP reputation
+      - USE_MODSECURITY=yes   # Enable WAF rules
+      - MODSECURITY_CRS=yes   # Enable OWASP Core Rule Set
+      - CACHE_TYPE=nginx      # Enable edge caching for static catalog
+      - SERVE_FILES=no        # BunkerWeb acts as a reverse proxy
+      - USE_REVERSE_PROXY=yes
+      - REVERSE_PROXY_URL_1=/
+      - REVERSE_PROXY_HOST_1=hostinger-static-origin:80 # Example origin
+    networks:
+      - bw-net
+
+networks:
+  bw-net:
+    driver: bridge

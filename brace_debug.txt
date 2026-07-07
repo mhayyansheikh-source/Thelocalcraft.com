@@ -1,0 +1,1235 @@
+0001: 000 | "use client"
+0002: 000 | 
+0003: 000 | import React, { useEffect, useState } from "react"
+0004: 000 | import { Navbar } from "@/components/layout/Navbar"
+0005: 000 | import { Footer } from "@/components/layout/Footer"
+0006: 000 | import { db, auth } from "@/lib/firebase/config"
+0007: 000 | import { collection, query, where, getDocs, doc, getDoc, updateDoc, setDoc, addDoc, deleteDoc, orderBy } from "firebase/firestore"
+0008: 000 | import { signOut, onAuthStateChanged } from "firebase/auth"
+0009: 001 | import {
+0010: 001 |     User,
+0011: 001 |     Lock,
+0012: 001 |     Sparkles,
+0013: 001 |     Hammer,
+0014: 001 |     ChevronRight,
+0015: 001 |     LogOut,
+0016: 001 |     Eye,
+0017: 001 |     TrendingUp,
+0018: 001 |     Star,
+0019: 001 |     LayoutDashboard,
+0020: 001 |     Package,
+0021: 001 |     Settings,
+0022: 001 |     MapPin,
+0023: 001 |     Calendar,
+0024: 001 |     Award,
+0025: 001 |     Mic,
+0026: 001 |     Loader,
+0027: 001 |     CheckCircle,
+0028: 001 |     Plus,
+0029: 001 |     Edit2,
+0030: 001 |     Trash2,
+0031: 001 |     Image as ImageIcon,
+0032: 001 |     DollarSign,
+0033: 001 |     ListFilter,
+0034: 001 |     Save,
+0035: 001 |     AlertCircle,
+0036: 001 |     Clock,
+0037: 001 |     BookOpen,
+0038: 001 |     Video
+0039: 000 | } from "lucide-react"
+0040: 000 | import Link from "next/link"
+0041: 000 | import { useRouter } from "next/navigation"
+0042: 000 | 
+0043: 001 | export default function ArtisanDashboard() {
+0044: 001 |     const [user, setUser] = useState<any>(null)
+0045: 001 |     const [profile, setProfile] = useState<any>(null)
+0046: 001 |     const [orders, setOrders] = useState<any[]>([])
+0047: 001 |     const [loading, setLoading] = useState(true)
+0048: 001 |     const [isRecording, setIsRecording] = useState(false)
+0049: 001 |     const [isGeneratingStory, setIsGeneratingStory] = useState(false)
+0050: 001 |     const [recordedStory, setRecordedStory] = useState<string | null>(null)
+0051: 001 |     const router = useRouter()
+0052: 001 |     const [activeTab, setActiveTab] = useState<"dashboard" | "settings" | "crafts" | "wiki" | "live">("dashboard")
+0053: 001 |     const [isSaving, setIsSaving] = useState(false)
+0054: 002 |     const [settingForm, setSettingForm] = useState({
+0055: 002 |         full_name: "",
+0056: 002 |         bio: "",
+0057: 002 |         location: "",
+0058: 002 |         specialty: ""
+0059: 001 |     })
+0060: 001 | 
+0061: 001 |     const [products, setProducts] = useState<any[]>([])
+0062: 001 |     const [categories, setCategories] = useState<any[]>([])
+0063: 001 |     const [showAddCraft, setShowAddCraft] = useState(false)
+0064: 001 |     const [editingCraftId, setEditingCraftId] = useState<string | null>(null)
+0065: 001 |     const [isSavingCraft, setIsSavingCraft] = useState(false)
+0066: 002 |     const [craftForm, setCraftForm] = useState({
+0067: 002 |         title: "",
+0068: 002 |         description: "",
+0069: 002 |         price: 0,
+0070: 002 |         stock: 10,
+0071: 002 |         category_id: "",
+0072: 002 |         region: "Punjab",
+0073: 002 |         image_url: ""
+0074: 001 |     })
+0075: 001 | 
+0076: 001 |     const [stats, setStats] = useState({ impressions: 0, rating: 0, activeCollections: 0 })
+0077: 001 |     const [gamification, setGamification] = useState({ points: 0, tier: 'Apprentice', nextTierPts: 250, progress: 0 })
+0078: 001 | 
+0079: 001 |     const [wikiArticles, setWikiArticles] = useState<any[]>([])
+0080: 001 |     const [showAddWiki, setShowAddWiki] = useState(false)
+0081: 001 |     const [editingWikiId, setEditingWikiId] = useState<string | null>(null)
+0082: 001 |     const [isSavingWiki, setIsSavingWiki] = useState(false)
+0083: 002 |     const [wikiForm, setWikiForm] = useState({
+0084: 002 |         title: "",
+0085: 002 |         content: "",
+0086: 002 |         category: "Ceramics",
+0087: 002 |         image_url: "",
+0088: 002 |         heritage_site: "Multan"
+0089: 001 |     })
+0090: 001 | 
+0091: 001 |     const [liveFeeds, setLiveFeeds] = useState<any[]>([])
+0092: 001 |     const [showAddFeed, setShowAddFeed] = useState(false)
+0093: 001 |     const [isSavingFeed, setIsSavingFeed] = useState(false)
+0094: 001 |     const [feedForm, setFeedForm] = useState({ video_url: "", caption: "", is_live: false })
+0095: 001 | 
+0096: 001 | 
+0097: 002 |     useEffect(() => {
+0098: 003 |         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+0099: 003 |             setLoading(true)
+0100: 004 |             if (!user) {
+0101: 004 |                 router.push("/login")
+0102: 004 |                 return
+0103: 003 |             }
+0104: 003 |             setUser(user)
+0105: 003 | 
+0106: 003 |             // Fetch profile for the artisan
+0107: 003 |             const pSnap = await getDoc(doc(db, "profiles", user.uid))
+0108: 003 |             const profile = pSnap.exists() ? { id: pSnap.id, ...pSnap.data() } : null
+0109: 003 | 
+0110: 004 |             if (profile) {
+0111: 004 |                 setProfile(profile)
+0112: 005 |                 if (profile.role !== "artisan") {
+0113: 005 |                     await signOut(auth)
+0114: 005 |                     router.push("/login")
+0115: 005 |                     return
+0116: 004 |                 }
+0117: 004 | 
+0118: 005 |                 if (profile.status === 'pending' || profile.status === 'rejected') {
+0119: 005 |                     setLoading(false)
+0120: 005 |                     return // Stop data fetch for unapproved users
+0121: 004 |                 }
+0122: 004 | 
+0123: 005 |                 setSettingForm({
+0124: 005 |                     full_name: profile.full_name || "",
+0125: 005 |                     bio: profile.bio || "",
+0126: 005 |                     location: profile.location || "",
+0127: 005 |                     specialty: profile.specialty || ""
+0128: 004 |                 })
+0129: 003 |             }
+0130: 003 | 
+0131: 003 |             // Fetch recent orders for this artisan
+0132: 003 |             const oQ = query(collection(db, "order_items"), where("artisan_id", "==", user.uid), orderBy("created_at", "desc"))
+0133: 003 |             const oSnap = await getDocs(oQ)
+0134: 003 |             const myOrders: any[] = []
+0135: 004 |             for (const d of oSnap.docs) {
+0136: 004 |                 const item = d.data()
+0137: 005 |                 if (item.order_id) {
+0138: 005 |                     const oSnap2 = await getDoc(doc(db, "orders", item.order_id))
+0139: 005 |                     if (oSnap2.exists()) item.orders = { id: oSnap2.id, ...oSnap2.data() }
+0140: 004 |                 }
+0141: 005 |                 if (item.product_id) {
+0142: 005 |                     const pSnap2 = await getDoc(doc(db, "products", item.product_id))
+0143: 005 |                     if (pSnap2.exists()) item.product = { id: pSnap2.id, ...pSnap2.data() }
+0144: 004 |                 }
+0145: 004 |                 myOrders.push({ id: d.id, ...item })
+0146: 003 |             }
+0147: 003 | 
+0148: 003 |             // Fetch categories
+0149: 003 |             const catSnap = await getDocs(collection(db, 'categories')); const catData = catSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+0150: 003 |             if (catData) setCategories(catData)
+0151: 003 | 
+0152: 003 |             // Fetch products for artisan
+0153: 003 |             let artisanProductsCount = 0;
+0154: 003 |             const prodSnap = await getDocs(query(collection(db, 'products'), where('artisan_id', '==', user.uid))); const prodData = prodSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+0155: 004 |             if (prodData) {
+0156: 004 |                 setProducts(prodData)
+0157: 004 |                 artisanProductsCount = prodData.length;
+0158: 003 |             }
+0159: 003 | 
+0160: 003 |             if (myOrders) setOrders(myOrders)
+0161: 003 | 
+0162: 003 |             // Calculate Live Stats
+0163: 003 |             let currentRating = 5.0; // Default new artisans to 5
+0164: 003 | 
+0165: 003 |             // Fetch reviews for products by this artisan
+0166: 003 |             
+0167: 004 |             if (artisanProducts && artisanProducts.length > 0) {
+0168: 004 |                 const productIds = artisanProducts.map(p => p.id);
+0169: 004 |                 const reviewsData: any[] = [];
+0170: 005 |                 for (const pid of productIds) {
+0171: 005 |                     const rSnap = await getDocs(query(collection(db, 'reviews'), where('product_id', '==', pid)));
+0172: 005 |                     reviewsData.push(...rSnap.docs.map(d => d.data()));
+0173: 004 |                 }
+0174: 005 |                 if (reviewsData && reviewsData.length > 0) {
+0175: 005 |                     const sum = reviewsData.reduce((acc, curr) => acc + curr.rating, 0);
+0176: 005 |                     currentRating = sum / reviewsData.length;
+0177: 004 |                 }
+0178: 003 |             }
+0179: 003 | 
+0180: 003 |             // Simulated impressions: orders * 42 + products * 123 + base 145
+0181: 003 |             const impressionsNum = (myOrders?.length || 0) * 42 + artisanProductsCount * 123 + 145;
+0182: 003 | 
+0183: 004 |             setStats({
+0184: 004 |                 impressions: impressionsNum,
+0185: 004 |                 rating: Number(currentRating.toFixed(1)),
+0186: 004 |                 activeCollections: artisanProductsCount
+0187: 003 |             })
+0188: 003 | 
+0189: 003 |             // Calculate Gamification Live
+0190: 003 |             const currentPoints = (myOrders?.length || 0) * 50 + artisanProductsCount * 20 + 25; // Base 25
+0191: 003 | 
+0192: 003 |             let currentTier = 'Apprentice';
+0193: 003 |             let nextPts = 250;
+0194: 003 |             if (currentPoints >= 5000) { currentTier = 'Grandmaster'; nextPts = 5000; }
+0195: 003 |             else if (currentPoints >= 1000) { currentTier = 'Master Artisan'; nextPts = 5000; }
+0196: 003 |             else if (currentPoints >= 250) { currentTier = 'Artisan'; nextPts = 1000; }
+0197: 003 | 
+0198: 003 |             const progressRatio = currentTier === 'Grandmaster' ? 100 : Math.min(100, (currentPoints / nextPts) * 100);
+0199: 003 | 
+0200: 004 |             setGamification({
+0201: 004 |                 points: currentPoints,
+0202: 004 |                 tier: currentTier,
+0203: 004 |                 nextTierPts: nextPts,
+0204: 004 |                 progress: progressRatio
+0205: 003 |             })
+0206: 003 | 
+0207: 003 |             // Silently persist mastery to public DB for global storefront retrieval
+0208: 003 |             updateDoc(doc(db, 'artisans', user.uid), { mastery_tier: currentTier, mastery_points: currentPoints }).catch(e => console.error(e));
+0209: 003 | 
+0210: 003 |             // Fetch Wiki Articles
+0211: 003 |             const wSnap = await getDocs(query(collection(db, 'craftpedia_articles'), where('author_id', '==', user.uid))); const wikiData = wSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+0212: 003 |             if (wikiData) setWikiArticles(wikiData)
+0213: 003 | 
+0214: 003 |             // Fetch Live Feeds
+0215: 003 |             const fSnap = await getDocs(query(collection(db, 'artisan_feeds'), where('artisan_id', '==', user.uid), where('status', '==', 'active'))); const feedData = fSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+0216: 003 |             if (feedData) setLiveFeeds(feedData)
+0217: 003 | 
+0218: 003 |             setLoading(false)
+0219: 002 |         })
+0220: 002 |         return () => unsubscribe()
+0221: 001 |     }, [router])
+0222: 001 | 
+0223: 002 |     const handleVoiceToStory = () => {
+0224: 002 |         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+0225: 003 |         if (!SpeechRecognition) {
+0226: 003 |             alert("Your browser does not support heritage voice dictation. Please use Chrome or Safari.")
+0227: 003 |             return
+0228: 002 |         }
+0229: 002 | 
+0230: 002 |         const recognition = new SpeechRecognition()
+0231: 002 |         recognition.lang = 'en-US'
+0232: 002 |         recognition.interimResults = false
+0233: 002 |         recognition.maxAlternatives = 1
+0234: 002 | 
+0235: 002 |         setIsRecording(true)
+0236: 002 |         setRecordedStory(null)
+0237: 002 | 
+0238: 002 |         recognition.start()
+0239: 002 | 
+0240: 003 |         recognition.onresult = async (event: any) => {
+0241: 003 |             const transcript = event.results[0][0].transcript
+0242: 003 |             setIsRecording(false)
+0243: 003 |             setIsGeneratingStory(true)
+0244: 003 | 
+0245: 004 |             try {
+0246: 004 |                 // Invoke Supabase Edge Function to expand and improve via Opensource AI First
+0247: 004 |                 const data = null as any; const error = null; // Supabase func removed
+0248: 004 | 
+0249: 004 |                 if (error) throw error
+0250: 004 | 
+0251: 005 |                 if (data?.story) {
+0252: 005 |                     setRecordedStory(data.story.replace(/^"|"$/g, ''))
+0253: 005 |                 } else {
+0254: 005 |                     setRecordedStory("Your beautiful story could not be generated at this time. Please try again.")
+0255: 004 |                 }
+0256: 004 |             } catch (err) {
+0257: 004 |                 console.warn("AI Generation Failed, using deterministic offline fallback.", err)
+0258: 004 |                 // Intelligent fallback string based on the raw transcript if HF key is missing
+0259: 004 |                 setRecordedStory(`[Offline Draft] Based on your voice notes (${transcript.substring(0, 30)}...), this masterwork represents generations of perfected technique. The intricate details and rich heritage shine through, making it a timeless addition to any collection.`)
+0260: 004 |             } finally {
+0261: 004 |                 setIsGeneratingStory(false)
+0262: 003 |             }
+0263: 002 |         }
+0264: 002 | 
+0265: 003 |         recognition.onerror = (event: any) => {
+0266: 003 |             console.error("Speech Recognition Error", event.error)
+0267: 003 |             setIsRecording(false)
+0268: 003 |             alert("Microphone capture failed. Please ensure you have granted microphone permissions.")
+0269: 002 |         }
+0270: 001 |     }
+0271: 001 | 
+0272: 002 |     const handleOrderStatusChange = async (orderId: string, newStatus: string) => {
+0273: 002 |         if (!orderId) return;
+0274: 003 |         try {
+0275: 003 |             await updateDoc(doc(db, 'orders', orderId), { status: newStatus }); const error = null;
+0276: 003 |             if (error) throw error
+0277: 003 | 
+0278: 004 |             setOrders(orders.map(o => {
+0279: 005 |                 if (o.orders?.id === orderId) {
+0280: 005 |                     return { ...o, orders: { ...o.orders, status: newStatus } }
+0281: 004 |                 }
+0282: 004 |                 return o
+0283: 003 |             }))
+0284: 003 |         } catch (error: any) {
+0285: 003 |             console.error("Status Update Failed", error)
+0286: 003 |             alert("Could not update order status.")
+0287: 002 |         }
+0288: 001 |     }
+0289: 001 | 
+0290: 002 |     const handleSaveProfile = async (e: React.FormEvent) => {
+0291: 002 |         e.preventDefault()
+0292: 002 |         setIsSaving(true)
+0293: 002 | 
+0294: 003 |         try {
+0295: 003 |             // Update auth profiles metadata
+0296: 004 |             await updateDoc(doc(db, "profiles", user.uid), {
+0297: 004 |                 full_name: settingForm.full_name,
+0298: 004 |                 bio: settingForm.bio,
+0299: 004 |                 location: settingForm.location,
+0300: 004 |                 specialty: settingForm.specialty
+0301: 003 |             })
+0302: 003 | 
+0303: 003 |             // Update purely public artisans table for matching
+0304: 004 |             await setDoc(doc(db, "artisans", user.uid), {
+0305: 004 |                 full_name: settingForm.full_name,
+0306: 004 |                 bio: settingForm.bio,
+0307: 004 |                 location: settingForm.location,
+0308: 004 |                 specialty: settingForm.specialty
+0309: 003 |             }, { merge: true })
+0310: 003 | 
+0311: 003 |             setProfile((prev: any) => ({ ...prev, ...settingForm }))
+0312: 003 |             alert("Studio Settings Updated Successfully!")
+0313: 003 |         } catch (error) {
+0314: 003 |             console.error("Failed to update profile", error)
+0315: 003 |             alert("Error updating profile.")
+0316: 003 |         } finally {
+0317: 003 |             setIsSaving(false)
+0318: 002 |         }
+0319: 001 |     }
+0320: 001 | 
+0321: 002 |     const handleSaveCraft = async (e: React.FormEvent) => {
+0322: 002 |         e.preventDefault()
+0323: 002 |         setIsSavingCraft(true)
+0324: 003 |         try {
+0325: 004 |             const formData = {
+0326: 004 |                 title: craftForm.title,
+0327: 004 |                 description: craftForm.description,
+0328: 004 |                 price: Number(craftForm.price),
+0329: 004 |                 stock: Number(craftForm.stock),
+0330: 004 |                 category_id: craftForm.category_id || null,
+0331: 004 |                 region: craftForm.region || "Punjab",
+0332: 004 |                 image_url: craftForm.image_url,
+0333: 004 |                 artisan_id: user.uid
+0334: 003 |             }
+0335: 003 | 
+0336: 003 |             let savedProduct: any = null;
+0337: 003 | 
+0338: 004 |             if (editingCraftId) {
+0339: 004 |                 await updateDoc(doc(db, 'products', editingCraftId), formData); const data = { id: editingCraftId, ...formData }; const error = null;
+0340: 004 |                 if (error) throw error
+0341: 004 |                 savedProduct = data
+0342: 004 |                 setProducts(products.map(p => p.id === editingCraftId ? { ...p, ...formData } : p))
+0343: 004 |             } else {
+0344: 004 |                 const docRef = await addDoc(collection(db, 'products'), formData); const data = { id: docRef.id, ...formData }; const error = null;
+0345: 004 |                 if (error) throw error
+0346: 004 |                 savedProduct = data
+0347: 004 |                 if (data) setProducts([data, ...products])
+0348: 003 |             }
+0349: 003 | 
+0350: 003 |             // --- Generate AI Semantic Vector Signature ---
+0351: 004 |             try {
+0352: 004 |                 const encodeString = `${formData.title} ${formData.description} ${formData.region}`;
+0353: 004 |                 const embedData = null as any; const embedError = null;
+0354: 004 | 
+0355: 005 |                 if (!embedError && embedData?.embedding && savedProduct) {
+0356: 005 |                     
+0357: 005 |                     console.log("AI semantic vector attached.")
+0358: 004 |                 }
+0359: 004 |             } catch (err) {
+0360: 004 |                 console.warn("Could not encode vector signature, skipping AI attach:", err)
+0361: 003 |             }
+0362: 003 |             // ---------------------------------------------
+0363: 003 | 
+0364: 003 |             setShowAddCraft(false)
+0365: 003 |             setEditingCraftId(null)
+0366: 003 |             setCraftForm({ title: "", description: "", price: 0, stock: 10, category_id: "", region: "Punjab", image_url: "" })
+0367: 003 |         } catch (error: any) {
+0368: 003 |             console.error("Failed to save craft:", error)
+0369: 003 |             alert(error.message || "Error saving craft.")
+0370: 003 |         } finally {
+0371: 003 |             setIsSavingCraft(false)
+0372: 002 |         }
+0373: 001 |     }
+0374: 001 | 
+0375: 002 |     const editCraft = (craft: any) => {
+0376: 002 |         setEditingCraftId(craft.id)
+0377: 003 |         setCraftForm({
+0378: 003 |             title: craft.title || "",
+0379: 003 |             description: craft.description || "",
+0380: 003 |             price: craft.price || 0,
+0381: 003 |             stock: craft.stock || 10,
+0382: 003 |             category_id: craft.category_id || "",
+0383: 003 |             region: craft.region || "Punjab",
+0384: 003 |             image_url: craft.image_url || ""
+0385: 002 |         })
+0386: 002 |         setShowAddCraft(true)
+0387: 001 |     }
+0388: 001 | 
+0389: 002 |     const handleDeleteCraft = async (id: string) => {
+0390: 002 |         if (!confirm("Are you sure you want to permanently remove this piece from the global catalog?")) return
+0391: 003 |         try {
+0392: 003 |             await deleteDoc(doc(db, 'products', id)); const error = null;
+0393: 003 |             if (error) throw error
+0394: 003 |             setProducts(products.filter(p => p.id !== id))
+0395: 003 |         } catch (error) {
+0396: 003 |             console.error("Delete Error", error)
+0397: 003 |             alert("Error deleting craft.")
+0398: 002 |         }
+0399: 003 |     const handleSaveWikiArticle = async (e: React.FormEvent) => {
+0400: 003 |         e.preventDefault()
+0401: 003 |         setIsSavingWiki(true)
+0402: 004 |         try {
+0403: 004 |             const slug = wikiForm.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
+0404: 005 |             const formData = {
+0405: 005 |                 ...wikiForm,
+0406: 005 |                 slug,
+0407: 005 |                 author_id: user.uid,
+0408: 005 |                 status: 'published'
+0409: 004 |             }
+0410: 004 | 
+0411: 005 |             if (editingWikiId) {
+0412: 005 |                 await updateDoc(doc(db, 'craftpedia_articles', editingWikiId), formData); const error = null;
+0413: 005 |                 if (error) throw error
+0414: 005 |                 setWikiArticles(wikiArticles.map(a => a.id === editingWikiId ? { ...a, ...formData } : a))
+0415: 005 |             } else {
+0416: 005 |                 const docRef = await addDoc(collection(db, 'craftpedia_articles'), formData); const data = { id: docRef.id, ...formData }; const error = null;
+0417: 005 |                 if (error) throw error
+0418: 005 |                 if (data) setWikiArticles([data, ...wikiArticles])
+0419: 004 |             }
+0420: 004 | 
+0421: 004 |             setShowAddWiki(false)
+0422: 004 |             setEditingWikiId(null)
+0423: 004 |             setWikiForm({ title: "", content: "", category: "Ceramics", image_url: "", heritage_site: "Multan" })
+0424: 004 |         } catch (error: any) {
+0425: 004 |             console.error("Failed to save wiki article:", error)
+0426: 004 |             alert(error.message || "Error saving article.")
+0427: 004 |         } finally {
+0428: 004 |             setIsSavingWiki(false)
+0429: 003 |         }
+0430: 002 |     }
+0431: 002 | 
+0432: 003 |     const deleteWikiArticle = async (id: string) => {
+0433: 003 |         if (!confirm("Are you sure you want to remove this documentation from the archive?")) return
+0434: 004 |         try {
+0435: 004 |             await deleteDoc(doc(db, 'craftpedia_articles', id)); const error = null;
+0436: 004 |             if (error) throw error
+0437: 004 |             setWikiArticles(wikiArticles.filter(a => a.id !== id))
+0438: 004 |         } catch (error) {
+0439: 004 |             console.error("Delete Error", error)
+0440: 004 |             alert("Error deleting article.")
+0441: 003 |         }
+0442: 002 |     }
+0443: 002 | 
+0444: 003 |     const handleSaveLiveFeed = async (e: React.FormEvent) => {
+0445: 003 |         e.preventDefault()
+0446: 003 |         setIsSavingFeed(true)
+0447: 004 |         try {
+0448: 005 |             const feedData = {
+0449: 005 |                 ...feedForm,
+0450: 005 |                 artisan_id: user.uid,
+0451: 005 |                 status: 'active'
+0452: 004 |             };
+0453: 004 |             const docRef = await addDoc(collection(db, 'artisan_feeds'), feedData);
+0454: 004 |             const data = { id: docRef.id, ...feedData };
+0455: 004 |             const error = null;
+0456: 004 |             if (error) throw error
+0457: 004 |             if (data) setLiveFeeds([data, ...liveFeeds])
+0458: 004 |             setShowAddFeed(false)
+0459: 004 |             setFeedForm({ video_url: "", caption: "", is_live: false })
+0460: 004 |         } catch (error: any) {
+0461: 004 |             console.error("Failed to post feed:", error)
+0462: 004 |             alert(error.message || "Error posting live story.")
+0463: 004 |         } finally {
+0464: 004 |             setIsSavingFeed(false)
+0465: 003 |         }
+0466: 002 |     }
+0467: 002 | 
+0468: 003 |     const deleteFeed = async (id: string) => {
+0469: 003 |         if (!confirm("Are you sure you want to remove this studio story?")) return
+0470: 004 |         try {
+0471: 004 |             await updateDoc(doc(db, 'artisan_feeds', id), { status: 'archived' }); const error = null;
+0472: 004 |             if (error) throw error
+0473: 004 |             setLiveFeeds(liveFeeds.filter(f => f.id !== id))
+0474: 004 |         } catch (error) {
+0475: 004 |             console.error("Delete Error", error)
+0476: 004 |             alert("Error removing story.")
+0477: 003 |         }
+0478: 002 |     }
+0479: 002 | 
+0480: 003 |     const handleLogout = async () => {
+0481: 003 |         await signOut(auth)
+0482: 003 |         router.push("/")
+0483: 002 |     }
+0484: 002 | 
+0485: 002 |     if (loading) return (
+0486: 002 |         <div className="bg-dark text-white min-vh-100 d-flex align-items-center justify-content-center">
+0487: 002 |             <div className="spinner-border text-warning" role="status">
+0488: 002 |                 <span className="visually-hidden">Syncing Heritage...</span>
+0489: 002 |             </div>
+0490: 002 |         </div>
+0491: 002 |     )
+0492: 002 | 
+0493: 003 |     if (profile?.status === 'pending') {
+0494: 003 |         return (
+0495: 003 |             <div className="bg-dark text-white min-vh-100 d-flex flex-column">
+0496: 003 |                 <Navbar />
+0497: 003 |                 <main className="container flex-grow-1 d-flex align-items-center justify-content-center py-5 mt-5">
+0498: 003 |                     <div className="text-center p-5 rounded-5 border border-warning border-opacity-25 bg-white bg-opacity-5 shadow-lg max-w-md w-100" style={{ backdropFilter: "blur(10px)" }}>
+0499: 003 |                         <div className="mb-4 d-inline-block rounded-circle p-4 bg-warning bg-opacity-10 text-warning shadow">
+0500: 003 |                             <Clock size={48} />
+0501: 003 |                         </div>
+0502: 003 |                         <h2 className="fw-bold mb-3 text-white">Verification Pending</h2>
+0503: 003 |                         <p className="text-white-50 mx-auto mb-5" style={{ maxWidth: '400px', lineHeight: '1.6' }}>
+0504: 003 |                             Your artisan account is currently under review by our heritage verification team. We will notify you once your global access is approved.
+0505: 003 |                         </p>
+0506: 003 |                         <button onClick={handleLogout} className="btn btn-warning rounded-pill px-5 py-3 fw-bold shadow-lg hover-scale transition-all d-flex align-items-center gap-2 mx-auto">
+0507: 003 |                             <LogOut size={20} /> Leave Portal
+0508: 003 |                         </button>
+0509: 003 |                     </div>
+0510: 003 |                 </main>
+0511: 003 |             </div>
+0512: 003 |         )
+0513: 002 |     }
+0514: 002 | 
+0515: 003 |     if (profile?.status === 'rejected') {
+0516: 003 |         return (
+0517: 003 |             <div className="bg-dark text-white min-vh-100 d-flex flex-column">
+0518: 003 |                 <Navbar />
+0519: 003 |                 <main className="container flex-grow-1 d-flex align-items-center justify-content-center py-5 mt-5">
+0520: 003 |                     <div className="text-center p-5 rounded-5 border border-danger border-opacity-25 bg-white bg-opacity-5 shadow-lg max-w-md w-100" style={{ backdropFilter: "blur(10px)" }}>
+0521: 003 |                         <div className="mb-4 d-inline-block rounded-circle p-4 bg-danger bg-opacity-10 text-danger shadow">
+0522: 003 |                             <AlertCircle size={48} />
+0523: 003 |                         </div>
+0524: 003 |                         <h2 className="fw-bold mb-3 text-white">Application Unsuccessful</h2>
+0525: 003 |                         <p className="text-white-50 mx-auto mb-5" style={{ maxWidth: '400px', lineHeight: '1.6' }}>
+0526: 003 |                             Unfortunately, we are unable to verify the heritage standards required to activate this artisan profile at this time.
+0527: 003 |                         </p>
+0528: 003 |                         <button onClick={handleLogout} className="btn btn-outline-danger border-opacity-50 rounded-pill px-5 py-3 fw-bold shadow-lg hover-scale transition-all d-flex align-items-center gap-2 mx-auto">
+0529: 003 |                             <LogOut size={20} /> Logout
+0530: 003 |                         </button>
+0531: 003 |                     </div>
+0532: 003 |                 </main>
+0533: 003 |             </div>
+0534: 003 |         )
+0535: 002 |     }
+0536: 002 | 
+0537: 002 |     return (
+0538: 002 |         <div className="bg-dark text-white min-vh-100 d-flex flex-column">
+0539: 002 |             <Navbar />
+0540: 002 | 
+0541: 002 |             <main className="container-fluid flex-grow-1 pt-5 mt-5 px-lg-5">
+0542: 002 |                 <div className="row g-5 h-100">
+0543: 002 |                     {/* SIDEBAR */}
+0544: 002 |                     <aside className="col-lg-3 d-none d-lg-block">
+0545: 002 |                         <div className="sticky-top pt-4 h-100" style={{ top: "100px" }}>
+0546: 002 |                             <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 d-flex flex-column">
+0547: 002 |                                 <div className="d-flex align-items-center gap-3 mb-5 pb-4 border-bottom border-white border-opacity-10">
+0548: 002 |                                     <div className="rounded-circle border border-warning border-opacity-25 p-1">
+0549: 002 |                                         <img
+0550: 002 |                                             src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.full_name || user?.email)}&background=random&color=fff`}
+0551: 002 |                                             className="rounded-circle w-100 h-100 object-fit-cover shadow-lg"
+0552: 002 |                                             style={{ width: "60px", height: "60px" }}
+0553: 002 |                                             alt="Profile"
+0554: 002 |                                         />
+0555: 002 |                                     </div>
+0556: 002 |                                     <div>
+0557: 002 |                                         <h6 className="fw-bold mb-0 text-white truncate-1">{profile?.full_name || "Artisan Master"}</h6>
+0558: 002 |                                         <div className="small text-warning d-flex align-items-center gap-1 mt-1">
+0559: 002 |                                             <Award size={14} /> {gamification.tier}
+0560: 002 |                                         </div>
+0561: 002 |                                     </div>
+0562: 002 |                                 </div>
+0563: 002 | 
+0564: 002 |                                 <nav className="d-flex flex-column gap-2 mb-auto pb-5">
+0565: 002 |                                     <button onClick={() => setActiveTab("dashboard")} className={`btn ${activeTab === 'dashboard' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+0566: 002 |                                         <LayoutDashboard size={20} /> Dashboard
+0567: 002 |                                     </button>
+0568: 002 |                                     <button onClick={() => setActiveTab("crafts")} className={`btn ${activeTab === 'crafts' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+0569: 002 |                                         <Package size={20} /> My Crafts
+0570: 002 |                                     </button>
+0571: 002 |                                     <button className="btn btn-link text-white-50 text-decoration-none rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-white-5 transition-all">
+0572: 002 |                                         <TrendingUp size={20} /> Impact Metrics
+0573: 002 |                                     </button>
+0574: 002 |                                     <button onClick={() => setActiveTab("wiki")} className={`btn ${activeTab === 'wiki' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+0575: 002 |                                         <BookOpen size={20} /> Craftpedia Wiki
+0576: 002 |                                     </button>
+0577: 002 |                                     <button onClick={() => setActiveTab("live")} className={`btn ${activeTab === 'live' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+0578: 002 |                                         <Video size={20} /> Live Studio
+0579: 002 |                                     </button>
+0580: 002 |                                     <button onClick={() => setActiveTab("settings")} className={`btn ${activeTab === 'settings' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+0581: 002 |                                         <Settings size={20} /> Studio Settings
+0582: 002 |                                     </button>
+0583: 002 |                                 </nav>
+0584: 002 | 
+0585: 002 |                                 <button
+0586: 002 |                                     onClick={handleLogout}
+0587: 002 |                                     className="btn btn-outline-danger border-opacity-20 rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-danger mt-auto"
+0588: 002 |                                 >
+0589: 002 |                                     <LogOut size={20} /> Leave Portal
+0590: 002 |                                 </button>
+0591: 002 |                             </div>
+0592: 002 |                         </div>
+0593: 002 |                     </aside>
+0594: 002 | 
+0595: 002 |                     {/* MAIN CONTENT */}
+0596: 002 |                     <div className="col-lg-9 py-4">
+0597: 003 |                         {activeTab === 'dashboard' ? (
+0598: 003 |                             <>
+0599: 003 |                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
+0600: 003 |                                     <div>
+0601: 003 |                                         <h1 className="display-4 fw-bold mb-2">Marhaba, <span className="text-warning">{profile?.full_name?.split(' ')[0] || "Master"}.</span></h1>
+0602: 003 |                                         <p className="text-white-50 opacity-75 lead mb-0">Your heritage portal is active. Centuries of tradition are now reaching a global audience.</p>
+0603: 003 |                                     </div>
+0604: 003 |                                     <div className="d-flex gap-3">
+0605: 003 |                                         <button className="btn btn-warning rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
+0606: 003 |                                             <Sparkles size={18} /> New Story
+0607: 003 |                                         </button>
+0608: 003 |                                         <button
+0609: 003 |                                             onClick={handleVoiceToStory}
+0610: 003 |                                             className={`btn ${isRecording ? 'btn-danger position-relative overflow-hidden' : 'btn-outline-light border-opacity-20'} rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 hover-translate-y transition-all`}
+0611: 003 |                                             disabled={isRecording || isGeneratingStory}>
+0612: 004 |                                             {isRecording ? (
+0613: 004 |                                                 <>
+0614: 004 |                                                     <span className="position-absolute w-100 h-100 bg-white bg-opacity-25 start-0 top-0 pulse-animation"></span>
+0615: 004 |                                                     <Mic size={18} className="position-relative z-1" />
+0616: 004 |                                                     <span className="position-relative z-1">Recording...</span>
+0617: 004 |                                                 </>
+0618: 004 |                                             ) : isGeneratingStory ? (
+0619: 004 |                                                 <><Loader size={18} className="spin" /> Magic happening...</>
+0620: 004 |                                             ) : (
+0621: 004 |                                                 <><Mic size={18} /> Voice to Story</>
+0622: 003 |                                             )}
+0623: 003 |                                         </button>
+0624: 003 |                                     </div>
+0625: 003 |                                 </header>
+0626: 003 | 
+0627: 003 |                                 {/* VOICE TO STORY UI */}
+0628: 004 |                                 {(isRecording || isGeneratingStory || recordedStory) && (
+0629: 004 |                                     <div className="mb-5 p-4 rounded-5 border border-warning border-opacity-50 bg-white bg-opacity-5 animate-fade-in shadow-lg">
+0630: 004 |                                         <div className="d-flex align-items-center gap-3 mb-3">
+0631: 004 |                                             <div className={`p-3 rounded-circle ${isRecording ? 'bg-danger text-white pulse-animation' : 'bg-warning bg-opacity-20 text-warning'}`}>
+0632: 004 |                                                 <Mic size={24} />
+0633: 004 |                                             </div>
+0634: 004 |                                             <h4 className="fw-bold mb-0">
+0635: 004 |                                                 {isRecording ? "Listening to Your Heritage..." : isGeneratingStory ? "AI is Transcribing & Formatting..." : "Your Heritage Story"}
+0636: 004 |                                             </h4>
+0637: 004 |                                         </div>
+0638: 004 | 
+0639: 005 |                                         {isRecording && (
+0640: 005 |                                             <div className="ps-5 ms-3">
+0641: 005 |                                                 <p className="text-white-50 mb-0">Speak naturally about your craft, its history, and the materials used. We'll capture the essence for your audience...</p>
+0642: 005 |                                                 <div className="d-flex align-items-center gap-2 mt-3 text-danger small fw-bold">
+0643: 005 |                                                     <span className="spinner-grow spinner-grow-sm" role="status"></span>
+0644: 005 |                                                     00:00:03...
+0645: 005 |                                                 </div>
+0646: 005 |                                             </div>
+0647: 004 |                                         )}
+0648: 004 | 
+0649: 005 |                                         {isGeneratingStory && (
+0650: 005 |                                             <div className="ps-5 ms-3 d-flex align-items-center gap-2 text-warning">
+0651: 005 |                                                 <span className="spinner-border spinner-border-sm"></span> Let the AI weave your words into a master story...
+0652: 005 |                                             </div>
+0653: 004 |                                         )}
+0654: 004 | 
+0655: 005 |                                         {recordedStory && (
+0656: 005 |                                             <div className="ps-5 ms-3">
+0657: 005 |                                                 <div className="p-4 rounded-4 bg-dark bg-opacity-80 text-white-70 fst-italic position-relative mt-2 shadow-lg" style={{ borderLeft: "4px solid #ffca2c" }}>
+0658: 005 |                                                     <Sparkles className="text-warning position-absolute top-0 end-0 m-3 opacity-50" />
+0659: 005 |                                                     "{recordedStory}"
+0660: 005 |                                                     <div className="mt-4 pt-3 border-top border-white-10 d-flex justify-content-end gap-3 align-items-center">
+0661: 005 |                                                         <button className="btn btn-link text-white-50 text-decoration-none p-0 hover-text-danger" onClick={() => setRecordedStory(null)}>Discard</button>
+0662: 007 |                                                         <button className="btn btn-warning rounded-pill px-4 fw-bold shadow-lg" onClick={() => {
+0663: 007 |                                                             setShowAddCraft(true)
+0664: 007 |                                                             setEditingCraftId(null)
+0665: 007 |                                                             setCraftForm(prev => ({ ...prev, description: recordedStory }))
+0666: 007 |                                                             setRecordedStory(null)
+0667: 007 |                                                             setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100)
+0668: 005 |                                                         }}>Publish Story to Catalog</button>
+0669: 005 |                                                     </div>
+0670: 005 |                                                 </div>
+0671: 005 |                                             </div>
+0672: 004 |                                         )}
+0673: 004 |                                     </div>
+0674: 003 |                                 )}
+0675: 003 | 
+0676: 003 |                                 {/* GAMIFICATION WIDGET */}
+0677: 003 |                                 <div className="mb-5 p-4 rounded-5 border border-warning border-opacity-25 position-relative overflow-hidden animate-fade-in-up" style={{ background: "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(0,0,0,0) 100%)" }}>
+0678: 003 |                                     <div className="position-absolute top-0 end-0 p-4 opacity-10 text-warning">
+0679: 003 |                                         <Award size={120} />
+0680: 003 |                                     </div>
+0681: 003 |                                     <h5 className="text-warning fw-bold mb-1 d-flex gap-2 align-items-center"><Award size={20} /> {gamification.tier} Status</h5>
+0682: 003 |                                     <p className="text-white-50 small mb-4 w-75 position-relative z-1" style={{ lineHeight: "1.5" }}>You have unlocked <strong>{gamification.points} mastery points</strong>. Continue sharing your heritage stories and fulfilling orders to ascend to the next prestigious artisanal tier.</p>
+0683: 003 | 
+0684: 003 |                                     <div className="position-relative z-1">
+0685: 003 |                                         <div className="d-flex justify-content-between text-white-70 small mb-2 fw-bold">
+0686: 003 |                                             <span>{gamification.points} pts</span>
+0687: 003 |                                             <span className={gamification.tier === 'Grandmaster' ? "text-warning" : ""}>{gamification.tier === 'Grandmaster' ? 'Max Level Achieved' : `${gamification.nextTierPts} pts`}</span>
+0688: 003 |                                         </div>
+0689: 003 |                                         <div className="progress rounded-pill overflow-hidden shadow-sm" style={{ height: "10px", backgroundColor: "rgba(255,255,255,0.05)" }}>
+0690: 003 |                                             <div className="progress-bar bg-warning progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" style={{ width: `${gamification.progress}%` }}></div>
+0691: 003 |                                         </div>
+0692: 003 |                                     </div>
+0693: 003 |                                 </div>
+0694: 003 | 
+0695: 003 |                                 {/* STATS OVERVIEW */}
+0696: 003 |                                 <div className="row g-4 mb-5 animate-fade-in-up">
+0697: 003 |                                     <div className="col-md-4">
+0698: 003 |                                         <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5">
+0699: 003 |                                             <div className="d-flex align-items-center justify-content-between mb-3 text-warning">
+0700: 003 |                                                 <Eye size={24} />
+0701: 003 |                                                 <span className="small text-success fw-bold d-flex align-items-center gap-1">+12% <TrendingUp size={12} /></span>
+0702: 003 |                                             </div>
+0703: 003 |                                             <div className="display-5 fw-bold text-white mb-1">{stats.impressions.toLocaleString()}</div>
+0704: 003 |                                             <div className="small text-white-50 text-uppercase ls-1 fw-bold">Story Impressions</div>
+0705: 003 |                                         </div>
+0706: 003 |                                     </div>
+0707: 003 |                                     <div className="col-md-4">
+0708: 003 |                                         <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5">
+0709: 003 |                                             <div className="d-flex align-items-center justify-content-between mb-3 text-info">
+0710: 003 |                                                 <Star size={24} />
+0711: 003 |                                                 <span className="small text-success fw-bold d-flex align-items-center gap-1">+5% <TrendingUp size={12} /></span>
+0712: 003 |                                             </div>
+0713: 003 |                                             <div className="display-5 fw-bold text-white mb-1">{stats.rating}/5</div>
+0714: 003 |                                             <div className="small text-white-50 text-uppercase ls-1 fw-bold">Heritage Rating</div>
+0715: 003 |                                         </div>
+0716: 003 |                                     </div>
+0717: 003 |                                     <div className="col-md-4">
+0718: 003 |                                         <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5">
+0719: 003 |                                             <div className="d-flex align-items-center justify-content-between mb-3 text-success">
+0720: 003 |                                                 <TrendingUp size={24} />
+0721: 003 |                                                 <span className="small text-info fw-bold">Verified</span>
+0722: 003 |                                             </div>
+0723: 003 |                                             <div className="display-5 fw-bold text-white mb-1">{stats.activeCollections}</div>
+0724: 003 |                                             <div className="small text-white-50 text-uppercase ls-1 fw-bold">Active Collections</div>
+0725: 003 |                                         </div>
+0726: 003 |                                     </div>
+0727: 003 |                                 </div>
+0728: 003 | 
+0729: 003 |                                 {/* RECENT ORDERS */}
+0730: 003 |                                 <div className="animate-fade-in-up mb-5" style={{ animationDelay: "0.1s" }}>
+0731: 003 |                                     <div className="d-flex align-items-center justify-content-between mb-4">
+0732: 003 |                                         <h3 className="fw-bold mb-0">Recent Orders</h3>
+0733: 003 |                                         <button className="btn btn-link text-warning text-decoration-none small d-flex align-items-center gap-1 hover-underline">
+0734: 003 |                                             View All <ChevronRight size={14} />
+0735: 003 |                                         </button>
+0736: 003 |                                     </div>
+0737: 003 | 
+0738: 003 |                                     <div className="rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 overflow-hidden">
+0739: 004 |                                         {orders.length === 0 ? (
+0740: 004 |                                             <div className="p-5 text-center text-white-50">
+0741: 004 |                                                 <Package size={32} className="mb-3 opacity-50 mx-auto" />
+0742: 004 |                                                 <p className="mb-0">No active orders yet. Keep sharing your stories!</p>
+0743: 004 |                                             </div>
+0744: 004 |                                         ) : (
+0745: 004 |                                             <div className="table-responsive">
+0746: 004 |                                                 <table className="table table-dark table-hover mb-0 bg-transparent align-middle">
+0747: 004 |                                                     <thead>
+0748: 004 |                                                         <tr className="border-bottom border-white border-opacity-10 opacity-75">
+0749: 004 |                                                             <th className="bg-transparent fw-bold py-3 ps-4">Product</th>
+0750: 004 |                                                             <th className="bg-transparent fw-bold py-3">Customer</th>
+0751: 004 |                                                             <th className="bg-transparent fw-bold py-3">Qty</th>
+0752: 004 |                                                             <th className="bg-transparent fw-bold py-3">Total Earnings</th>
+0753: 004 |                                                             <th className="bg-transparent fw-bold py-3">Status</th>
+0754: 004 |                                                             <th className="bg-transparent fw-bold py-3 pe-4 text-end">Action</th>
+0755: 004 |                                                         </tr>
+0756: 004 |                                                     </thead>
+0757: 004 |                                                     <tbody>
+0758: 005 |                                                         {orders.map((item) => (
+0759: 005 |                                                             <tr key={item.id} className="border-bottom border-white border-opacity-10">
+0760: 005 |                                                                 <td className="bg-transparent py-3 ps-4">
+0761: 005 |                                                                     <div className="d-flex align-items-center gap-3">
+0762: 005 |                                                                         <img src={item.product?.image_url || "/images/hero.png"} alt="Product" className="rounded-3 object-fit-cover" style={{ width: "48px", height: "48px" }} />
+0763: 005 |                                                                         <span className="fw-bold">{item.product?.title || "Unknown Craft"}</span>
+0764: 005 |                                                                     </div>
+0765: 005 |                                                                 </td>
+0766: 005 |                                                                 <td className="bg-transparent py-3">
+0767: 005 |                                                                     <div className="small text-white">{item.orders?.customer_name}</div>
+0768: 005 |                                                                     <div className="small text-white-50">{item.orders?.customer_address?.substring(0, 20)}...</div>
+0769: 005 |                                                                 </td>
+0770: 005 |                                                                 <td className="bg-transparent py-3 text-white-50">{item.quantity}</td>
+0771: 005 |                                                                 <td className="bg-transparent py-3 fw-bold text-warning">${(item.price_at_time * item.quantity).toFixed(2)}</td>
+0772: 005 |                                                                 <td className="bg-transparent py-3 pe-4 text-end">
+0773: 005 |                                                                     <select
+0774: 005 |                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${item.orders?.status === 'pending' ? 'bg-warning text-dark' : item.orders?.status === 'processing' ? 'bg-info text-dark' : item.orders?.status === 'shipped' ? 'bg-primary text-white' : item.orders?.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
+0775: 005 |                                                                         value={item.orders?.status || 'pending'}
+0776: 005 |                                                                         onChange={(e) => handleOrderStatusChange(item.orders?.id, e.target.value)}
+0777: 005 |                                                                         style={{ cursor: "pointer", appearance: "none", paddingRight: "1.5rem" }}
+0778: 005 |                                                                     >
+0779: 005 |                                                                         <option value="pending" className="bg-dark text-white">Pending</option>
+0780: 005 |                                                                         <option value="processing" className="bg-dark text-white">Processing</option>
+0781: 005 |                                                                         <option value="shipped" className="bg-dark text-white">Shipped</option>
+0782: 005 |                                                                         <option value="delivered" className="bg-dark text-white">Delivered</option>
+0783: 005 |                                                                         <option value="cancelled" className="bg-dark text-white">Cancelled</option>
+0784: 005 |                                                                     </select>
+0785: 005 |                                                                 </td>
+0786: 005 |                                                                 <td className="bg-transparent py-3 pe-4 text-end">
+0787: 006 |                                                                     {item.orders?.status === 'delivered' ? (
+0788: 006 |                                                                         <span className="small text-success fw-bold d-flex align-items-center gap-1 justify-content-end"><CheckCircle size={14} /> Completed</span>
+0789: 006 |                                                                     ) : (
+0790: 006 |                                                                         <span className="small text-white-50">In Progress</span>
+0791: 005 |                                                                     )}
+0792: 005 |                                                                 </td>
+0793: 005 |                                                             </tr>
+0794: 004 |                                                         ))}
+0795: 004 |                                                     </tbody>
+0796: 004 |                                                 </table>
+0797: 004 |                                             </div>
+0798: 003 |                                         )}
+0799: 003 |                                     </div>
+0800: 003 |                                 </div>
+0801: 003 |                             </>
+0802: 003 |                         ) : activeTab === 'settings' ? (
+0803: 003 |                             <div className="animate-fade-in-up">
+0804: 003 |                                 <header className="mb-4">
+0805: 003 |                                     <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
+0806: 003 |                                         <Settings className="text-warning" size={32} /> Studio Settings
+0807: 003 |                                     </h2>
+0808: 003 |                                     <p className="text-white-50 mb-0">Manage your public artisan profile and heritage details here.</p>
+0809: 003 |                                 </header>
+0810: 003 | 
+0811: 003 |                                 <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5">
+0812: 003 |                                     <form onSubmit={handleSaveProfile} className="d-flex flex-column gap-4">
+0813: 003 |                                         <div className="row g-4">
+0814: 003 |                                             <div className="col-md-6">
+0815: 003 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Full Name</label>
+0816: 003 |                                                 <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0817: 003 |                                                     <span className="input-group-text bg-transparent border-0 text-white-50"><User size={16} /></span>
+0818: 003 |                                                     <input type="text" required value={settingForm.full_name} onChange={e => setSettingForm({ ...settingForm, full_name: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="Master Artisan Name" />
+0819: 003 |                                                 </div>
+0820: 003 |                                             </div>
+0821: 003 |                                             <div className="col-md-6">
+0822: 003 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Master Specialty</label>
+0823: 003 |                                                 <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0824: 003 |                                                     <span className="input-group-text bg-transparent border-0 text-warning"><Hammer size={16} /></span>
+0825: 003 |                                                     <input type="text" value={settingForm.specialty} onChange={e => setSettingForm({ ...settingForm, specialty: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="e.g. Blue Pottery" />
+0826: 003 |                                                 </div>
+0827: 003 |                                             </div>
+0828: 003 |                                         </div>
+0829: 003 | 
+0830: 003 |                                         <div>
+0831: 003 |                                             <label className="form-label small text-white-50 text-uppercase ls-1">Studio Location</label>
+0832: 003 |                                             <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0833: 003 |                                                 <span className="input-group-text bg-transparent border-0 text-white-50"><MapPin size={16} /></span>
+0834: 003 |                                                 <input type="text" value={settingForm.location} onChange={e => setSettingForm({ ...settingForm, location: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="e.g. Multan, Pakistan" />
+0835: 003 |                                             </div>
+0836: 003 |                                         </div>
+0837: 003 | 
+0838: 003 |                                         <div>
+0839: 003 |                                             <label className="form-label small text-white-50 text-uppercase ls-1">Heritage Bio</label>
+0840: 003 |                                             <textarea rows={4} value={settingForm.bio} onChange={e => setSettingForm({ ...settingForm, bio: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="Tell the world about the heritage of your craft..."></textarea>
+0841: 003 |                                         </div>
+0842: 003 | 
+0843: 003 |                                         <button type="submit" disabled={isSaving} className="btn btn-warning rounded-pill py-3 fw-bold mt-2 shadow-lg d-flex align-items-center justify-content-center gap-2 hover-translate-y transition-all">
+0844: 003 |                                             {isSaving ? <Loader size={20} className="spin" /> : <>Save Global Avatar <Sparkles size={18} /></>}
+0845: 003 |                                         </button>
+0846: 003 |                                     </form>
+0847: 003 |                                 </div>
+0848: 003 |                             </div>
+0849: 003 |                         ) : activeTab === 'crafts' ? (
+0850: 003 |                             <div className="animate-fade-in-up">
+0851: 003 |                                 <header className="mb-4 d-flex justify-content-between align-items-center">
+0852: 003 |                                     <div>
+0853: 003 |                                         <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
+0854: 003 |                                             <Package className="text-warning" size={32} /> Global Inventory
+0855: 003 |                                         </h2>
+0856: 003 |                                         <p className="text-white-50 mb-0">Present your heritage crafts to buyers worldwide.</p>
+0857: 003 |                                     </div>
+0858: 004 |                                     {!showAddCraft && (
+0859: 006 |                                         <button onClick={() => {
+0860: 006 |                                             setEditingCraftId(null)
+0861: 006 |                                             setCraftForm({ title: "", description: "", price: 0, stock: 10, category_id: categories.length > 0 ? categories[0].id : "", region: "Punjab", image_url: "" })
+0862: 006 |                                             setShowAddCraft(true)
+0863: 004 |                                         }} className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-lg hover-scale">
+0864: 004 |                                             <Plus size={18} /> New Masterpiece
+0865: 004 |                                         </button>
+0866: 003 |                                     )}
+0867: 003 |                                 </header>
+0868: 003 | 
+0869: 004 |                                 {showAddCraft ? (
+0870: 004 |                                     <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5 animate-fade-in">
+0871: 004 |                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
+0872: 004 |                                             <h4 className="fw-bold m-0">{editingCraftId ? "Update Masterpiece Details" : "Publish to Global Network"}</h4>
+0873: 004 |                                             <button onClick={() => setShowAddCraft(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
+0874: 004 |                                                 Cancel
+0875: 004 |                                             </button>
+0876: 004 |                                         </div>
+0877: 004 |                                         <form onSubmit={handleSaveCraft} className="d-flex flex-column gap-4">
+0878: 004 |                                             <div className="row g-4">
+0879: 004 |                                                 <div className="col-md-8">
+0880: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Title</label>
+0881: 004 |                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0882: 004 |                                                         <span className="input-group-text bg-transparent border-0 text-white-50"><Package size={16} /></span>
+0883: 004 |                                                         <input type="text" required value={craftForm.title} onChange={e => setCraftForm({ ...craftForm, title: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="e.g. Multani Blue Pottery Vase" />
+0884: 004 |                                                     </div>
+0885: 004 |                                                 </div>
+0886: 004 |                                                 <div className="col-md-4">
+0887: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Price (USD)</label>
+0888: 004 |                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0889: 004 |                                                         <span className="input-group-text bg-transparent border-0 text-warning"><DollarSign size={16} /></span>
+0890: 004 |                                                         <input type="number" step="0.01" min="0" required value={craftForm.price} onChange={e => setCraftForm({ ...craftForm, price: parseFloat(e.target.value) })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="0.00" />
+0891: 004 |                                                     </div>
+0892: 004 |                                                 </div>
+0893: 004 |                                             </div>
+0894: 004 | 
+0895: 004 |                                             <div className="row g-4">
+0896: 004 |                                                 <div className="col-md-4">
+0897: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Heritage Category</label>
+0898: 004 |                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0899: 004 |                                                         <span className="input-group-text bg-transparent border-0 text-white-50"><ListFilter size={16} /></span>
+0900: 004 |                                                         <select required value={craftForm.category_id} onChange={e => setCraftForm({ ...craftForm, category_id: e.target.value })} className="form-select bg-transparent border-0 text-white shadow-none">
+0901: 004 |                                                             <option value="" disabled className="text-dark">Select Category</option>
+0902: 005 |                                                             {categories.map(cat => (
+0903: 005 |                                                                 <option key={cat.id} value={cat.id} className="text-dark">{cat.name}</option>
+0904: 004 |                                                             ))}
+0905: 004 |                                                         </select>
+0906: 004 |                                                     </div>
+0907: 004 |                                                 </div>
+0908: 004 |                                                 <div className="col-md-4">
+0909: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Regional Silo</label>
+0910: 004 |                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0911: 004 |                                                         <span className="input-group-text bg-transparent border-0 text-white-50"><MapPin size={16} /></span>
+0912: 004 |                                                         <select required value={craftForm.region} onChange={e => setCraftForm({ ...craftForm, region: e.target.value })} className="form-select bg-transparent border-0 text-white shadow-none">
+0913: 004 |                                                             <option value="Punjab" className="text-dark">Punjab</option>
+0914: 004 |                                                             <option value="Sindh" className="text-dark">Sindh</option>
+0915: 004 |                                                             <option value="KPK" className="text-dark">Khyber Pakhtunkhwa (KPK)</option>
+0916: 004 |                                                             <option value="Balochistan" className="text-dark">Balochistan</option>
+0917: 004 |                                                             <option value="Gilgit-Baltistan" className="text-dark">Gilgit-Baltistan</option>
+0918: 004 |                                                             <option value="AJK" className="text-dark">Azad Kashmir</option>
+0919: 004 |                                                         </select>
+0920: 004 |                                                     </div>
+0921: 004 |                                                 </div>
+0922: 004 |                                                 <div className="col-md-4">
+0923: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Available Quantity</label>
+0924: 004 |                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0925: 004 |                                                         <input type="number" min="0" required value={craftForm.stock} onChange={e => setCraftForm({ ...craftForm, stock: parseInt(e.target.value) })} className="form-control bg-transparent border-0 text-white shadow-none ps-3" placeholder="10" />
+0926: 004 |                                                     </div>
+0927: 004 |                                                 </div>
+0928: 004 |                                             </div>
+0929: 004 | 
+0930: 004 |                                             <div>
+0931: 004 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Main Image URL</label>
+0932: 004 |                                                 <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
+0933: 004 |                                                     <span className="input-group-text bg-transparent border-0 text-white-50"><ImageIcon size={16} /></span>
+0934: 004 |                                                     <input type="url" required value={craftForm.image_url} onChange={e => setCraftForm({ ...craftForm, image_url: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="https://..." />
+0935: 004 |                                                 </div>
+0936: 005 |                                                 {craftForm.image_url && (
+0937: 005 |                                                     <div className="mt-3 rounded-4 overflow-hidden border border-white-10 d-inline-block" style={{ height: "100px", maxWidth: "200px" }}>
+0938: 005 |                                                         <img src={craftForm.image_url} alt="Preview" className="w-100 h-100 object-fit-cover" />
+0939: 005 |                                                     </div>
+0940: 004 |                                                 )}
+0941: 004 |                                             </div>
+0942: 004 | 
+0943: 004 |                                             <div>
+0944: 004 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Description & Heritage Detail</label>
+0945: 004 |                                                 <textarea rows={4} required value={craftForm.description} onChange={e => setCraftForm({ ...craftForm, description: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="Describe the materials, the process, and the history behind this masterwork..."></textarea>
+0946: 004 |                                             </div>
+0947: 004 | 
+0948: 004 |                                             <div className="mt-3">
+0949: 004 |                                                 <button type="submit" disabled={isSavingCraft} className="btn btn-warning rounded-pill px-5 py-3 fw-bold shadow-lg d-inline-flex align-items-center gap-2 hover-scale">
+0950: 004 |                                                     {isSavingCraft ? <Loader size={20} className="spin" /> : <>{editingCraftId ? "Update Publish Settings" : "Publish to World"} <Sparkles size={18} /></>}
+0951: 004 |                                                 </button>
+0952: 004 |                                             </div>
+0953: 004 |                                         </form>
+0954: 004 |                                     </div>
+0955: 004 |                                 ) : (
+0956: 004 |                                     <div className="row g-4">
+0957: 005 |                                         {products.length === 0 ? (
+0958: 005 |                                             <div className="col-12 text-center py-5 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 mt-4">
+0959: 005 |                                                 <Package size={48} className="text-white-50 mb-3 opacity-50" />
+0960: 005 |                                                 <h4 className="fw-bold mb-2">Blank Canvas Active</h4>
+0961: 005 |                                                 <p className="text-white-50 mb-4">You have not published any masterworks to the global nexus.</p>
+0962: 005 |                                                 <button onClick={() => setShowAddCraft(true)} className="btn btn-warning rounded-pill px-4 py-3 fw-bold shadow-lg hover-scale text-dark">
+0963: 005 |                                                     Begin Publishing <Plus size={18} className="ms-1" />
+0964: 005 |                                                 </button>
+0965: 005 |                                             </div>
+0966: 005 |                                         ) : (
+0967: 005 |                                             products.map((prod) => (
+0968: 005 |                                                 <div key={prod.id} className="col-md-6 col-lg-4">
+0969: 005 |                                                     <div className="position-relative overflow-hidden rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 transition-all hover-translate-y d-flex flex-column h-100">
+0970: 005 |                                                         <div className="aspect-ratio-square bg-dark w-100 position-relative" style={{ height: "240px" }}>
+0971: 006 |                                                             {prod.image_url ? (
+0972: 006 |                                                                 <img src={prod.image_url} alt={prod.title} className="w-100 h-100 object-fit-cover opacity-75 hover-opacity-100 transition-opacity" />
+0973: 006 |                                                             ) : (
+0974: 006 |                                                                 <div className="w-100 h-100 d-flex align-items-center justify-content-center text-white-50">
+0975: 006 |                                                                     <ImageIcon size={32} />
+0976: 006 |                                                                 </div>
+0977: 005 |                                                             )}
+0978: 005 |                                                             <div className="position-absolute top-0 end-0 m-3 px-3 py-1 bg-dark bg-opacity-75 backdrop-blur-md rounded-pill fw-bold text-warning border border-warning border-opacity-25 shadow-sm">
+0979: 005 |                                                                 ${prod.price?.toFixed(2)}
+0980: 005 |                                                             </div>
+0981: 005 |                                                         </div>
+0982: 005 |                                                         <div className="p-4 flex-grow-1 d-flex flex-column">
+0983: 005 |                                                             <div className="d-flex justify-content-between align-items-start mb-2">
+0984: 005 |                                                                 <h5 className="fw-bold text-white fs-5 mb-0 text-truncate" style={{ maxWidth: '80%' }}>{prod.title}</h5>
+0985: 006 |                                                                 {prod.stock > 0 ? (
+0986: 006 |                                                                     <span className="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 flex-shrink-0" style={{ fontSize: '0.65rem' }}>{prod.stock} left</span>
+0987: 006 |                                                                 ) : (
+0988: 006 |                                                                     <span className="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 flex-shrink-0" style={{ fontSize: '0.65rem' }}>Sold Out</span>
+0989: 005 |                                                                 )}
+0990: 005 |                                                             </div>
+0991: 005 |                                                             <p className="small text-white-50 line-clamp-2 mb-4 flex-grow-1">{prod.description}</p>
+0992: 005 | 
+0993: 005 |                                                             <div className="d-flex align-items-center gap-2 mt-auto">
+0994: 005 |                                                                 <button onClick={() => editCraft(prod)} className="btn btn-dark border border-white-10 rounded-pill py-2 fw-bold flex-grow-1 d-flex align-items-center justify-content-center gap-2 hover-bg-white-10 text-white-75 transition-colors">
+0995: 005 |                                                                     <Edit2 size={16} /> Edit
+0996: 005 |                                                                 </button>
+0997: 005 |                                                                 <button onClick={() => handleDeleteCraft(prod.id)} className="btn btn-danger bg-opacity-10 border border-danger border-opacity-25 text-danger rounded-pill py-2 px-3 fw-bold d-flex align-items-center justify-content-center hover-bg-danger hover-text-white transition-colors" title="Delete">
+0998: 005 |                                                                     <Trash2 size={18} />
+0999: 005 |                                                                 </button>
+1000: 005 |                                                             </div>
+1001: 005 |                                                         </div>
+1002: 005 |                                                     </div>
+1003: 005 |                                                 </div>
+1004: 005 |                                             ))
+1005: 004 |                                         )}
+1006: 004 |                                     </div>
+1007: 003 |                                 )}
+1008: 003 |                             </div>
+1009: 003 |                         ) : activeTab === 'wiki' ? (
+1010: 003 |                             <div className="animate-fade-in-up">
+1011: 003 |                                 <header className="mb-4 d-flex justify-content-between align-items-center">
+1012: 003 |                                     <div>
+1013: 003 |                                         <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
+1014: 003 |                                             <BookOpen className="text-warning" size={32} /> Heritage Archives
+1015: 003 |                                         </h2>
+1016: 003 |                                         <p className="text-white-50 mb-0">Document your local history, techniques, and regional materials.</p>
+1017: 003 |                                     </div>
+1018: 004 |                                     {!showAddWiki && (
+1019: 006 |                                         <button onClick={() => {
+1020: 006 |                                             setEditingWikiId(null)
+1021: 006 |                                             setWikiForm({ title: "", content: "", category: "Ceramics", image_url: "", heritage_site: profile?.location || "Pakistan" })
+1022: 006 |                                             setShowAddWiki(true)
+1023: 004 |                                         }} className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-lg hover-scale">
+1024: 004 |                                             <Plus size={18} /> New Manuscript
+1025: 004 |                                         </button>
+1026: 003 |                                     )}
+1027: 003 |                                 </header>
+1028: 003 | 
+1029: 004 |                                 {showAddWiki ? (
+1030: 004 |                                     <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5 animate-fade-in shadow-2xl">
+1031: 004 |                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
+1032: 004 |                                             <h4 className="fw-bold m-0">{editingWikiId ? "Refine Manuscript" : "Publish to Craftpedia"}</h4>
+1033: 004 |                                             <button onClick={() => setShowAddWiki(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
+1034: 004 |                                                 Close Editor
+1035: 004 |                                             </button>
+1036: 004 |                                         </div>
+1037: 004 |                                         <form onSubmit={handleSaveWikiArticle} className="d-flex flex-column gap-4">
+1038: 004 |                                             <div className="row g-4">
+1039: 004 |                                                 <div className="col-md-7">
+1040: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Article Title</label>
+1041: 004 |                                                     <input type="text" required value={wikiForm.title} onChange={e => setWikiForm({ ...wikiForm, title: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="e.g. The Ancient Origins of Indigo Dye" />
+1042: 004 |                                                 </div>
+1043: 004 |                                                 <div className="col-md-5">
+1044: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Heritage Site / Region</label>
+1045: 004 |                                                     <input type="text" value={wikiForm.heritage_site} onChange={e => setWikiForm({ ...wikiForm, heritage_site: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="e.g. Multan, Pakistan" />
+1046: 004 |                                                 </div>
+1047: 004 |                                             </div>
+1048: 004 | 
+1049: 004 |                                             <div className="row g-4">
+1050: 004 |                                                 <div className="col-md-6">
+1051: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Category</label>
+1052: 004 |                                                     <select required value={wikiForm.category} onChange={e => setWikiForm({ ...wikiForm, category: e.target.value })} className="form-select bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none">
+1053: 004 |                                                         <option value="Ceramics">Ceramics</option>
+1054: 004 |                                                         <option value="Textiles">Textiles</option>
+1055: 004 |                                                         <option value="Jewelry">Jewelry</option>
+1056: 004 |                                                         <option value="Woodwork">Woodwork</option>
+1057: 004 |                                                         <option value="Metalware">Metalware</option>
+1058: 004 |                                                         <option value="History">History & Culture</option>
+1059: 004 |                                                     </select>
+1060: 004 |                                                 </div>
+1061: 004 |                                                 <div className="col-md-6">
+1062: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Feature Image (URL)</label>
+1063: 004 |                                                     <input type="url" value={wikiForm.image_url} onChange={e => setWikiForm({ ...wikiForm, image_url: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="https://..." />
+1064: 004 |                                                 </div>
+1065: 004 |                                             </div>
+1066: 004 | 
+1067: 004 |                                             <div>
+1068: 004 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Manuscript Content (Markdown Supported)</label>
+1069: 004 |                                                 <textarea rows={12} required value={wikiForm.content} onChange={e => setWikiForm({ ...wikiForm, content: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-4 shadow-none font-monospace" placeholder="# The History of...\n\nBody content goes here..."></textarea>
+1070: 004 |                                             </div>
+1071: 004 | 
+1072: 004 |                                             <button type="submit" disabled={isSavingWiki} className="btn btn-warning rounded-pill py-3 fw-bold mt-2 shadow-lg d-flex align-items-center justify-content-center gap-2 hover-translate-y transition-all">
+1073: 004 |                                                 {isSavingWiki ? <Loader size={20} className="spin" /> : <>Archive Manuscript <Save size={18} /></>}
+1074: 004 |                                             </button>
+1075: 004 |                                         </form>
+1076: 004 |                                     </div>
+1077: 004 |                                 ) : (
+1078: 004 |                                     <div className="row g-4">
+1079: 005 |                                         {wikiArticles.map((a, i) => (
+1080: 005 |                                             <div key={a.id} className="col-md-6 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+1081: 005 |                                                 <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 group transition-all d-flex flex-column shadow-xl">
+1082: 005 |                                                     <div className="d-flex justify-content-between align-items-start mb-4">
+1083: 005 |                                                         <div className="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-1 small fw-bold text-uppercase border border-warning border-opacity-25">{a.category}</div>
+1084: 005 |                                                         <div className="d-flex gap-2">
+1085: 005 |                                                             <button 
+1086: 007 |                                                                 onClick={() => {
+1087: 007 |                                                                     setEditingWikiId(a.id)
+1088: 007 |                                                                     setWikiForm({ title: a.title, content: a.content, category: a.category, image_url: a.image_url || "", heritage_site: a.heritage_site || "" })
+1089: 007 |                                                                     setShowAddWiki(true)
+1090: 005 |                                                                 }} 
+1091: 005 |                                                                 className="btn btn-sm btn-outline-light rounded-circle p-2 border-opacity-10 hover-bg-warning hover-text-dark transition-all"
+1092: 005 |                                                             >
+1093: 005 |                                                                 <Edit2 size={16} />
+1094: 005 |                                                             </button>
+1095: 005 |                                                             <button 
+1096: 005 |                                                                 onClick={() => deleteWikiArticle(a.id)}
+1097: 005 |                                                                 className="btn btn-sm btn-outline-danger rounded-circle p-2 border-opacity-10 hover-bg-danger transition-all"
+1098: 005 |                                                             >
+1099: 005 |                                                                 <Trash2 size={16} />
+1100: 005 |                                                             </button>
+1101: 005 |                                                         </div>
+1102: 005 |                                                     </div>
+1103: 005 |                                                     <h4 className="fw-bold mb-3 text-white">{a.title}</h4>
+1104: 005 |                                                     <p className="text-white-50 small mb-4 opacity-75 truncate-3 flex-grow-1">{a.content.substring(0, 150)}...</p>
+1105: 005 |                                                     <div className="mt-auto pt-3 border-top border-white border-opacity-5 d-flex justify-content-between align-items-center">
+1106: 005 |                                                         <div className="small text-white-50 d-flex align-items-center gap-1"><MapPin size={12} /> {a.heritage_site}</div>
+1107: 005 |                                                         <Link href={`/craftpedia/${a.slug}`} className="btn btn-link text-warning text-decoration-none p-0 small fw-bold hover-underline d-flex align-items-center gap-1">View Publicly <ChevronRight size={14} /></Link>
+1108: 005 |                                                     </div>
+1109: 005 |                                                 </div>
+1110: 005 |                                             </div>
+1111: 004 |                                         ))}
+1112: 005 |                                         {wikiArticles.length === 0 && (
+1113: 005 |                                             <div className="col-12 py-5 text-center text-white-50 rounded-5 border border-white border-opacity-5 bg-white bg-opacity-2 mt-4">
+1114: 005 |                                                 <BookOpen size={48} className="mb-3 opacity-25 mx-auto" />
+1115: 005 |                                                 <h5 className="text-white fw-bold">No Manuscripts Found</h5>
+1116: 005 |                                                 <p>You haven't authored any heritage manuscripts yet. Start documenting your legacy!</p>
+1117: 005 |                                             </div>
+1118: 004 |                                         )}
+1119: 004 |                                     </div>
+1120: 003 |                                 )}
+1121: 003 |                             </div>
+1122: 003 |                         ) : activeTab === 'live' ? (
+1123: 003 |                             <div className="animate-fade-in-up">
+1124: 003 |                                 <header className="mb-4 d-flex justify-content-between align-items-center">
+1125: 003 |                                     <div>
+1126: 003 |                                         <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
+1127: 003 |                                             <Video className="text-warning" size={32} /> Studio Stories
+1128: 003 |                                         </h2>
+1129: 003 |                                         <p className="text-white-50 mb-0">Share real-time vertical clips of your process, heritage stories, and workshop moments.</p>
+1130: 003 |                                     </div>
+1131: 004 |                                     {!showAddFeed && (
+1132: 004 |                                         <button onClick={() => setShowAddFeed(true)} className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-lg hover-scale">
+1133: 004 |                                             <Plus size={18} /> New Studio Story
+1134: 004 |                                         </button>
+1135: 003 |                                     )}
+1136: 003 |                                 </header>
+1137: 003 | 
+1138: 004 |                                 {showAddFeed ? (
+1139: 004 |                                     <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5 animate-fade-in shadow-2xl overflow-hidden position-relative">
+1140: 004 |                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
+1141: 004 |                                             <h4 className="fw-bold m-0">Go Live (Vertical Story)</h4>
+1142: 004 |                                             <button onClick={() => setShowAddFeed(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
+1143: 004 |                                                 Cancel
+1144: 004 |                                             </button>
+1145: 004 |                                         </div>
+1146: 004 |                                         <form onSubmit={handleSaveLiveFeed} className="d-flex flex-column gap-4">
+1147: 004 |                                             <div className="row g-4">
+1148: 004 |                                                 <div className="col-md-8">
+1149: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Video Source URL (MP4)</label>
+1150: 004 |                                                     <input type="url" required value={feedForm.video_url} onChange={e => setFeedForm({ ...feedForm, video_url: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="https://cloud.storage.com/story.mp4" />
+1151: 004 |                                                 </div>
+1152: 004 |                                                 <div className="col-md-4">
+1153: 004 |                                                     <label className="form-label small text-white-50 text-uppercase ls-1">Simulate Real-time</label>
+1154: 004 |                                                     <div className="form-check form-switch p-2 bg-white bg-opacity-5 rounded-4 d-flex align-items-center justify-content-between border border-white-5">
+1155: 004 |                                                         <label className="form-check-label ps-2">Mark as "LIVE"</label>
+1156: 004 |                                                         <input className="form-check-input ms-0 me-2" type="checkbox" checked={feedForm.is_live} onChange={e => setFeedForm({ ...feedForm, is_live: e.target.checked })} />
+1157: 004 |                                                     </div>
+1158: 004 |                                                 </div>
+1159: 004 |                                             </div>
+1160: 004 | 
+1161: 004 |                                             <div>
+1162: 004 |                                                 <label className="form-label small text-white-50 text-uppercase ls-1">Caption</label>
+1163: 004 |                                                 <textarea rows={3} value={feedForm.caption} onChange={e => setFeedForm({ ...feedForm, caption: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="What's happening in your studio today?"></textarea>
+1164: 004 |                                             </div>
+1165: 004 | 
+1166: 004 |                                             <div className="p-4 rounded-4 bg-info bg-opacity-10 border border-info border-opacity-20">
+1167: 004 |                                                 <p className="small text-info mb-0 d-flex align-items-center gap-2">
+1168: 004 |                                                     <Sparkles size={16} /> Heritage tip: Vertical (9:16) videos get 3x more global engagement.
+1169: 004 |                                                 </p>
+1170: 004 |                                             </div>
+1171: 004 | 
+1172: 004 |                                             <button type="submit" disabled={isSavingFeed} className="btn btn-warning rounded-pill py-3 fw-bold mt-2 shadow-lg d-flex align-items-center justify-content-center gap-2 hover-translate-y transition-all">
+1173: 004 |                                                 {isSavingFeed ? <Loader size={20} className="spin" /> : <>Stream Heritage Story <Video size={18} /></>}
+1174: 004 |                                             </button>
+1175: 004 |                                         </form>
+1176: 004 |                                     </div>
+1177: 004 |                                 ) : (
+1178: 004 |                                     <div className="row g-4 overflow-hidden">
+1179: 005 |                                         {liveFeeds.map((feed, i) => (
+1180: 005 |                                             <div key={feed.id} className="col-md-4 col-lg-3 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+1181: 005 |                                                 <div className="position-relative overflow-hidden rounded-5 border border-white border-opacity-10 bg-black aspect-ratio-9-16 shadow-2xl group transition-all hover-translate-y" style={{ height: "450px" }}>
+1182: 005 |                                                     <video 
+1183: 005 |                                                         src={feed.video_url} 
+1184: 005 |                                                         className="w-100 h-100 object-fit-cover opacity-60 group-hover-opacity-90 transition-opacity" 
+1185: 005 |                                                         onMouseOver={(e) => e.currentTarget.play()}
+1186: 005 |                                                         onMouseOut={(e) => e.currentTarget.pause()}
+1187: 005 |                                                         muted
+1188: 005 |                                                         loop
+1189: 005 |                                                     />
+1190: 005 |                                                     <div className="position-absolute top-0 start-0 w-100 p-3 bg-gradient-to-b from-dark to-transparent">
+1191: 006 |                                                         {feed.is_live ? (
+1192: 006 |                                                             <div className="badge bg-danger rounded-pill px-3 py-1 fw-bold ls-1 d-inline-flex align-items-center gap-1 shadow-sm pulse-animation">
+1193: 006 |                                                                 <span className="spinner-grow spinner-grow-sm" role="status"></span> LIVE
+1194: 006 |                                                             </div>
+1195: 006 |                                                         ) : (
+1196: 006 |                                                             <div className="badge bg-dark bg-opacity-80 border border-white-10 rounded-pill px-3 py-1 fw-bold text-white-50">Story</div>
+1197: 005 |                                                         )}
+1198: 005 |                                                     </div>
+1199: 005 |                                                     <div className="position-absolute bottom-0 start-0 w-100 p-4 bg-gradient-to-t from-dark to-transparent">
+1200: 005 |                                                         <p className="text-white small fw-bold mb-3 truncate-2 opacity-90">{feed.caption}</p>
+1201: 005 |                                                         <div className="d-flex justify-content-between align-items-center pt-3 border-top border-white-10 border-opacity-20 text-white-50 small fw-bold">
+1202: 005 |                                                             <div className="d-flex align-items-center gap-2"><Eye size={14} /> {feed.views_count}</div>
+1203: 005 |                                                             <button 
+1204: 005 |                                                                 onClick={() => deleteFeed(feed.id)}
+1205: 005 |                                                                 className="btn btn-sm btn-link text-danger p-0 opacity-25 group-hover-opacity-100 transition-opacity"
+1206: 005 |                                                             >
+1207: 005 |                                                                 <Trash2 size={16} />
+1208: 005 |                                                             </button>
+1209: 005 |                                                         </div>
+1210: 005 |                                                     </div>
+1211: 005 |                                                 </div>
+1212: 005 |                                             </div>
+1213: 004 |                                         ))}
+1214: 005 |                                         {liveFeeds.length === 0 && (
+1215: 005 |                                             <div className="col-12 py-5 text-center text-white-50 bg-white bg-opacity-5 rounded-5 border border-white-5">
+1216: 005 |                                                 <Video size={48} className="mb-3 opacity-25" />
+1217: 005 |                                                 <h5 className="text-white fw-bold">Studio Silence</h5>
+1218: 005 |                                                 <p>Your studio story stream is currently quiet. Connect with global buyers by sharing a moment.</p>
+1219: 005 |                                             </div>
+1220: 004 |                                         )}
+1221: 004 |                                     </div>
+1222: 003 |                                 )}
+1223: 003 |                             </div>
+1224: 003 |                         ) : (
+1225: 003 |                             null
+1226: 002 |                         )}
+1227: 002 |                     </div>
+1228: 002 |                 </div>
+1229: 002 |             </main>
+1230: 002 | 
+1231: 002 |             <Footer />
+1232: 002 |         </div>
+1233: 002 |     )
+1234: 001 | }
+1235: 001 | 

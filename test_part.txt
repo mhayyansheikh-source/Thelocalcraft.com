@@ -1,0 +1,221 @@
+"use client"
+
+import React, { useEffect, useState } from "react"
+import { Navbar } from "@/components/layout/Navbar"
+import { Footer } from "@/components/layout/Footer"
+import { db, auth } from "@/lib/firebase/config"
+import { collection, query, where, getDocs, doc, getDoc, updateDoc, setDoc, addDoc, deleteDoc, orderBy } from "firebase/firestore"
+import { signOut, onAuthStateChanged } from "firebase/auth"
+import {
+    User,
+    Lock,
+    Sparkles,
+    Hammer,
+    ChevronRight,
+    LogOut,
+    Eye,
+    TrendingUp,
+    Star,
+    LayoutDashboard,
+    Package,
+    Settings,
+    MapPin,
+    Calendar,
+    Award,
+    Mic,
+    Loader,
+    CheckCircle,
+    Plus,
+    Edit2,
+    Trash2,
+    Image as ImageIcon,
+    DollarSign,
+    ListFilter,
+    Save,
+    AlertCircle,
+    Clock,
+    BookOpen,
+    Video
+} from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+
+export default function ArtisanDashboard() {
+    const [user, setUser] = useState<any>(null)
+    const [profile, setProfile] = useState<any>(null)
+    const [orders, setOrders] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
+    const [isRecording, setIsRecording] = useState(false)
+    const [isGeneratingStory, setIsGeneratingStory] = useState(false)
+    const [recordedStory, setRecordedStory] = useState<string | null>(null)
+    const router = useRouter()
+    const [activeTab, setActiveTab] = useState<"dashboard" | "settings" | "crafts" | "wiki" | "live">("dashboard")
+    const [isSaving, setIsSaving] = useState(false)
+    const [settingForm, setSettingForm] = useState({
+        full_name: "",
+        bio: "",
+        location: "",
+        specialty: ""
+    })
+
+    const [products, setProducts] = useState<any[]>([])
+    const [categories, setCategories] = useState<any[]>([])
+    const [showAddCraft, setShowAddCraft] = useState(false)
+    const [editingCraftId, setEditingCraftId] = useState<string | null>(null)
+    const [isSavingCraft, setIsSavingCraft] = useState(false)
+    const [craftForm, setCraftForm] = useState({
+        title: "",
+        description: "",
+        price: 0,
+        stock: 10,
+        category_id: "",
+        region: "Punjab",
+        image_url: ""
+    })
+
+    const [stats, setStats] = useState({ impressions: 0, rating: 0, activeCollections: 0 })
+    const [gamification, setGamification] = useState({ points: 0, tier: 'Apprentice', nextTierPts: 250, progress: 0 })
+
+    const [wikiArticles, setWikiArticles] = useState<any[]>([])
+    const [showAddWiki, setShowAddWiki] = useState(false)
+    const [editingWikiId, setEditingWikiId] = useState<string | null>(null)
+    const [isSavingWiki, setIsSavingWiki] = useState(false)
+    const [wikiForm, setWikiForm] = useState({
+        title: "",
+        content: "",
+        category: "Ceramics",
+        image_url: "",
+        heritage_site: "Multan"
+    })
+
+    const [liveFeeds, setLiveFeeds] = useState<any[]>([])
+    const [showAddFeed, setShowAddFeed] = useState(false)
+    const [isSavingFeed, setIsSavingFeed] = useState(false)
+    const [feedForm, setFeedForm] = useState({ video_url: "", caption: "", is_live: false })
+
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setLoading(true)
+            if (!user) {
+                router.push("/login")
+                return
+            }
+            setUser(user)
+
+            // Fetch profile for the artisan
+            const pSnap = await getDoc(doc(db, "profiles", user.uid))
+            const profile = pSnap.exists() ? { id: pSnap.id, ...pSnap.data() } : null
+
+            if (profile) {
+                setProfile(profile)
+                if (profile.role !== "artisan") {
+                    await signOut(auth)
+                    router.push("/login")
+                    return
+                }
+
+                if (profile.status === 'pending' || profile.status === 'rejected') {
+                    setLoading(false)
+                    return // Stop data fetch for unapproved users
+                }
+
+                setSettingForm({
+                    full_name: profile.full_name || "",
+                    bio: profile.bio || "",
+                    location: profile.location || "",
+                    specialty: profile.specialty || ""
+                })
+            }
+
+            // Fetch recent orders for this artisan
+            const oQ = query(collection(db, "order_items"), where("artisan_id", "==", user.uid), orderBy("created_at", "desc"))
+            const oSnap = await getDocs(oQ)
+            const myOrders: any[] = []
+            for (const d of oSnap.docs) {
+                const item = d.data()
+                if (item.order_id) {
+                    const oSnap2 = await getDoc(doc(db, "orders", item.order_id))
+                    if (oSnap2.exists()) item.orders = { id: oSnap2.id, ...oSnap2.data() }
+                }
+                if (item.product_id) {
+                    const pSnap2 = await getDoc(doc(db, "products", item.product_id))
+                    if (pSnap2.exists()) item.product = { id: pSnap2.id, ...pSnap2.data() }
+                }
+                myOrders.push({ id: d.id, ...item })
+            }
+
+            // Fetch categories
+            const catSnap = await getDocs(collection(db, 'categories')); const catData = catSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+            if (catData) setCategories(catData)
+
+            // Fetch products for artisan
+            let artisanProductsCount = 0;
+            const prodSnap = await getDocs(query(collection(db, 'products'), where('artisan_id', '==', user.uid))); const prodData = prodSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+            if (prodData) {
+                setProducts(prodData)
+                artisanProductsCount = prodData.length;
+            }
+
+            if (myOrders) setOrders(myOrders)
+
+            // Calculate Live Stats
+            let currentRating = 5.0; // Default new artisans to 5
+
+            // Fetch reviews for products by this artisan
+            
+            if (artisanProducts && artisanProducts.length > 0) {
+                const productIds = artisanProducts.map(p => p.id);
+                const reviewsData: any[] = [];
+                for (const pid of productIds) {
+                    const rSnap = await getDocs(query(collection(db, 'reviews'), where('product_id', '==', pid)));
+                    reviewsData.push(...rSnap.docs.map(d => d.data()));
+                }
+                if (reviewsData && reviewsData.length > 0) {
+                    const sum = reviewsData.reduce((acc, curr) => acc + curr.rating, 0);
+                    currentRating = sum / reviewsData.length;
+                }
+            }
+
+            // Simulated impressions: orders * 42 + products * 123 + base 145
+            const impressionsNum = (myOrders?.length || 0) * 42 + artisanProductsCount * 123 + 145;
+
+            setStats({
+                impressions: impressionsNum,
+                rating: Number(currentRating.toFixed(1)),
+                activeCollections: artisanProductsCount
+            })
+
+            // Calculate Gamification Live
+            const currentPoints = (myOrders?.length || 0) * 50 + artisanProductsCount * 20 + 25; // Base 25
+
+            let currentTier = 'Apprentice';
+            let nextPts = 250;
+            if (currentPoints >= 5000) { currentTier = 'Grandmaster'; nextPts = 5000; }
+            else if (currentPoints >= 1000) { currentTier = 'Master Artisan'; nextPts = 5000; }
+            else if (currentPoints >= 250) { currentTier = 'Artisan'; nextPts = 1000; }
+
+            const progressRatio = currentTier === 'Grandmaster' ? 100 : Math.min(100, (currentPoints / nextPts) * 100);
+
+            setGamification({
+                points: currentPoints,
+                tier: currentTier,
+                nextTierPts: nextPts,
+                progress: progressRatio
+            })
+
+            // Silently persist mastery to public DB for global storefront retrieval
+            updateDoc(doc(db, 'artisans', user.uid), { mastery_tier: currentTier, mastery_points: currentPoints }).catch(e => console.error(e));
+
+            // Fetch Wiki Articles
+            const wSnap = await getDocs(query(collection(db, 'craftpedia_articles'), where('author_id', '==', user.uid))); const wikiData = wSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+            if (wikiData) setWikiArticles(wikiData)
+
+            // Fetch Live Feeds
+            const fSnap = await getDocs(query(collection(db, 'artisan_feeds'), where('artisan_id', '==', user.uid), where('status', '==', 'active'))); const feedData = fSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+            if (feedData) setLiveFeeds(feedData)
+
+            setLoading(false)
+        })
+        
+}
