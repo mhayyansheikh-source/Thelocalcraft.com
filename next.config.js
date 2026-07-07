@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Only use 'export' when building for production static hosting (Hostinger)
-    output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+    // Only use 'export' when building for static hosting (Hostinger) via `STATIC_EXPORT=true`
+    output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
     trailingSlash: true,        // Add trailing slash (required for Hostinger)
     skipTrailingSlashRedirect: true,
     distDir: 'out',             // Output directory
