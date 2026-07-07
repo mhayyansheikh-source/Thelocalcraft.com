@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    // Only use 'export' when building for static hosting (Hostinger) via `STATIC_EXPORT=true`
-    output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
-    trailingSlash: true,        // Add trailing slash (required for Hostinger)
-    skipTrailingSlashRedirect: true,
-    distDir: 'out',             // Output directory
+const isStaticExport = process.env.STATIC_EXPORT === 'true';
 
-    images: {
-        unoptimized: true,        // Required for static export
-    },
+const nextConfig = {
+    output: isStaticExport ? 'export' : undefined,
+    trailingSlash: isStaticExport,
+    skipTrailingSlashRedirect: isStaticExport,
+    distDir: isStaticExport ? 'out' : undefined,
+
+    ...(isStaticExport && {
+        images: {
+            unoptimized: true,
+        },
+    }),
 
     // Fix for ONNX Runtime / Xenova Transformers
     experimental: {
