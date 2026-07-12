@@ -269,15 +269,15 @@ export default function WholesaleDashboard() {
                                                     <tbody>
                                                         {orders.map(order => (
                                                             <tr key={order.id} className="border-bottom border-white border-opacity-5">
-                                                                <td className="bg-transparent py-3 ps-4 font-monospace small text-white-50">{order.id.split('-')[0] || order.id}</td>
-                                                                <td className="bg-transparent py-3 fw-bold">{order.customer_name}</td>
-                                                                <td className="bg-transparent py-3 text-white-50">${order.total_amount?.toFixed(2)}</td>
-                                                                <td className="bg-transparent py-3 text-center">
+                                                                <td data-label="Ref ID" className="bg-transparent py-3 ps-md-4 font-monospace small text-white-50">{order.id.split('-')[0] || order.id}</td>
+                                                                <td data-label="Customer Entity" className="bg-transparent py-3 fw-bold">{order.customer_name}</td>
+                                                                <td data-label="Order Value" className="bg-transparent py-3 text-white-50">${order.total_amount?.toFixed(2)}</td>
+                                                                <td data-label="Status" className="bg-transparent py-3 text-center text-md-center text-start">
                                                                     <span className={`badge rounded-pill px-3 py-2 ${order.status === 'pending' ? 'bg-warning text-dark' : 'bg-success bg-opacity-10 text-success'}`}>
                                                                         {order.status}
                                                                     </span>
                                                                 </td>
-                                                                <td className="bg-transparent py-3 pe-4 text-end fw-bold text-warning">
+                                                                <td data-label="Commission" className="bg-transparent py-3 pe-md-4 text-start text-md-end fw-bold text-warning">
                                                                     +${((order.total_amount || 0) * 0.1).toFixed(2)}
                                                                 </td>
                                                             </tr>
@@ -311,19 +311,23 @@ export default function WholesaleDashboard() {
                                             <tbody>
                                                 {commissions.map(c => (
                                                     <tr key={c.id} className="border-bottom border-white border-opacity-5">
-                                                        <td className="bg-transparent py-3 ps-4 fw-bold">
+                                                        <td data-label="Transaction Node" className="bg-transparent py-3 ps-md-4 fw-bold">
                                                             <div className="d-flex align-items-center gap-2">
                                                                 <Database size={14} className="text-warning" />
                                                                 {c.id.split('-')[0] || c.id}
                                                             </div>
                                                         </td>
-                                                        <td className="bg-transparent py-3">
+                                                        <td data-label="Order Depth" className="bg-transparent py-3">
                                                             <div className="small font-monospace text-white-50">#{c.orders?.id?.split('-')[0] || 'N/A'}</div>
                                                             <div className="small fw-bold">{c.orders?.customer_name}</div>
                                                         </td>
-                                                        <td className="bg-transparent py-3 fw-bold text-warning">${Number(c.amount || 0).toFixed(2)}</td>
-                                                        <td className="bg-transparent py-3 text-white-50 small">{c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}</td>
-                                                        <td className="bg-transparent py-3 pe-4 text-end">
+                                                        <td data-label="Value Shared" className="bg-transparent py-3 text-warning fw-bold">
+                                                            ${Number(c.amount || 0).toFixed(2)}
+                                                        </td>
+                                                        <td data-label="Timestamp" className="bg-transparent py-3 text-white-50 small">
+                                                            {c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}
+                                                        </td>
+                                                        <td data-label="System Status" className="bg-transparent py-3 pe-md-4 text-start text-md-end">
                                                             <span className={`badge rounded-pill px-3 py-2 ${c.status === 'paid' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
                                                                 {c.status === 'paid' ? 'Settled' : 'Pending Settlement'}
                                                             </span>

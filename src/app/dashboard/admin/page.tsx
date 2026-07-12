@@ -293,8 +293,8 @@ export default function AdminDashboard() {
                     {/* MAIN CONTENT */}
                     <div className="col-lg-9 py-4">
                         {/* MOBILE NAV */}
-                        <div className="d-lg-none mb-4 overflow-hidden">
-                            <div className="d-flex overflow-x-auto pb-2 gap-2 hide-scrollbar" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        <div className="d-lg-none mb-4 overflow-hidden mx-n3 px-3 mx-sm-0 px-sm-0">
+                            <div className="d-flex overflow-x-auto pb-2 gap-2 hide-scrollbar pe-4" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                 <button onClick={() => setActiveTab("core")} className={`btn ${activeTab === 'core' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
                                     <LayoutDashboard size={16} /> Core
                                 </button>
@@ -400,11 +400,11 @@ export default function AdminDashboard() {
                                                     <tbody>
                                                         {recentOrders.map(order => (
                                                             <tr key={order.id} className="border-bottom border-white border-opacity-5">
-                                                                <td className="py-3 font-monospace small text-white-50">{order.id.split('-')[0]}</td>
-                                                                <td className="py-3 fw-bold">{order.customer_name}</td>
-                                                                <td className="py-3 text-white-50 small text-truncate" style={{ maxWidth: "200px" }}>{order.customer_address}</td>
-                                                                <td className="py-3 fw-bold text-warning text-end">${order.total_amount?.toFixed(2)}</td>
-                                                                <td className="py-3 text-center">
+                                                                <td className="py-3 font-monospace small text-white-50" data-label="Order UID">{order.id.split('-')[0]}</td>
+                                                                <td className="py-3 fw-bold" data-label="Customer Entity">{order.customer_name}</td>
+                                                                <td className="py-3 text-white-50 small text-truncate" style={{ maxWidth: "200px" }} data-label="Routing Addr">{order.customer_address}</td>
+                                                                <td className="py-3 fw-bold text-warning text-end" data-label="Payload Value">${order.total_amount?.toFixed(2)}</td>
+                                                                <td className="py-3 text-center" data-label="Status">
                                                                     <select
                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${order.status === 'pending' ? 'bg-warning text-dark' : order.status === 'processing' ? 'bg-info text-dark' : order.status === 'shipped' ? 'bg-primary text-white' : order.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
                                                                         value={order.status}
@@ -504,20 +504,20 @@ export default function AdminDashboard() {
                                             <tbody>
                                                 {categories.map(cat => (
                                                     <tr key={cat.id} className="border-bottom border-white border-opacity-5 hover-bg-white-5 transition-all">
-                                                        <td className="py-3 px-4">
+                                                        <td className="py-3 px-4" data-label="Registry">
                                                             <div className="d-flex align-items-center gap-3">
                                                                 {cat.image_url && (
                                                                     <div className="rounded-3 overflow-hidden bg-white bg-opacity-10 d-none d-sm-block flex-shrink-0" style={{ width: "40px", height: "40px" }}>
                                                                         <img src={cat.image_url} alt="" className="w-100 h-100 object-fit-cover" />
                                                                     </div>
                                                                 )}
-                                                                <div>
+                                                                <div className="text-start">
                                                                     <div className="fw-bold">{cat.name}</div>
                                                                     <div className="small text-white-50 text-truncate" style={{ maxWidth: '250px' }}>{cat.description}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="py-3 text-white-50">
+                                                        <td className="py-3 text-white-50" data-label="Heritage Link">
                                                             {cat.heritage_site ? (
                                                                 <span className="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-2">
                                                                     <MapPin size={10} className="me-1" /> {cat.heritage_site}
@@ -526,10 +526,10 @@ export default function AdminDashboard() {
                                                                 <span className="small opacity-50">Null pointer</span>
                                                             )}
                                                         </td>
-                                                        <td className="py-3 font-monospace small text-white-50">
+                                                        <td className="py-3 font-monospace small text-white-50" data-label="Nodes Connected">
                                                             Auto-scaling
                                                         </td>
-                                                        <td className="py-3 pe-4 text-end">
+                                                        <td className="py-3 pe-4 text-end" data-label="System Actions">
                                                             <div className="d-flex align-items-center justify-content-end gap-2">
                                                                 <button onClick={() => editCategory(cat)} className="btn btn-sm btn-outline-light border-white-20 rounded-pill px-3 py-1 hover-bg-white-10 hover-text-white transition-all d-flex align-items-center gap-1">
                                                                     <Edit2 size={14} /> Update
@@ -582,18 +582,18 @@ export default function AdminDashboard() {
                                             <tbody>
                                                 {wholesaleApps.filter(a => a.status === 'pending').map(app => (
                                                     <tr key={app.id} className="border-bottom border-white-5">
-                                                        <td className="py-3 px-4">
+                                                        <td className="py-3 px-4 text-start" data-label="Business">
                                                             <div className="fw-bold">{app.business_name}</div>
                                                             <div className="small text-white-50">{app.profiles?.full_name}</div>
                                                         </td>
-                                                        <td className="py-3">
+                                                        <td className="py-3" data-label="Contact">
                                                             <div className="small font-monospace">{app.phone}</div>
                                                             <div className="small text-white-50 text-truncate" style={{ maxWidth: '150px' }}>{app.website}</div>
                                                         </td>
-                                                        <td className="py-3">
+                                                        <td className="py-3" data-label="Type">
                                                             <span className="badge bg-info bg-opacity-10 text-info rounded-pill px-2">{app.business_type}</span>
                                                         </td>
-                                                        <td className="py-3 pe-4 text-end">
+                                                        <td className="py-3 pe-4 text-end" data-label="Actions">
                                                             <div className="d-flex gap-2 justify-content-end">
                                                                 <button onClick={() => handleWholesaleAction(app.id, app.user_id, 'approved')} className="btn btn-sm btn-success rounded-pill px-3 shadow-sm">Approve</button>
                                                                 <button onClick={() => handleWholesaleAction(app.id, app.user_id, 'rejected')} className="btn btn-sm btn-outline-danger rounded-pill px-3">Reject</button>
@@ -624,14 +624,14 @@ export default function AdminDashboard() {
                                             <tbody>
                                                 {allCommissions.map(comm => (
                                                     <tr key={comm.id} className="border-bottom border-white-5">
-                                                        <td className="py-3 px-4">
+                                                        <td className="py-3 px-4 text-start" data-label="Partner">
                                                             <div className="fw-bold">{comm.profiles?.full_name}</div>
                                                         </td>
-                                                        <td className="py-3 text-warning fw-bold">${comm.amount}</td>
-                                                        <td className="py-3">
+                                                        <td className="py-3 text-warning fw-bold" data-label="Earnings">${comm.amount}</td>
+                                                        <td className="py-3" data-label="Status">
                                                             <span className={`badge rounded-pill px-2 ${comm.status === 'paid' ? 'bg-success' : 'bg-warning text-dark'}`}>{comm.status}</span>
                                                         </td>
-                                                        <td className="py-3 pe-4 text-end text-white-50 small font-monospace">#{comm.orders?.id?.split('-')[0]}</td>
+                                                        <td className="py-3 pe-4 text-end text-white-50 small font-monospace" data-label="Order Ref">#{comm.orders?.id?.split('-')[0]}</td>
                                                     </tr>
                                                 ))}
                                                 {allCommissions.length === 0 && (
@@ -669,26 +669,26 @@ export default function AdminDashboard() {
                                         <tbody>
                                             {pendingUsers.map(u => (
                                                 <tr key={u.id} className="border-bottom border-white border-opacity-5 hover-bg-white-5 transition-all">
-                                                    <td className="py-3 px-4">
+                                                    <td className="py-3 px-4" data-label="User Identity">
                                                         <div className="d-flex align-items-center gap-3">
-                                                            <div className="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center text-white" style={{ width: "40px", height: "40px" }}>
+                                                            <div className="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center text-white flex-shrink-0" style={{ width: "40px", height: "40px" }}>
                                                                 <User size={18} />
                                                             </div>
-                                                            <div>
+                                                            <div className="text-start">
                                                                 <div className="fw-bold">{u.full_name || u.username || 'Anonymous Node'}</div>
                                                                 <div className="small text-white-50 font-monospace" style={{ fontSize: '10px' }}>{u.id}</div>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="py-3">
+                                                    <td className="py-3" data-label="Role Attempt">
                                                         <span className={`badge ${u.role === 'artisan' ? 'bg-warning text-dark' : 'bg-info bg-opacity-10 text-info'} rounded-pill px-3 py-2 text-uppercase ls-1`}>
                                                             {u.role}
                                                         </span>
                                                     </td>
-                                                    <td className="py-3 text-white-50 small">
+                                                    <td className="py-3 text-white-50 small" data-label="Created On">
                                                         {new Date(u.updated_at || new Date()).toLocaleDateString()}
                                                     </td>
-                                                    <td className="py-3 pe-4 text-end">
+                                                    <td className="py-3 pe-4 text-end" data-label="Approval Override">
                                                         <div className="d-flex align-items-center justify-content-end gap-2">
                                                             <button onClick={() => handleUserStatusUpdate(u.id, 'approved')} className="btn btn-sm btn-outline-success border-success border-opacity-25 rounded-pill px-3 py-1 hover-bg-success hover-text-white transition-all d-flex align-items-center gap-1">
                                                                 <CheckCircle size={14} /> Approve

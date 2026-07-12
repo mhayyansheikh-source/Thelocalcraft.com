@@ -118,13 +118,13 @@ export function Navbar() {
                     <div className="d-flex align-items-center gap-3">
                         <button
                             onClick={() => setIsSearchOpen(true)}
-                            className="btn btn-link text-white p-2 d-none d-md-block opacity-75 hover-opacity-100 transition-opacity"
+                            className="btn btn-link text-white p-3 p-md-2 d-none d-md-block opacity-75 hover-opacity-100 transition-opacity"
                             aria-label="Search"
                         >
                             <Search size={20} />
                         </button>
                         <button
-                            className="btn btn-link text-white p-2 opacity-75 hover-opacity-100 transition-opacity position-relative"
+                            className="btn btn-link text-white p-3 p-md-2 opacity-75 hover-opacity-100 transition-opacity position-relative"
                             onClick={() => setIsCartOpen(true)}
                             aria-label="Shopping cart"
                         >
@@ -155,7 +155,7 @@ export function Navbar() {
                         )}
 
                         {/* Universal Menu Toggle */}
-                        <button className="btn btn-link text-white p-2 d-flex align-items-center gap-2 text-decoration-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                        <button className="btn btn-link text-white p-3 p-md-2 d-flex align-items-center gap-2 text-decoration-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                             {isMobileMenuOpen ? (
                                 <>
                                     <span className="small text-uppercase fw-bold d-none d-md-block" style={{ letterSpacing: "2px", fontSize: "0.75rem" }}>CLOSE</span>
@@ -177,7 +177,7 @@ export function Navbar() {
             {isMobileMenuOpen && (
                 <div className="position-fixed top-0 start-0 w-100 vh-100 bg-dark d-flex flex-column align-items-center justify-content-center gap-4 animate-fade-in" style={{ zIndex: 1050 }}>
                     <button
-                        className="btn btn-link text-white position-absolute top-0 end-0 m-4 p-2 opacity-75 hover-opacity-100 transition-all hover-scale"
+                        className="btn btn-link text-white position-absolute top-0 end-0 m-3 p-3 opacity-75 hover-opacity-100 transition-all hover-scale"
                         onClick={() => setIsMobileMenuOpen(false)}
                         style={{ zIndex: 1060 }}
                         aria-label="Close menu"
@@ -223,7 +223,7 @@ export function Navbar() {
                 <div className="position-fixed top-0 start-0 w-100 vh-100 d-flex flex-column"
                     style={{ zIndex: 1050, background: "rgba(10,10,10,0.95)", backdropFilter: "blur(20px)" }}>
                     <button
-                        className="btn btn-link text-white position-absolute top-0 end-0 m-4 p-2 opacity-75 hover-opacity-100 transition-all hover-scale"
+                        className="btn btn-link text-white position-absolute top-0 end-0 m-3 p-3 opacity-75 hover-opacity-100 transition-all hover-scale"
                         onClick={() => setIsSearchOpen(false)}
                         style={{ zIndex: 1060 }}
                     >
@@ -286,7 +286,7 @@ export function Navbar() {
                     <div className="bg-dark text-white h-100 shadow-lg d-flex flex-column animate-slide-in-right" style={{ width: "100%", maxWidth: "400px", borderLeft: "1px solid rgba(255,255,255,0.1)" }}>
                         <div className="p-4 border-bottom border-white-10 d-flex justify-content-between align-items-center">
                             <h4 className="mb-0 fw-bold d-flex align-items-center gap-2"><ShoppingBag className="text-warning" /> Your Bag</h4>
-                            <button className="btn btn-link text-white p-0 opacity-75 hover-opacity-100" onClick={() => setIsCartOpen(false)}>
+                            <button className="btn btn-link text-white p-3 opacity-75 hover-opacity-100" onClick={() => setIsCartOpen(false)}>
                                 <X size={24} />
                             </button>
                         </div>

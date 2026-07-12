@@ -53,7 +53,7 @@ export const StudioLive = () => {
                 </div>
             </div>
 
-            <div className="d-flex gap-4 overflow-auto pb-4 custom-scrollbar scroll-smooth" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="d-flex gap-4 overflow-auto pb-4 px-4 mx-n4 px-sm-0 mx-sm-0 custom-scrollbar scroll-smooth" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {feeds.map((feed) => (
                     <div 
                         key={feed.id} 

@@ -789,19 +789,19 @@ export default function ArtisanDashboard() {
                                                     <tbody>
                                                         {orders.map((item) => (
                                                             <tr key={item.id} className="border-bottom border-white border-opacity-10">
-                                                                <td className="bg-transparent py-3 ps-4">
+                                                                <td data-label="Product" className="bg-transparent py-3 ps-4">
                                                                     <div className="d-flex align-items-center gap-3">
                                                                         <img src={item.product?.image_url || "/images/hero.png"} alt="Product" className="rounded-3 object-fit-cover" style={{ width: "48px", height: "48px" }} />
                                                                         <span className="fw-bold">{item.product?.title || "Unknown Craft"}</span>
                                                                     </div>
                                                                 </td>
-                                                                <td className="bg-transparent py-3">
+                                                                <td data-label="Customer" className="bg-transparent py-3">
                                                                     <div className="small text-white">{item.orders?.customer_name}</div>
                                                                     <div className="small text-white-50">{item.orders?.customer_address?.substring(0, 20)}...</div>
                                                                 </td>
-                                                                <td className="bg-transparent py-3 text-white-50">{item.quantity}</td>
-                                                                <td className="bg-transparent py-3 fw-bold text-warning">${(item.price_at_time * item.quantity).toFixed(2)}</td>
-                                                                <td className="bg-transparent py-3 pe-4 text-end">
+                                                                <td data-label="Qty" className="bg-transparent py-3 text-white-50">{item.quantity}</td>
+                                                                <td data-label="Total Earnings" className="bg-transparent py-3 fw-bold text-warning">${(item.price_at_time * item.quantity).toFixed(2)}</td>
+                                                                <td data-label="Status" className="bg-transparent py-3 pe-4 text-end">
                                                                     <select
                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${item.orders?.status === 'pending' ? 'bg-warning text-dark' : item.orders?.status === 'processing' ? 'bg-info text-dark' : item.orders?.status === 'shipped' ? 'bg-primary text-white' : item.orders?.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
                                                                         value={item.orders?.status || 'pending'}
@@ -815,7 +815,7 @@ export default function ArtisanDashboard() {
                                                                         <option value="cancelled" className="bg-dark text-white">Cancelled</option>
                                                                     </select>
                                                                 </td>
-                                                                <td className="bg-transparent py-3 pe-4 text-end">
+                                                                <td data-label="Action" className="bg-transparent py-3 pe-md-4 text-start text-md-end">
                                                                     {item.orders?.status === 'delivered' ? (
                                                                         <span className="small text-success fw-bold d-flex align-items-center gap-1 justify-content-end"><CheckCircle size={14} /> Completed</span>
                                                                     ) : (

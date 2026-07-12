@@ -32,6 +32,12 @@ export const metadata: Metadata = {
     robots: {
         index: true,
         follow: true,
+    },
+    manifest: '/manifest.json',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: 'The Local Crafts',
     }
 };
 
@@ -62,6 +68,21 @@ export default function RootLayout({
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                        if ('serviceWorker' in navigator) {
+                            window.addEventListener('load', function() {
+                                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                                }, function(err) {
+                                    console.log('ServiceWorker registration failed: ', err);
+                                });
+                            });
+                        }
+                        `
+                    }}
                 />
             </head>
             <body className={roboto.className}>

@@ -171,3 +171,56 @@ h6, .display-6 { font-size: 1.50rem; font-weight: 400; text-transform: uppercase
 .rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5, .rounded-pill, .rounded-circle {
   border-radius: 0 !important;
 }
+
+/* Mobile Responsive Tables (adapt.md: transform to cards) */
+@media (max-width: 767px) {
+  .table-responsive {
+    border: none !important;
+    background: transparent !important;
+  }
+  .table-responsive table, 
+  .table-responsive tbody, 
+  .table-responsive tr, 
+  .table-responsive td {
+    display: block;
+    width: 100%;
+  }
+  .table-responsive thead {
+    display: none;
+  }
+  .table-responsive tr {
+    margin-bottom: 1rem;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color) !important;
+    padding: 1rem;
+  }
+  .table-responsive td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    border: none !important;
+    padding: 0.5rem 0 !important;
+  }
+  .table-responsive td::before {
+    content: attr(data-label);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: bold;
+    text-align: left;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  .table-responsive td > div {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .table-responsive td:last-child {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem !important;
+    border-top: 1px solid var(--border-color) !important;
+  }
+}
