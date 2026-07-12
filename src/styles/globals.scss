@@ -1,37 +1,38 @@
 @import "bootstrap/scss/bootstrap";
 
 :root {
-  /* Dark Mode Default - Lamborghini System (OKLCH)
-   * Hue 85 is Lamborghini Gold. All neutrals have a tiny chroma (0.01) to tint toward the brand color. 
-   */
-  --bg-color: oklch(0% 0 0); /* Absolute Black */
-  --surface-color: oklch(20% 0.01 85);
-  --text-color: oklch(100% 0 0); /* Pure White */
-  --text-muted: oklch(65% 0.005 85);
-  --border-color: oklch(35% 0.01 85);
+  /* Lamborghini Design System Colors */
+  --bg-color: #000000;
+  --surface-color: #202020;
+  --text-color: #FFFFFF;
+  --text-muted: #7D7D7D;
+  --border-color: #202020;
   
-  --accent-gold: oklch(81% 0.17 85); /* #FFC000 equivalent */
-  --accent-gold-dark: oklch(65% 0.15 85);
+  --accent-gold: #FFC000;
+  --accent-gold-dark: #917300;
   
-  --ghost-hover-bg: oklch(81% 0.17 85 / 15%);
-  --ghost-hover-border: oklch(81% 0.17 85 / 50%);
+  --ghost-hover-bg: #1EAEDB;
+  --ghost-hover-border: #1EAEDB;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    /* Light Mode Adaptation (OKLCH) */
-    --bg-color: oklch(100% 0 0);
-    --surface-color: oklch(97% 0.005 85); /* Very light, warm off-white */
-    --text-color: oklch(0% 0 0);
-    --text-muted: oklch(45% 0.005 85);
-    --border-color: oklch(85% 0.01 85);
-    
-    --accent-gold: oklch(81% 0.17 85);
-    --accent-gold-dark: oklch(65% 0.15 85);
-    
-    --ghost-hover-bg: oklch(81% 0.17 85 / 10%);
-    --ghost-hover-border: oklch(81% 0.17 85 / 50%);
-  }
+/* Global Interceptors for non-compliant utility classes */
+.bg-white.bg-opacity-5,
+.bg-white.bg-opacity-10,
+.bg-white.bg-opacity-20,
+.bg-white-5,
+.bg-white-10,
+.bg-white-20 {
+  background-color: var(--surface-color) !important;
+  backdrop-filter: none !important;
+}
+
+.border-white.border-opacity-5,
+.border-white.border-opacity-10,
+.border-white.border-opacity-20,
+.border-white-5,
+.border-white-10,
+.border-white-20 {
+  border-color: var(--border-color) !important;
 }
 
 body {
@@ -81,15 +82,25 @@ h6, .display-6 { font-size: 1.50rem; font-weight: 400; text-transform: uppercase
 
 .btn-ghost {
   background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
   padding: 16px 24px;
+  opacity: 0.5;
 }
 
 .btn-ghost:hover {
   background-color: var(--ghost-hover-bg);
-  color: var(--accent-gold);
+  color: #FFFFFF;
   border-color: var(--ghost-hover-border);
+  opacity: 0.7;
+}
+
+.btn-ghost:focus {
+  background-color: var(--ghost-hover-bg);
+  color: #FFFFFF;
+  border: 1px solid #000000;
+  outline: 2px solid #000000;
+  opacity: 1;
 }
 
 /* Utilities */

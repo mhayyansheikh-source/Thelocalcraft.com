@@ -38,11 +38,10 @@ export function VibeExplorer() {
 
     return (
         <div className="discovery-section w-100 mt-5">
-            <div className="vibe-explorer-container p-4 rounded-4 shadow-lg text-center position-relative mb-5"
+            <div className="vibe-explorer-container p-4 text-center position-relative mb-5"
                 style={{
-                    background: "rgba(255, 255, 255, 0.05)",
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)"
+                    background: "var(--surface-color)",
+                    borderBottom: "1px solid var(--border-color)"
                 }}>
                 <div className="d-inline-flex align-items-center mb-3 text-warning">
                     <Sparkles size={20} className="me-2" />
@@ -61,11 +60,13 @@ export function VibeExplorer() {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Describe what you're looking for..."
-                        className="form-control rounded-pill py-3 ps-5 border-0 shadow-sm"
+                        className="form-control py-3 ps-5 text-white shadow-none"
                         style={{
-                            background: "rgba(255, 255, 255, 0.9)",
+                            background: "var(--bg-color)",
+                            border: "1px solid var(--border-color)",
                             fontSize: "1.1rem",
-                            paddingRight: "130px"
+                            paddingRight: "130px",
+                            borderRadius: "0px"
                         }}
                         disabled={isSearching}
                     />
@@ -74,8 +75,8 @@ export function VibeExplorer() {
                     </div>
                     <button
                         type="submit"
-                        className="btn btn-warning rounded-pill px-4 py-2 position-absolute end-0 top-50 translate-middle-y me-2 h-75 d-flex align-items-center"
-                        style={{ fontWeight: "bold" }}
+                        className="btn btn-accent px-4 py-2 position-absolute end-0 top-50 translate-middle-y me-2 h-75 d-flex align-items-center"
+                        style={{ fontWeight: "bold", borderRadius: "0px" }}
                         disabled={isSearching}
                     >
                         {isSearching ? (
@@ -90,10 +91,11 @@ export function VibeExplorer() {
                         <span key={tag}
                             className="badge rounded-pill px-3 py-2"
                             style={{
-                                background: "rgba(255, 255, 255, 0.1)",
-                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                background: "var(--bg-color)",
+                                border: "1px solid var(--border-color)",
                                 cursor: "pointer",
-                                color: "#eee"
+                                color: "var(--text-color)",
+                                borderRadius: "2px"
                             }}
                             onClick={() => {
                                 setQuery(tag);
@@ -128,7 +130,7 @@ export function VibeExplorer() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-5 rounded-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.1)" }}>
+                        <div className="text-center py-5" style={{ background: "var(--surface-color)", border: "1px solid var(--border-color)" }}>
                             <p className="text-white-50 mb-0">No results found. Try describing your vibe differently!</p>
                         </div>
                     )}

@@ -44,14 +44,13 @@ export const ProductCard = ({ product }: { product: Product }) => {
     }, [])
 
     return (
-        <div className="product-card h-100 p-3 rounded-4"
+        <div className="product-card h-100 p-3"
             style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                background: "var(--surface-color)",
+                border: "1px solid var(--border-color)",
                 transition: "transform 0.3s ease, background 0.3s ease"
             }}>
-            <div className="position-relative mb-3 rounded-3 overflow-hidden bg-dark" style={{ aspectRatio: "1/1" }}>
+            <div className="position-relative mb-3 overflow-hidden bg-dark" style={{ aspectRatio: "1/1" }}>
                 {product.image_url ? (
                     <img
                         src={product.image_url}
@@ -64,13 +63,13 @@ export const ProductCard = ({ product }: { product: Product }) => {
                     </div>
                 )}
                 {product.similarity && (
-                    <div className="position-absolute top-0 end-0 m-2 badge rounded-pill bg-warning text-dark d-flex align-items-center gap-1 shadow-sm">
+                    <div className="position-absolute top-0 end-0 m-2 badge rounded-0 bg-warning text-dark d-flex align-items-center gap-1 shadow-none">
                         <Sparkles size={10} />
                         {(product.similarity * 100).toFixed(0)}% Match
                     </div>
                 )}
                 {isWholesale && (
-                    <div className="position-absolute top-0 start-0 m-2 badge rounded-pill bg-info text-white d-flex align-items-center gap-1 shadow-sm border border-white border-opacity-20" style={{ backdropFilter: "blur(10px)" }}>
+                    <div className="position-absolute top-0 start-0 m-2 badge rounded-0 bg-info text-white d-flex align-items-center gap-1 shadow-none border-0">
                         <Tag size={10} /> Wholesale Active
                     </div>
                 )}
@@ -86,7 +85,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
                 </p>
 
                 {isWholesale && (
-                    <div className="p-2 mb-3 rounded-3 bg-white bg-opacity-5 border border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <div className="p-2 mb-3 rounded-0 bg-white bg-opacity-5 border border-white-10 d-flex justify-content-between align-items-center">
                         <div className="small text-white-50">Est. Commission</div>
                         <div className="small fw-bold text-warning">+{formatPrice(Number(product.price) * 0.1)}</div>
                     </div>
@@ -99,11 +98,11 @@ export const ProductCard = ({ product }: { product: Product }) => {
                     </div>
                     </div>
                     <div className="d-flex align-items-center gap-2">
-                        <Link href={`/products/${product.id}`} className="btn btn-outline-light rounded-pill px-3 d-flex align-items-center justify-content-center text-decoration-none transition-colors hover-bg-light hover-text-dark" style={{ fontSize: "0.8rem", minHeight: "44px", border: "1px solid rgba(255,255,255,0.2)" }}>
+                        <Link href={`/products/${product.id}`} className="btn btn-outline-light rounded-0 px-3 d-flex align-items-center justify-content-center text-decoration-none transition-colors hover-bg-light hover-text-dark" style={{ fontSize: "0.8rem", minHeight: "44px", border: "1px solid var(--border-color)" }}>
                             Details
                         </Link>
                         <button
-                            className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center p-0 hover-scale transition-transform border-0 shadow-sm"
+                            className="btn btn-warning rounded-0 d-flex align-items-center justify-content-center p-0 hover-scale transition-transform border-0 shadow-none"
                             style={{ width: "44px", height: "44px" }}
                             onClick={(e) => {
                                 e.preventDefault()
