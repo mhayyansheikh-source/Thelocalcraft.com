@@ -36,27 +36,28 @@ export default function Homepage() {
                 />
                 <div className="position-absolute top-0 start-0 w-100 h-100"
                     style={{
-                        background: "linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(10,10,10,1))",
+                        background: "var(--bg-color)",
+                        opacity: 0.6,
                         zIndex: 2
                     }}
                 />
 
                 <div className="container position-relative text-center pt-5" style={{ zIndex: 10 }}>
                     <div className="animate-fade-in-up">
-                        <div className="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-10 small text-uppercase fw-bold" style={{ letterSpacing: "2px", fontSize: "0.7rem" }}>
+                        <div className="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 bg-white bg-opacity-10 border-white-10 small text-uppercase fw-bold" style={{ letterSpacing: "2px", fontSize: "0.7rem" }}>
                             <Sparkles size={14} className="text-warning" /> New Arrival: Swat Valley Woodwork
                         </div>
-                        <h1 className="display-1 fw-bold mb-4" style={{ letterSpacing: "-4px" }}>
+                        <h1 className="fw-bold mb-4" style={{ letterSpacing: "-4px", fontSize: "clamp(3rem, 10vw, 5.5rem)" }}>
                             A Portal to <span className="text-warning">Heritage</span>
                         </h1>
-                        <p className="lead text-white-50 mb-5 mx-auto opacity-75" style={{ maxWidth: "700px", fontSize: "1.25rem", lineHeight: "1.6" }}>
+                        <p className="lead text-white-50 mb-5 mx-auto opacity-75" style={{ maxWidth: "700px", fontSize: "clamp(1.1rem, 3vw, 1.25rem)", lineHeight: "1.6" }}>
                             Directly from the artisan's hand to your door. We use AI to preserve South Asia's dying arts and bring you the soul of authentic craftsmanship.
                         </p>
-                        <div className="d-flex flex-wrap justify-content-center gap-3">
-                            <Link href="/explore" className="btn btn-warning rounded-pill px-5 py-3 fw-bold fs-5 shadow-lg d-flex align-items-center gap-2 text-decoration-none">
+                        <div className="d-grid d-md-flex justify-content-md-center gap-3 mx-auto" style={{ maxWidth: "100%" }}>
+                            <Link href="/explore" className="btn btn-accent fs-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none">
                                 Shop Collection <ArrowRight size={20} />
                             </Link>
-                            <Link href="/artisans" className="btn btn-outline-light rounded-pill px-5 py-3 fw-bold fs-5 border-white border-opacity-25 hover-bg-white hover-text-dark transition-all text-decoration-none">
+                            <Link href="/artisans" className="btn btn-ghost fs-5 text-decoration-none d-flex align-items-center justify-content-center">
                                 Meet the Artisans
                             </Link>
                         </div>
@@ -65,11 +66,7 @@ export default function Homepage() {
             </section>
 
             {/* TRUST & FEATURES */}
-            <section className="py-5 position-relative" style={{ background: "#0a0a0a" }}>
-                {/* Background Glow */}
-                <div className="position-absolute top-50 start-50 translate-middle w-75 h-75 opacity-10 blur-3xl rounded-circle"
-                    style={{ background: "radial-gradient(circle, var(--primary-orange), transparent 70%)", pointerEvents: "none" }} />
-
+            <section className="py-responsive position-relative bg-dark">
                 <div className="container position-relative" style={{ zIndex: 1 }}>
                     <div className="row g-4 justify-content-center">
                         {[
@@ -93,17 +90,15 @@ export default function Homepage() {
                             }
                         ].map((item, idx) => (
                             <div key={idx} className="col-lg-4 col-md-6">
-                                <div className="feature-card p-4 h-100 rounded-5 text-center transition-all hover-translate-up"
+                                <div className="feature-card p-4 h-100 text-center transition-all hover-translate-up"
                                     style={{
-                                        background: "rgba(255, 255, 255, 0.03)",
-                                        backdropFilter: "blur(20px)",
-                                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                                        boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+                                        background: "var(--surface-color)",
+                                        border: "1px solid var(--border-color)"
                                     }}>
-                                    <div className="d-inline-flex p-4 rounded-4 mb-4 shadow-sm"
+                                    <div className="d-inline-flex p-4 mb-4"
                                         style={{
-                                            background: item.glow,
-                                            border: "1px solid rgba(255,255,255,0.05)"
+                                            background: "var(--bg-color)",
+                                            border: "1px solid var(--border-color)"
                                         }}>
                                         <item.icon className="text-warning" size={32} strokeWidth={1.5} />
                                     </div>
@@ -123,8 +118,8 @@ export default function Homepage() {
             </section>
 
             {/* AI DISCOVERY (EXPLORE) SECTION */}
-            <section id="explore" className="py-5" style={{ background: "linear-gradient(to bottom, #0a0a0a, #111)" }}>
-                <div className="container py-5">
+            <section id="explore" className="py-responsive bg-dark">
+                <div className="container">
                     <div className="row align-items-center g-5">
                         <div className="col-lg-12">
                             <VibeExplorer />
@@ -134,17 +129,10 @@ export default function Homepage() {
             </section>
 
             {/* FEATURED STORIES SECTION */}
-            <section id="stories" className="py-5 position-relative overflow-hidden" style={{ background: "#0a0a0a" }}>
-                {/* Subtle Decorative Pattern Overlay */}
-                <div className="position-absolute top-0 start-0 w-100 h-100"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-                        backgroundSize: "80px 80px",
-                        pointerEvents: "none"
-                    }}
-                />
+            <section id="stories" className="py-responsive position-relative overflow-hidden bg-dark">
+                {/* Subtle Decorative Pattern Overlay Removed for Lamborghini aesthetic */}
 
-                <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
+                <div className="container position-relative" style={{ zIndex: 2 }}>
                     <div className="row g-5 align-items-center">
                         <div className="col-lg-5">
                             <div className="d-flex align-items-center gap-3 text-warning mb-4">
@@ -152,24 +140,24 @@ export default function Homepage() {
                                 <div className="flex-grow-1" style={{ height: "1px", background: "linear-gradient(to right, rgba(245, 114, 36, 0.4), transparent)" }} />
                             </div>
 
-                            <h2 className="display-4 fw-bold mb-4 text-white" style={{ letterSpacing: "-2px" }}>
+                            <h2 className="fw-bold mb-4 text-white" style={{ letterSpacing: "-2px", fontSize: "clamp(2.5rem, 8vw, 4rem)" }}>
                                 Behind Every <span className="text-warning">Stitch</span>
                             </h2>
 
-                            <p className="text-white-50 mb-5 fs-5 opacity-75" style={{ lineHeight: "1.8" }}>
+                            <p className="text-white-50 mb-5 opacity-75" style={{ lineHeight: "1.8", fontSize: "clamp(1.1rem, 3vw, 1.25rem)" }}>
                                 Every handicraft is a living archive, a narrative of resilience passed down through generations.
                                 Our AI Storyteller bridges the gap between the weaver's loom and your heart.
                             </p>
 
                             <div className="row g-4 mb-5">
                                 <div className="col-6">
-                                    <div className="p-3 rounded-4 border border-white border-opacity-10 shadow-sm" style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(10px)" }}>
+                                    <div className="p-3 border-white-10" style={{ background: "var(--surface-color)", border: "1px solid var(--border-color)" }}>
                                         <div className="h3 fw-bold text-warning mb-0">500+</div>
                                         <div className="small text-white-50 text-uppercase" style={{ fontSize: "0.65rem", letterSpacing: "1px" }}>Artisans Empowered</div>
                                     </div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="p-3 rounded-4 border border-white border-opacity-10 shadow-sm" style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(10px)" }}>
+                                    <div className="p-3 border-white-10" style={{ background: "var(--surface-color)", border: "1px solid var(--border-color)" }}>
                                         <div className="h3 fw-bold text-warning mb-0">12+</div>
                                         <div className="small text-white-50 text-uppercase" style={{ fontSize: "0.65rem", letterSpacing: "1px" }}>Heritage Hubs</div>
                                     </div>
@@ -178,7 +166,7 @@ export default function Homepage() {
 
                             <div className="d-flex flex-column gap-3 mb-5">
                                 <div className="d-flex align-items-center gap-2">
-                                    <div className="rounded-circle bg-success shadow-success pulse-animation" style={{ width: "8px", height: "8px", boxShadow: "0 0 10px #198754" }} />
+                                    <div className="bg-success" style={{ width: "8px", height: "8px" }} />
                                     <span className="small text-white-50 fw-bold text-uppercase" style={{ fontSize: "0.7rem", letterSpacing: "1px" }}>Direct Artisan Connection Live</span>
                                 </div>
                                 <div className="d-flex gap-3">
@@ -187,21 +175,17 @@ export default function Homepage() {
                                 </div>
                             </div>
 
-                            <Link href="/stories" className="btn btn-outline-warning rounded-pill px-5 py-3 fw-bold transition-all text-decoration-none d-inline-block hover-scale">
+                            <Link href="/stories" className="btn btn-ghost px-5 py-3 text-decoration-none d-inline-block hover-scale">
                                 View Documentary Library
                             </Link>
                         </div>
 
                         <div className="col-lg-7">
                             <div className="position-relative">
-                                {/* Decorative Glow behind viewer */}
-                                <div className="position-absolute top-50 start-50 translate-middle w-100 h-100 bg-warning rounded-circle blur-3xl opacity-10" />
-
-                                <div className="p-2 rounded-5 shadow-2xl position-relative overflow-hidden"
+                                <div className="p-2 border-white-10 position-relative overflow-hidden"
                                     style={{
-                                        background: "rgba(255, 255, 255, 0.02)",
-                                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                                        backdropFilter: "blur(20px)"
+                                        background: "var(--surface-color)",
+                                        border: "1px solid var(--border-color)"
                                     }}>
 
                                     <ArtisanStoryViewer artisanId="featured-artisan-1" />
@@ -227,32 +211,30 @@ export default function Homepage() {
             </section>
 
             {/* NEWSLETTER SECTION */}
-            <section className="py-5 mb-5" style={{ background: "#0a0a0a" }}>
-                <div className="container py-5">
-                    <div className="p-5 rounded-5 border border-white border-opacity-5 text-center shadow-2xl position-relative overflow-hidden"
+            <section className="py-responsive mb-5 bg-dark">
+                <div className="container">
+                    <div className="p-5 border-white-10 text-center position-relative overflow-hidden"
                         style={{
-                            background: "rgba(255,255,255,0.02)",
-                            backdropFilter: "blur(40px)"
+                            background: "var(--surface-color)",
+                            border: "1px solid var(--border-color)"
                         }}>
-                        <div className="position-absolute top-0 start-50 translate-middle-x bg-warning rounded-pill blur-3xl opacity-5" style={{ width: "400px", height: "400px" }} />
-
                         <div className="position-relative" style={{ zIndex: 5 }}>
                             <ShoppingBag className="text-warning mb-4" size={48} />
                             <h2 className="display-5 fw-bold mb-3">Join the Heritage List</h2>
                             <p className="text-white-50 mb-5 mx-auto" style={{ maxWidth: "600px" }}>
                                 Be the first to know about new artisan launches and seasonal drops. Get exclusive backstories from our creators.
                             </p>
-                            <form onSubmit={handleNewsletter} className="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
+                            <form onSubmit={handleNewsletter} className="d-grid d-md-flex gap-3 justify-content-md-center align-items-center mx-auto" style={{ maxWidth: "500px" }}>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="your@email.com"
-                                    className="form-control rounded-pill bg-dark border-white border-opacity-10 py-3 px-5 text-white shadow-inner"
-                                    style={{ maxWidth: "350px" }}
+                                    className="form-control bg-dark border-white-10 py-3 px-4 text-white w-100"
+                                    style={{ borderRadius: 0 }}
                                     required
                                 />
-                                <button type="submit" className="btn btn-warning rounded-pill px-5 py-3 fw-bold">
+                                <button type="submit" className="btn btn-accent px-5 py-3 w-100 text-nowrap">
                                     Keep Me Updated
                                 </button>
                             </form>

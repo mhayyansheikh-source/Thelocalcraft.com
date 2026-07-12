@@ -1,71 +1,138 @@
 @import "bootstrap/scss/bootstrap";
 
 :root {
-  --primary-orange: #f57224;
-  --secondary-orange: #ff933f;
-  --accent-red: #d3232a;
-  --text-dark: #0a0a0a;
-  --glass: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Dark Mode Default - Lamborghini System (OKLCH)
+   * Hue 85 is Lamborghini Gold. All neutrals have a tiny chroma (0.01) to tint toward the brand color. 
+   */
+  --bg-color: oklch(0% 0 0); /* Absolute Black */
+  --surface-color: oklch(20% 0.01 85);
+  --text-color: oklch(100% 0 0); /* Pure White */
+  --text-muted: oklch(65% 0.005 85);
+  --border-color: oklch(35% 0.01 85);
+  
+  --accent-gold: oklch(81% 0.17 85); /* #FFC000 equivalent */
+  --accent-gold-dark: oklch(65% 0.15 85);
+  
+  --ghost-hover-bg: oklch(81% 0.17 85 / 15%);
+  --ghost-hover-border: oklch(81% 0.17 85 / 50%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Light Mode Adaptation (OKLCH) */
+    --bg-color: oklch(100% 0 0);
+    --surface-color: oklch(97% 0.005 85); /* Very light, warm off-white */
+    --text-color: oklch(0% 0 0);
+    --text-muted: oklch(45% 0.005 85);
+    --border-color: oklch(85% 0.01 85);
+    
+    --accent-gold: oklch(81% 0.17 85);
+    --accent-gold-dark: oklch(65% 0.15 85);
+    
+    --ghost-hover-bg: oklch(81% 0.17 85 / 10%);
+    --ghost-hover-border: oklch(81% 0.17 85 / 50%);
+  }
 }
 
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  background-color: var(--text-dark);
-  background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--text-dark) 80%);
-  color: #ffffff;
+  font-family: var(--font-lambo), system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Organic Noise / Texture Infusion */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.035;
-  /* incredibly subtle */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+/* Typography Scale */
+h1, .display-1 { font-size: clamp(3.38rem, 5vw, 7.50rem); line-height: 0.92; font-weight: 400; text-transform: uppercase; }
+h2, .display-2 { font-size: clamp(2.50rem, 4vw, 5.00rem); line-height: 1.13; font-weight: 400; text-transform: uppercase; }
+h3, .display-3 { font-size: clamp(1.69rem, 3vw, 3.38rem); line-height: 1.19; font-weight: 400; text-transform: uppercase; }
+h4, .display-4 { font-size: 2.50rem; line-height: 1.15; font-weight: 400; text-transform: uppercase; }
+h5, .display-5 { font-size: 1.69rem; line-height: 1.37; font-weight: 400; text-transform: uppercase; }
+h6, .display-6 { font-size: 1.50rem; font-weight: 400; text-transform: uppercase; }
+
+/* Buttons */
+.btn {
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-accent {
+  background-color: var(--accent-gold);
+  color: #000000;
+  border: none;
+  padding: 16px 24px;
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-gold-dark);
+  color: #000000;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 16px 24px;
+}
+
+.btn-ghost:hover {
+  background-color: var(--ghost-hover-bg);
+  color: var(--accent-gold);
+  border-color: var(--ghost-hover-border);
+}
+
+/* Utilities */
+.bg-dark { background-color: var(--bg-color) !important; }
+.text-white { color: var(--text-color) !important; }
+.text-white-50 { color: var(--text-muted) !important; }
+.border-white-10 { border-color: var(--border-color) !important; }
+.text-warning { color: var(--accent-gold) !important; }
+.bg-warning { background-color: var(--accent-gold) !important; }
+
+/* Responsive Spacing Utilities */
+.py-responsive {
+  padding-top: clamp(1.5rem, 4vw, 3.5rem) !important; /* 24px to 56px */
+  padding-bottom: clamp(1.5rem, 4vw, 3.5rem) !important;
+}
+.px-responsive {
+  padding-left: clamp(1rem, 3vw, 2.5rem) !important;
+  padding-right: clamp(1rem, 3vw, 2.5rem) !important;
+}
+
+/* Shadows -> Surfaces */
+.shadow-2xl, .shadow-lg, .shadow-sm {
+  box-shadow: none !important;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #111;
+  background: var(--bg-color);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 10px;
+  background: var(--surface-color);
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-orange);
+  background: var(--accent-gold);
 }
 
 /* Animations */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
@@ -73,20 +140,14 @@ body::before {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .animate-fade-in {
   animation: fadeIn 1s ease forwards;
 }
 
-/* Hover Effects */
 .hover-translate-up {
   transition: transform 0.3s ease;
 }
@@ -95,109 +156,7 @@ body::before {
   transform: translateY(-8px);
 }
 
-.hover-white {
-  transition: color 0.2s ease;
-}
-
-.hover-white:hover {
-  color: #ffffff !important;
-}
-
-.transition-all {
-  transition: all 0.3s ease;
-}
-
-.bg-gradient-warning {
-  background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
-}
-
-.blur-3xl {
-  filter: blur(80px);
-}
-
-.shadow-2xl {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-.text-truncate-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Logo & Branding */
-.logo-text {
-  font-weight: 800;
-  background: linear-gradient(to right, #fff, #ff933f);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Custom Bootstrap Extensions */
-.bg-opacity-5 {
-  --bs-bg-opacity: 0.05 !important;
-}
-
-.bg-opacity-2 {
-  --bs-bg-opacity: 0.02 !important;
-}
-
-/* Hover Utilities */
-.hover-translate-y:hover {
-  transform: translateY(-8px);
-}
-
-.hover-scale:hover {
-  transform: scale(1.05);
-}
-
-.pulse-animation {
-  animation: pulse 2s infinite;
-}
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
-
-  100% {
-    opacity: 0.1;
-  }
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.bg-gradient-dark-overlay {
-  background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.6) 50%, rgba(10, 10, 10, 0.1) 100%);
-}
-
-.border-white-10 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.3s ease-out forwards;
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
+/* Ensure no rounded corners anywhere */
+.rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5, .rounded-pill, .rounded-circle {
+  border-radius: 0 !important;
 }

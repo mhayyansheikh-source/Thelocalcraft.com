@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "@/styles/globals.scss";
 import { Providers } from "./providers";
 
-const inter = Inter({
+const roboto = Roboto({
+    weight: ['300', '400', '500', '700', '900'],
     subsets: ["latin"],
     display: 'swap',
-    variable: '--font-inter',
+    variable: '--font-lambo',
 });
 
 export const viewport: Viewport = {
@@ -53,7 +54,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={inter.variable}>
+        <html lang="en" className={roboto.variable}>
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -63,7 +64,7 @@ export default function RootLayout({
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
                 />
             </head>
-            <body className={inter.className}>
+            <body className={roboto.className}>
                 <Providers>{children}</Providers>
             </body>
         </html>

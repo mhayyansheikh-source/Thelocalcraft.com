@@ -224,62 +224,26 @@ export function Navbar() {
                 <div className="container d-flex justify-content-between align-items-center">
                     {/* Logo */}
                     <Link href="/" className="text-decoration-none d-flex align-items-center gap-2">
-                        <div className="fw-bold text-white fs-4" style={{ letterSpacing: "-1px" }}>
+                        <div className="fw-bold text-white fs-4 text-uppercase" style={{ letterSpacing: "-1px" }}>
                             The Local <span className="text-warning">Crafts</span>
                         </div>
                     </Link>
 
-                    {/* Desktop Menu */}
-                    <div className="d-none d-lg-flex align-items-center gap-3 gap-xl-4">
-                        <Link href="/explore" className="text-white-50 text-decoration-none small text-uppercase fw-bold hover-white transition-colors" style={{ letterSpacing: "1.5px", fontSize: "0.75rem" }}>
-                            Explore
-                        </Link>
 
-                        <Link href="/craft-map" className="text-warning text-decoration-none small text-uppercase fw-bold hover-white transition-colors" style={{ letterSpacing: "1.5px", fontSize: "0.75rem" }}>
-                            Craft Map
-                        </Link>
-
-                        <div className="position-relative" onMouseEnter={() => setIsRegionsOpen(true)} onMouseLeave={() => setIsRegionsOpen(false)}>
-                            <button className="btn btn-link p-0 text-white-50 text-decoration-none small text-uppercase fw-bold hover-white transition-colors d-flex align-items-center gap-1" style={{ letterSpacing: "1.5px", fontSize: "0.75rem" }}>
-                                Regions
-                            </button>
-                            {isRegionsOpen && (
-                                <div className="position-absolute top-100 start-0 pt-3" style={{ minWidth: "200px" }}>
-                                    <div className="bg-dark border border-white-10 rounded-4 overflow-hidden shadow-lg" style={{ backdropFilter: "blur(20px)" }}>
-                                        {["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"].map(region => (
-                                            <Link key={region} href={`/region/${region.toLowerCase()}`} className="d-block px-4 py-3 text-white-50 text-decoration-none hover-bg-white-5 hover-text-white transition-all small fw-bold">
-                                                {region}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {["Artisans", "Heritage", "Stories", "Wholesale"].map((item) => (
-                            <Link key={item} href={item === 'Wholesale' ? "/apply/wholesale" : `/${item.toLowerCase()}`}
-                                className="text-white-50 text-decoration-none small text-uppercase fw-bold hover-white transition-colors"
-                                style={{ letterSpacing: "1.5px", fontSize: "0.75rem" }}>
-                                {item}
-                            </Link>
-                        ))}
-
-                        <button onClick={toggleCurrency} className="btn btn-outline-light border-opacity-10 rounded-pill px-3 py-1 small fw-bold text-uppercase d-flex align-items-center gap-2 hover-bg-warning hover-text-dark transition-all" style={{ fontSize: "0.65rem", letterSpacing: "1px" }}>
-                            <Globe size={14} /> {currency}
-                        </button>
-                    </div>
 
                     {/* Actions */}
                     <div className="d-flex align-items-center gap-3">
                         <button
                             onClick={() => setIsSearchOpen(true)}
                             className="btn btn-link text-white p-2 d-none d-md-block opacity-75 hover-opacity-100 transition-opacity"
+                            aria-label="Search"
                         >
                             <Search size={20} />
                         </button>
                         <button
                             className="btn btn-link text-white p-2 opacity-75 hover-opacity-100 transition-opacity position-relative"
                             onClick={() => setIsCartOpen(true)}
+                            aria-label="Shopping cart"
                         >
                             <ShoppingBag size={20} />
                             {items.length > 0 && (
@@ -297,64 +261,94 @@ export function Navbar() {
                                     userAuth.role === 'customer' ? "/dashboard/customer" : 
                                     "/dashboard/artisan"
                                 }
-                                    className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-none d-md-flex align-items-center gap-2 shadow-sm" style={{ fontSize: "0.85rem" }}>
+                                    className="btn btn-accent px-4 py-2 d-none d-md-flex align-items-center gap-2" style={{ fontSize: "0.85rem" }}>
                                     <User size={16} /> Dashboard
                                 </Link>
                             ) : (
-                                <Link href="/login" className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-none d-md-flex align-items-center gap-2 shadow-sm" style={{ fontSize: "0.85rem" }}>
+                                <Link href="/login" className="btn btn-accent px-4 py-2 d-none d-md-flex align-items-center gap-2" style={{ fontSize: "0.85rem" }}>
                                     <User size={16} /> Sign In
                                 </Link>
                             )
                         )}
 
-                        {/* Mobile Toggle */}
-                        <button className="btn btn-link text-white d-lg-none p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {/* Universal Menu Toggle */}
+                        <button className="btn btn-link text-white p-2 d-flex align-items-center gap-2 text-decoration-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                            {isMobileMenuOpen ? (
+                                <>
+                                    <span className="small text-uppercase fw-bold d-none d-md-block" style={{ letterSpacing: "2px", fontSize: "0.75rem" }}>CLOSE</span>
+                                    <X size={24} />
+                                </>
+                            ) : (
+                                <>
+                                    <span className="small text-uppercase fw-bold d-none d-md-block" style={{ letterSpacing: "2px", fontSize: "0.75rem" }}>MENU</span>
+                                    <Menu size={24} />
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Menu Overlay */}
-                {isMobileMenuOpen && (
-                    <div className="position-fixed top-0 start-0 w-100 vh-100 bg-dark d-flex flex-column align-items-center justify-content-center gap-4 animate-fade-in" style={{ zIndex: 999 }}>
-                        {["Explore", "Artisans", "Heritage", "Stories", "Wholesale"].map((item) => (
-                            <Link key={item} href={item === 'Wholesale' ? "/apply/wholesale" : `/${item.toLowerCase()}`}
-                                className="text-white text-decoration-none fs-2 fw-bold"
-                                onClick={() => setIsMobileMenuOpen(false)}>
-                                {item}
-                            </Link>
-                        ))}
-
-                        <div className="text-center mt-3">
-                            <h6 className="text-white-50 small text-uppercase mb-3 ls-1">Regional Silos</h6>
-                            <div className="d-flex flex-wrap justify-content-center gap-2">
-                                {["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"].map(region => (
-                                    <Link key={region} href={`/region/${region.toLowerCase()}`} className="btn btn-sm btn-outline-light border-white-10 text-white-50 rounded-pill px-3 py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                                        {region}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-
-                        {!isAuthLoading && (
-                            userAuth ? (
-                                <Link href={
-                                    userAuth.role === 'admin' ? "/dashboard/admin" : 
-                                    userAuth.role === 'wholesale' ? "/dashboard/wholesale" :
-                                    "/dashboard/artisan"
-                                }
-                                    className="btn btn-warning rounded-pill px-5 py-3 fs-5 fw-bold mt-4 shadow-lg d-flex align-items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <User size={20} /> Dashboard
-                                </Link>
-                            ) : (
-                                <Link href="/login" className="btn btn-warning rounded-pill px-5 py-3 fs-5 fw-bold mt-4 shadow-lg d-flex align-items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <User size={20} /> Sign In
-                                </Link>
-                            )
-                        )}
-                    </div>
-                )}
             </nav>
+
+            {/* Fullscreen Menu Overlay */}
+            {isMobileMenuOpen && (
+                <div className="position-fixed top-0 start-0 w-100 vh-100 bg-dark d-flex flex-column align-items-center justify-content-center gap-4 animate-fade-in" style={{ zIndex: 1050 }}>
+                    <button
+                        className="btn btn-link text-white position-absolute top-0 end-0 m-4 p-2 opacity-75 hover-opacity-100 transition-all hover-scale"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        style={{ zIndex: 1060 }}
+                        aria-label="Close menu"
+                    >
+                        <X size={40} />
+                    </button>
+
+                    {["Explore", "Craft Map", "Artisans", "Heritage", "Stories", "Wholesale"].map((item) => (
+                        <Link key={item} href={
+                            item === 'Wholesale' ? "/apply/wholesale" : 
+                            item === 'Craft Map' ? "/craft-map" : 
+                            `/${item.toLowerCase()}`
+                        }
+                            className="text-white text-decoration-none fs-2 fw-bold text-uppercase"
+                            onClick={() => setIsMobileMenuOpen(false)}>
+                            {item}
+                        </Link>
+                    ))}
+
+                    <div className="text-center mt-3">
+                        <h6 className="text-white-50 small text-uppercase mb-3" style={{ letterSpacing: "2px" }}>Regional Silos</h6>
+                        <div className="d-flex flex-wrap justify-content-center gap-2">
+                            {["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"].map(region => (
+                                <Link key={region} href={`/region/${region.toLowerCase()}`} className="btn btn-sm btn-ghost border-white-10 text-white-50 px-3 py-2" style={{ borderRadius: 0 }} onClick={() => setIsMobileMenuOpen(false)}>
+                                    {region}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="d-flex align-items-center gap-3 mt-3">
+                        <button onClick={toggleCurrency} className="btn btn-ghost px-4 py-2 small text-uppercase d-flex align-items-center gap-2 hover-bg-warning hover-text-dark transition-all">
+                            <Globe size={16} /> {currency}
+                        </button>
+                    </div>
+
+                    {!isAuthLoading && (
+                        userAuth ? (
+                            <Link href={
+                                userAuth.role === 'admin' ? "/dashboard/admin" : 
+                                userAuth.role === 'wholesale' ? "/dashboard/wholesale" :
+                                "/dashboard/artisan"
+                            }
+                                className="btn btn-accent px-5 py-3 fs-5 mt-4 d-flex align-items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                                <User size={20} /> Dashboard
+                            </Link>
+                        ) : (
+                            <Link href="/login" className="btn btn-accent px-5 py-3 fs-5 mt-4 d-flex align-items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                                <User size={20} /> Sign In
+                            </Link>
+                        )
+                    )}
+                </div>
+            )}
 
             {/* Global Search Overlay */}
             {isSearchOpen && (

@@ -105,8 +105,8 @@ function ExploreContent() {
 
             <main className="container flex-grow-1 pt-5 mt-5">
                 <header className="py-5 text-center">
-                    <h1 className="display-4 fw-bold mb-3">Explore <span className="text-warning">Collection</span></h1>
-                    <p className="text-white-50 mx-auto" style={{ maxWidth: "600px" }}>
+                    <h1 className="fw-bold mb-3" style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)" }}>Explore <span className="text-warning">Collection</span></h1>
+                    <p className="text-white-50 mx-auto px-3" style={{ maxWidth: "600px", fontSize: "clamp(1rem, 3vw, 1.1rem)" }}>
                         Every piece is a handcrafted testament to centuries of tradition. Use the AI signature to verify authenticity.
                     </p>
                 </header>
@@ -125,9 +125,10 @@ function ExploreContent() {
                                     onChange={(e) => setSearchInput(e.target.value)}
                                     className="form-control bg-transparent border-0 text-white py-3 outline-none shadow-none pe-5"
                                     placeholder="Semantic Search (e.g. 'Blue pottery with floral motifs')"
+                                    style={{ paddingRight: "60px" }}
                                 />
-                                <button type="submit" disabled={isSearchingSemantic} className="btn position-absolute end-0 top-50 translate-middle-y me-2 rounded-circle btn-warning p-2 d-flex align-items-center justify-content-center" style={{ width: "36px", height: "36px", zIndex: 10 }}>
-                                    <SearchIcon size={16} />
+                                <button type="submit" disabled={isSearchingSemantic} className="btn position-absolute end-0 top-50 translate-middle-y me-2 rounded-circle btn-warning p-0 d-flex align-items-center justify-content-center" style={{ width: "44px", height: "44px", zIndex: 10 }}>
+                                    <SearchIcon size={20} />
                                 </button>
                             </div>
                         </form>

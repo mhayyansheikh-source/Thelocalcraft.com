@@ -61,10 +61,11 @@ export function VibeExplorer() {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Describe what you're looking for..."
-                        className="form-control rounded-pill py-3 px-5 border-0 shadow-sm"
+                        className="form-control rounded-pill py-3 ps-5 border-0 shadow-sm"
                         style={{
                             background: "rgba(255, 255, 255, 0.9)",
-                            fontSize: "1.1rem"
+                            fontSize: "1.1rem",
+                            paddingRight: "130px"
                         }}
                         disabled={isSearching}
                     />

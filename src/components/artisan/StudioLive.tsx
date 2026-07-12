@@ -108,9 +108,9 @@ export const StudioLive = () => {
                         <X size={32} />
                     </button>
 
-                    <div className="row w-100 h-100 g-0">
+                    <div className="row w-100 h-100 g-0 flex-column flex-lg-row">
                         {/* THE VIDEO PLAYER */}
-                        <div className="col-lg-5 h-100 bg-black d-flex align-items-center justify-content-center position-relative">
+                        <div className="col-12 col-lg-5 h-50 h-lg-100 bg-black d-flex align-items-center justify-content-center position-relative">
                             <video 
                                 src={selectedFeed.video_url} 
                                 className="h-100 w-100 object-fit-contain shadow-2xl" 
@@ -156,17 +156,17 @@ export const StudioLive = () => {
                             )}
                         </div>
 
-                        {/* ENGAGEMENT / COMMERCE SIDEBAR (Desktop) */}
-                        <div className="col-lg-7 d-none d-lg-flex bg-white bg-opacity-2 blur-2xl border-start border-white-5 align-items-center justify-content-center p-5">
-                            <div className="text-center max-w-lg">
-                                <Maximize2 size={64} className="text-warning mb-4 opacity-50 shadow-2xl" />
-                                <h1 className="display-4 fw-bold mb-4">Direct Link to <span className="text-warning">Provenance.</span></h1>
+                        {/* ENGAGEMENT / COMMERCE SIDEBAR (Responsive) */}
+                        <div className="col-12 col-lg-7 h-50 h-lg-100 d-flex bg-white bg-opacity-2 blur-2xl border-top border-lg-0 border-start-lg border-white-5 align-items-center justify-content-center p-4 p-lg-5 overflow-y-auto">
+                            <div className="text-center max-w-lg pb-5 pb-lg-0">
+                                <Maximize2 size={48} className="text-warning mb-3 opacity-50 shadow-2xl d-none d-lg-inline-block" />
+                                <h1 className="display-6 display-lg-4 fw-bold mb-3 mb-lg-4">Direct Link to <span className="text-warning">Provenance.</span></h1>
                                 <p className="text-white-50 lead mb-5 opacity-75" style={{ lineHeight: "1.8" }}>
                                     This artisan is currently active in their heritage hub. Every purchase directly impacts their mastery tier and sustainable community fund.
                                 </p>
                                 <div className="d-grid gap-3">
-                                    <Link href="/explore" className="btn btn-warning rounded-pill py-4 fw-bold fs-4 shadow-2xl hover-translate-y d-flex align-items-center justify-content-center gap-3">
-                                        Explore This Artisan's Collection <ArrowRight size={24} />
+                                    <Link href="/explore" className="btn btn-warning rounded-pill py-3 py-lg-4 fw-bold fs-5 fs-lg-4 shadow-2xl hover-translate-y d-flex align-items-center justify-content-center gap-3">
+                                        Explore This Artisan <ArrowRight size={20} />
                                     </Link>
                                     <button onClick={() => setSelectedFeed(null)} className="btn btn-outline-light border-opacity-20 rounded-pill py-3 px-5 fw-bold hover-bg-white-5 transition-all mt-4">
                                         Continue Exploring Live Feeds

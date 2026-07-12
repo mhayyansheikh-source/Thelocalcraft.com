@@ -99,12 +99,12 @@ export const ProductCard = ({ product }: { product: Product }) => {
                     </div>
                     </div>
                     <div className="d-flex align-items-center gap-2">
-                        <Link href={`/products/${product.id}`} className="btn btn-outline-light btn-sm rounded-pill px-3 text-decoration-none transition-colors hover-bg-light hover-text-dark" style={{ fontSize: "0.75rem", border: "1px solid rgba(255,255,255,0.2)" }}>
+                        <Link href={`/products/${product.id}`} className="btn btn-outline-light rounded-pill px-3 d-flex align-items-center justify-content-center text-decoration-none transition-colors hover-bg-light hover-text-dark" style={{ fontSize: "0.8rem", minHeight: "44px", border: "1px solid rgba(255,255,255,0.2)" }}>
                             Details
                         </Link>
                         <button
-                            className="btn btn-warning btn-sm rounded-circle d-flex align-items-center justify-content-center p-0 hover-scale transition-transform border-0 shadow-sm"
-                            style={{ width: "32px", height: "32px" }}
+                            className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center p-0 hover-scale transition-transform border-0 shadow-sm"
+                            style={{ width: "44px", height: "44px" }}
                             onClick={(e) => {
                                 e.preventDefault()
                                 e.stopPropagation()
@@ -112,7 +112,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
                             }}
                             title="Add to Cart"
                         >
-                            <Plus size={18} strokeWidth={3} className="text-dark" />
+                            <Plus size={20} strokeWidth={3} className="text-dark" />
                         </button>
                     </div>
                 </div>

@@ -249,7 +249,7 @@ export default function AdminDashboard() {
                     {/* SIDEBAR */}
                     <aside className="col-lg-3 d-none d-lg-block">
                         <div className="sticky-top pt-4 h-100" style={{ top: "100px" }}>
-                            <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 d-flex flex-column">
+                            <div className="p-4 rounded-5 h-100 d-flex flex-column" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                 <div className="d-flex align-items-center gap-3 mb-5 pb-4 border-bottom border-white border-opacity-10">
                                     <div className="rounded-circle border border-danger border-opacity-50 p-2 bg-danger bg-opacity-10">
                                         <Shield size={32} className="text-danger shadow-lg" />
@@ -292,12 +292,30 @@ export default function AdminDashboard() {
 
                     {/* MAIN CONTENT */}
                     <div className="col-lg-9 py-4">
+                        {/* MOBILE NAV */}
+                        <div className="d-lg-none mb-4 overflow-hidden">
+                            <div className="d-flex overflow-x-auto pb-2 gap-2 hide-scrollbar" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                                <button onClick={() => setActiveTab("core")} className={`btn ${activeTab === 'core' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <LayoutDashboard size={16} /> Core
+                                </button>
+                                <button onClick={() => setActiveTab("categories")} className={`btn ${activeTab === 'categories' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <FolderTree size={16} /> Categories
+                                </button>
+                                <button onClick={() => setActiveTab("users")} className={`btn ${activeTab === 'users' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Users size={16} /> Identity {pendingUsers.length > 0 && `(${pendingUsers.length})`}
+                                </button>
+                                <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Briefcase size={16} /> Wholesale {wholesaleApps.filter(a => a.status === 'pending').length > 0 && `(${wholesaleApps.filter(a => a.status === 'pending').length})`}
+                                </button>
+                            </div>
+                        </div>
+
                         {activeTab === 'core' ? (
                             <>
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
                                     <div>
-                                        <h1 className="display-4 fw-bold mb-2">Central <span className="text-danger">Command.</span></h1>
-                                        <p className="text-white-50 opacity-75 lead mb-0">System operations are nominal. AI safeguards and global logistics are actively tracking.</p>
+                                        <h1 className="fw-bold mb-2 text-uppercase" style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)", letterSpacing: "-1px" }}>Central <span className="text-danger">Command.</span></h1>
+                                        <p className="text-white-50 opacity-75 lead mb-0" style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}>System operations are nominal. AI safeguards and global logistics are actively tracking.</p>
                                     </div>
                                     <div className="d-flex gap-3">
                                         <button className="btn btn-danger rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
@@ -306,10 +324,9 @@ export default function AdminDashboard() {
                                     </div>
                                 </header>
 
-                                {/* System Core Stats... */}
                                 <div className="row g-4 mb-5 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                                     <div className="col-md-4">
-                                        <div className="p-4 rounded-4 border border-white-10 bg-white bg-opacity-5 h-100 hover-translate-y transition-all">
+                                        <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                             <div className="d-flex align-items-center justify-content-between mb-4">
                                                 <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Network Artisans</h6>
                                                 <div className="p-2 bg-info bg-opacity-10 text-info rounded-circle">
@@ -324,7 +341,7 @@ export default function AdminDashboard() {
                                     </div>
 
                                     <div className="col-md-4">
-                                        <div className="p-4 rounded-4 border border-white-10 bg-white bg-opacity-5 h-100 hover-translate-y transition-all">
+                                        <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                             <div className="d-flex align-items-center justify-content-between mb-4">
                                                 <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Transaction Node</h6>
                                                 <div className="p-2 bg-warning bg-opacity-10 text-warning rounded-circle">
@@ -355,7 +372,7 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {/* Recent Deep Metrics */}
-                                <div className="p-4 p-md-5 rounded-4 border border-white-10 bg-dark position-relative overflow-hidden mb-5 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                                <div className="p-4 p-md-5 rounded-4 position-relative overflow-hidden mb-5 animate-fade-in-up" style={{ animationDelay: '0.2s', backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                     <div className="position-absolute w-100 h-100 top-0 start-0 opacity-10 blur-3xl" style={{ background: "radial-gradient(circle at top right, #dc3545, transparent)" }}></div>
 
                                     <div className="position-relative z-1">
@@ -431,7 +448,7 @@ export default function AdminDashboard() {
                                 </header>
 
                                 {showCatForm ? (
-                                    <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5 animate-fade-in relative z-1">
+                                    <div className="p-4 p-md-5 rounded-5 animate-fade-in relative z-1" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
                                             <h4 className="fw-bold m-0">{editingCatId ? "Modify Infrastructure" : "Deploy Validation Path"}</h4>
                                             <button onClick={() => setShowCatForm(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
@@ -474,7 +491,7 @@ export default function AdminDashboard() {
                                         </form>
                                     </div>
                                 ) : (
-                                    <div className="table-responsive bg-dark rounded-4 border border-white-10 mt-4 overflow-hidden">
+                                    <div className="table-responsive rounded-4 mt-4 overflow-hidden" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <table className="table table-dark table-borderless table-hover align-middle mb-0">
                                             <thead>
                                                 <tr className="border-bottom border-white-10 text-white-50 small text-uppercase ls-1 bg-white bg-opacity-5">
@@ -552,7 +569,7 @@ export default function AdminDashboard() {
 
                                 <div className="mb-5">
                                     <h4 className="fw-bold mb-4">Pending Applications</h4>
-                                    <div className="table-responsive bg-dark rounded-4 border border-white-10 overflow-hidden shadow-lg">
+                                    <div className="table-responsive rounded-4 overflow-hidden shadow-lg" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <table className="table table-dark table-borderless align-middle mb-0">
                                             <thead>
                                                 <tr className="bg-white bg-opacity-5 text-white-50 small text-uppercase">
@@ -594,7 +611,7 @@ export default function AdminDashboard() {
 
                                 <div className="mb-4">
                                     <h4 className="fw-bold mb-4">Commission Register</h4>
-                                    <div className="table-responsive bg-dark rounded-4 border border-white-10 overflow-hidden shadow-lg">
+                                    <div className="table-responsive rounded-4 overflow-hidden shadow-lg" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <table className="table table-dark table-borderless align-middle mb-0">
                                             <thead>
                                                 <tr className="bg-white bg-opacity-5 text-white-50 small text-uppercase">

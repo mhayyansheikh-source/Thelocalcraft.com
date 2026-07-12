@@ -15,20 +15,20 @@ export function Footer() {
                     {/* Brand Section */}
                     <div className="col-lg-4">
                         <div className="brand-footer mb-4">
-                            <h3 className="fw-bold mb-2">The Local <span className="text-warning">Crafts</span></h3>
+                            <h3 className="fw-bold mb-2 text-uppercase">The Local <span className="text-warning">Crafts</span></h3>
                             <div className="d-flex align-items-center gap-2 text-white-50 small text-uppercase" style={{ letterSpacing: "3.5px", fontSize: "0.6rem" }}>
-                                <Heart size={10} className="text-danger" fill="currentColor" />
+                                <Heart size={10} className="text-warning" fill="currentColor" />
                                 Handcrafted with Love
-                                <Heart size={10} className="text-danger" fill="currentColor" />
+                                <Heart size={10} className="text-warning" fill="currentColor" />
                             </div>
                         </div>
                         <p className="text-white-50 mb-4" style={{ maxWidth: "300px", fontSize: "0.9rem", lineHeight: "1.7" }}>
                             A portal to Pakistan's soul. We use AI to preserve heritage and bring authentic artisan crafts directly to your door.
                         </p>
-                        <div className="d-flex gap-3">
+                        <div className="d-flex gap-3 mt-2">
                             {[Facebook, Twitter, Instagram].map((Icon, idx) => (
-                                <Link key={idx} href="#" className="btn btn-outline-light rounded-circle p-2 opacity-75 hover-opacity-100 transition-all shadow-sm" style={{ width: "38px", height: "38px" }}>
-                                    <Icon size={18} />
+                                <Link key={idx} href="#" className="btn btn-outline-light border-opacity-25 opacity-75 hover-opacity-100 transition-all d-flex align-items-center justify-content-center p-0" style={{ width: "44px", height: "44px", borderRadius: "50%" }}>
+                                    <Icon size={20} />
                                 </Link>
                             ))}
                         </div>
