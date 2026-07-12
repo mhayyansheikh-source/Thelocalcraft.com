@@ -44,21 +44,15 @@ export default function Homepage() {
 
                 <div className="container position-relative text-center pt-5" style={{ zIndex: 10 }}>
                     <div className="animate-fade-in-up">
-                        <div className="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 bg-white bg-opacity-10 border-white-10 small text-uppercase fw-bold" style={{ letterSpacing: "2px", fontSize: "0.7rem" }}>
-                            <Sparkles size={14} className="text-warning" /> New Arrival: Swat Valley Woodwork
-                        </div>
                         <h1 className="fw-bold mb-4" style={{ letterSpacing: "-4px", fontSize: "clamp(3rem, 10vw, 5.5rem)" }}>
                             A Portal to <span className="text-warning">Heritage</span>
                         </h1>
                         <p className="lead text-white-50 mb-5 mx-auto opacity-75" style={{ maxWidth: "700px", fontSize: "clamp(1.1rem, 3vw, 1.25rem)", lineHeight: "1.6" }}>
-                            Directly from the artisan's hand to your door. We use AI to preserve South Asia's dying arts and bring you the soul of authentic craftsmanship.
+                            Pure craftsmanship, delivered directly to you.
                         </p>
-                        <div className="d-grid d-md-flex justify-content-md-center gap-3 mx-auto" style={{ maxWidth: "100%" }}>
+                        <div className="d-grid d-md-flex justify-content-md-center mx-auto">
                             <Link href="/explore" className="btn btn-accent fs-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none">
                                 Shop Collection <ArrowRight size={20} />
-                            </Link>
-                            <Link href="/artisans" className="btn btn-ghost fs-5 text-decoration-none d-flex align-items-center justify-content-center">
-                                Meet the Artisans
                             </Link>
                         </div>
                     </div>
@@ -73,37 +67,30 @@ export default function Homepage() {
                             {
                                 icon: Shield,
                                 title: "Verified Heritage",
-                                desc: "Every unique piece is curated and authenticated by our heritage experts.",
-                                glow: "rgba(245, 114, 36, 0.15)"
+                                desc: "Authenticated by heritage experts."
                             },
                             {
                                 icon: Truck,
                                 title: "Global Passage",
-                                desc: "Premium tracked shipping from our artisans' workshops to your doorstep.",
-                                glow: "rgba(13, 202, 240, 0.15)"
+                                desc: "Premium tracked shipping."
                             },
                             {
                                 icon: Award,
                                 title: "Ethical Craft",
-                                desc: "100% fair-trade model ensuring sustainable livelihoods for artisan families.",
-                                glow: "rgba(255, 193, 7, 0.15)"
+                                desc: "100% fair-trade model."
                             }
                         ].map((item, idx) => (
                             <div key={idx} className="col-lg-4 col-md-6">
-                                <div className="feature-card p-4 h-100 text-center transition-all hover-translate-up"
+                                <div className="p-4 h-100 text-center transition-all hover-translate-up"
                                     style={{
                                         background: "var(--surface-color)",
                                         border: "1px solid var(--border-color)"
                                     }}>
-                                    <div className="d-inline-flex p-4 mb-4"
-                                        style={{
-                                            background: "var(--bg-color)",
-                                            border: "1px solid var(--border-color)"
-                                        }}>
+                                    <div className="mb-4">
                                         <item.icon className="text-warning" size={32} strokeWidth={1.5} />
                                     </div>
                                     <h4 className="fw-bold mb-3 text-white" style={{ letterSpacing: "-0.5px" }}>{item.title}</h4>
-                                    <p className="text-white-50 px-3 mb-0" style={{ fontSize: "0.95rem", lineHeight: "1.6", opacity: 0.8 }}>
+                                    <p className="text-white-50 mb-0" style={{ fontSize: "0.95rem", lineHeight: "1.6", opacity: 0.8 }}>
                                         {item.desc}
                                     </p>
                                 </div>
@@ -146,23 +133,7 @@ export default function Homepage() {
 
                             <p className="text-white-50 mb-5 opacity-75" style={{ lineHeight: "1.8", fontSize: "clamp(1.1rem, 3vw, 1.25rem)" }}>
                                 Every handicraft is a living archive, a narrative of resilience passed down through generations.
-                                Our AI Storyteller bridges the gap between the weaver's loom and your heart.
                             </p>
-
-                            <div className="row g-4 mb-5">
-                                <div className="col-6">
-                                    <div className="p-3 border-white-10" style={{ background: "var(--surface-color)", border: "1px solid var(--border-color)" }}>
-                                        <div className="h3 fw-bold text-warning mb-0">500+</div>
-                                        <div className="small text-white-50 text-uppercase" style={{ fontSize: "0.65rem", letterSpacing: "1px" }}>Artisans Empowered</div>
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="p-3 border-white-10" style={{ background: "var(--surface-color)", border: "1px solid var(--border-color)" }}>
-                                        <div className="h3 fw-bold text-warning mb-0">12+</div>
-                                        <div className="small text-white-50 text-uppercase" style={{ fontSize: "0.65rem", letterSpacing: "1px" }}>Heritage Hubs</div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div className="d-flex flex-column gap-3 mb-5">
                                 <div className="d-flex align-items-center gap-2">
