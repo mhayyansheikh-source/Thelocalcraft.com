@@ -42,8 +42,10 @@ import { Syndicate } from "@/components/wholesale/Syndicate"
 import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
 import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
 import { VillageDrops } from "@/components/wholesale/VillageDrops"
+import { useCurrency } from "@/context/CurrencyContext"
 
 export default function WholesaleDashboard() {
+    const { formatPrice } = useCurrency()
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [stats, setStats] = useState({ orders: 0, commission: 0, pendingPayout: 0 })
@@ -217,7 +219,7 @@ export default function WholesaleDashboard() {
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4">
                                     <div>
                                         <h1 className="display-4 fw-bold mb-2">Heritage <span className="text-warning">Partner.</span></h1>
-                                        <p className="text-white-50 opacity-75 lead mb-0">Welcome to your B2B Command Center. Track global orders and growth assets.</p>
+                                        <p className="text-white-50 opacity-75 lead mb-0">Welcome to your B2B Command Center. Track national orders and growth assets.</p>
                                     </div>
                                     <div className="d-flex gap-3">
                                         <Link href="/explore" className="btn btn-warning rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
@@ -244,7 +246,7 @@ export default function WholesaleDashboard() {
                                                 <DollarSign size={24} />
                                                 <span className="small text-success fw-bold d-flex align-items-center gap-1">+12% <ArrowUpRight size={12} /></span>
                                             </div>
-                                            <div className="display-5 fw-bold text-white mb-1">${stats.commission.toLocaleString()}</div>
+                                            <div className="display-5 fw-bold text-white mb-1">{formatPrice(stats.commission)}</div>
                                             <div className="small text-white-50 text-uppercase ls-1 fw-bold">Life Commission</div>
                                         </div>
                                     </div>
@@ -254,7 +256,7 @@ export default function WholesaleDashboard() {
                                                 <Clock size={24} />
                                                 <span className="small text-warning opacity-75 fw-bold">Processing</span>
                                             </div>
-                                            <div className="display-5 fw-bold text-white mb-1">${stats.pendingPayout.toLocaleString()}</div>
+                                            <div className="display-5 fw-bold text-white mb-1">{formatPrice(stats.pendingPayout)}</div>
                                             <div className="small text-white-50 text-uppercase ls-1 fw-bold">Next Payout</div>
                                         </div>
                                     </div>
@@ -307,14 +309,14 @@ export default function WholesaleDashboard() {
                                                                 <tr key={order.id} className="border-bottom border-white border-opacity-5">
                                                                     <td className="bg-transparent py-3 ps-md-4 font-monospace small text-white-50">{order.id.split('-')[0] || order.id}</td>
                                                                     <td className="bg-transparent py-3 fw-bold">{order.customer_name}</td>
-                                                                    <td className="bg-transparent py-3 text-white-50">${order.total_amount?.toFixed(2)}</td>
+                                                                    <td className="bg-transparent py-3 text-white-50">{formatPrice(order.total_amount || 0)}</td>
                                                                     <td className="bg-transparent py-3 text-center text-md-center">
                                                                         <span className={`badge rounded-pill px-3 py-2 ${order.status === 'pending' ? 'bg-warning text-dark' : 'bg-success bg-opacity-10 text-success'}`}>
                                                                             {order.status}
                                                                         </span>
                                                                     </td>
                                                                     <td className="bg-transparent py-3 pe-md-4 text-end fw-bold text-warning">
-                                                                        +${((order.total_amount || 0) * 0.1).toFixed(2)}
+                                                                        +{formatPrice((order.total_amount || 0) * 0.1)}
                                                                     </td>
                                                                 </tr>
                                                             ))}
@@ -336,11 +338,11 @@ export default function WholesaleDashboard() {
                                                             </div>
                                                             <div className="d-flex justify-content-between align-items-center small">
                                                                 <span className="text-white-50">Order Value:</span>
-                                                                <span className="text-white">${order.total_amount?.toFixed(2)}</span>
+                                                                <span className="text-white">{formatPrice(order.total_amount || 0)}</span>
                                                             </div>
                                                             <div className="d-flex justify-content-between align-items-center small border-top border-white-10 pt-2 mt-1">
                                                                 <span className="text-white-50 text-warning">Commission:</span>
-                                                                <span className="text-warning fw-bold">+${((order.total_amount || 0) * 0.1).toFixed(2)}</span>
+                                                                <span className="text-warning fw-bold">+{formatPrice((order.total_amount || 0) * 0.1)}</span>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -383,7 +385,7 @@ export default function WholesaleDashboard() {
                                                             <div className="small fw-bold">{c.orders?.customer_name}</div>
                                                         </td>
                                                         <td className="bg-transparent py-3 text-warning fw-bold">
-                                                            ${Number(c.amount || 0).toFixed(2)}
+                                                            {formatPrice(Number(c.amount || 0))}
                                                         </td>
                                                         <td className="bg-transparent py-3 text-white-50 small">
                                                             {c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}
@@ -436,7 +438,7 @@ export default function WholesaleDashboard() {
                                                 </div>
                                                 <div className="d-flex justify-content-between align-items-center small border-top border-white-10 pt-2 mt-1">
                                                     <span className="text-white-50 text-warning">Value Shared:</span>
-                                                    <span className="text-warning fw-bold">${Number(c.amount || 0).toFixed(2)}</span>
+                                                    <span className="text-warning fw-bold">{formatPrice(Number(c.amount || 0))}</span>
                                                 </div>
                                             </div>
                                         ))}

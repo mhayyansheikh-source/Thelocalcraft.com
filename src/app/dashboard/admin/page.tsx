@@ -42,8 +42,10 @@ import { Syndicate } from "@/components/wholesale/Syndicate"
 import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
 import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
 import { VillageDrops } from "@/components/wholesale/VillageDrops"
+import { useCurrency } from "@/context/CurrencyContext"
 
 export default function AdminDashboard() {
+    const { formatPrice } = useCurrency()
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [stats, setStats] = useState({ artisans: 0, orders: 0, revenue: 0 })
@@ -269,7 +271,7 @@ export default function AdminDashboard() {
                                     <div>
                                         <h6 className="fw-bold mb-0 text-white truncate-1">{profile?.full_name || "System Admin"}</h6>
                                         <div className="small text-danger d-flex align-items-center gap-1">
-                                            <Globe size={12} /> Global Access
+                                            <Globe size={12} /> National Access
                                         </div>
                                     </div>
                                 </div>
@@ -369,7 +371,7 @@ export default function AdminDashboard() {
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
                                     <div>
                                         <h1 className="fw-bold mb-2 text-uppercase" style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)", letterSpacing: "-1px" }}>Central <span className="text-danger">Command.</span></h1>
-                                        <p className="text-white-50 opacity-75 lead mb-0" style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}>System operations are nominal. AI safeguards and global logistics are actively tracking.</p>
+                                        <p className="text-white-50 opacity-75 lead mb-0" style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}>System operations are nominal. AI safeguards and national logistics are actively tracking.</p>
                                     </div>
                                     <div className="d-flex gap-3">
                                         <button className="btn btn-danger rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
@@ -414,12 +416,12 @@ export default function AdminDashboard() {
                                     <div className="col-md-4">
                                         <div className="p-4 rounded-4 border border-danger border-opacity-25 bg-danger bg-opacity-10 h-100 hover-translate-y transition-all">
                                             <div className="d-flex align-items-center justify-content-between mb-4">
-                                                <h6 className="text-danger opacity-75 mb-0 fw-bold ls-1 text-uppercase small">Global Pipeline</h6>
+                                                <h6 className="text-danger opacity-75 mb-0 fw-bold ls-1 text-uppercase small">National Pipeline</h6>
                                                 <div className="p-2 bg-danger bg-opacity-25 text-white rounded-circle">
                                                     <Activity size={20} />
                                                 </div>
                                             </div>
-                                            <div className="display-4 fw-bold text-white">${stats.revenue.toFixed(2)}</div>
+                                            <div className="display-4 fw-bold text-white">{formatPrice(stats.revenue)}</div>
                                             <div className="text-white-50 small mt-2 d-flex align-items-center justify-content-start gap-1">
                                                 Captured revenue metrics
                                             </div>
@@ -459,7 +461,7 @@ export default function AdminDashboard() {
                                                                 <td className="py-3 font-monospace small text-white-50" data-label="Order UID">{order.id.split('-')[0]}</td>
                                                                 <td className="py-3 fw-bold" data-label="Customer Entity">{order.customer_name}</td>
                                                                 <td className="py-3 text-white-50 small text-truncate" style={{ maxWidth: "200px" }} data-label="Routing Addr">{order.customer_address}</td>
-                                                                <td className="py-3 fw-bold text-warning text-end" data-label="Payload Value">${order.total_amount?.toFixed(2)}</td>
+                                                                <td className="py-3 fw-bold text-warning text-end" data-label="Payload Value">{formatPrice(order.total_amount || 0)}</td>
                                                                 <td className="py-3 text-center" data-label="Status">
                                                                     <select
                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${order.status === 'pending' ? 'bg-warning text-dark' : order.status === 'processing' ? 'bg-info text-dark' : order.status === 'shipped' ? 'bg-primary text-white' : order.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
@@ -600,7 +602,7 @@ export default function AdminDashboard() {
                                                 {categories.length === 0 && (
                                                     <tr>
                                                         <td colSpan={4} className="text-center py-5 text-white-50">
-                                                            No categories registered in global index.
+                                                            No categories registered in national index.
                                                         </td>
                                                     </tr>
                                                 )}

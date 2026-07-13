@@ -4,23 +4,16 @@ import { motion } from 'framer-motion'
 export function SupplyMap() {
     const nodes = [
         { id: 'lahore', x: '70%', y: '40%', name: 'Lahore, PK', status: 'Active Hub' },
-        { id: 'marrakech', x: '45%', y: '45%', name: 'Marrakech, MA', status: 'Active Hub' },
-        { id: 'kyoto', x: '85%', y: '35%', name: 'Kyoto, JP', status: 'Active Hub' },
-        { id: 'newyork', x: '25%', y: '35%', name: 'New York, US', status: 'Receiving' },
-        { id: 'london', x: '45%', y: '30%', name: 'London, UK', status: 'Receiving' },
-    ]
-
-    const routes = [
-        { from: 'lahore', to: 'newyork', progress: [0, 1] },
-        { from: 'marrakech', to: 'london', progress: [0, 1] },
-        { from: 'kyoto', to: 'newyork', progress: [0, 1] },
+        { id: 'multan', x: '50%', y: '60%', name: 'Multan, PK', status: 'Active Hub' },
+        { id: 'karachi', x: '30%', y: '85%', name: 'Karachi, PK', status: 'Receiving' },
+        { id: 'islamabad', x: '60%', y: '25%', name: 'Islamabad, PK', status: 'Receiving' },
     ]
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="animate-fade-in">
             <header className="mb-5 d-flex justify-content-between align-items-end">
                 <div>
-                    <h2 className="display-4 fw-bold mb-2">Global <span className="text-warning">Supply Routes.</span></h2>
+                    <h2 className="display-4 fw-bold mb-2">National <span className="text-warning">Supply Routes.</span></h2>
                     <p className="text-white-50 lead mb-0">Live visualization of active heritage trade routes.</p>
                 </div>
                 <div className="d-flex gap-3">
@@ -47,25 +40,25 @@ export function SupplyMap() {
                             <stop offset="100%" stopColor="rgba(255, 193, 7, 0.1)" />
                         </linearGradient>
                     </defs>
-                    <path d="M 70% 40% Q 47% 30% 25% 35%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
-                    <path d="M 45% 45% Q 45% 37% 45% 30%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
-                    <path d="M 85% 35% Q 55% 20% 25% 35%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
+                    <path d="M 70% 40% Q 50% 60% 30% 85%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
+                    <path d="M 50% 60% Q 55% 40% 60% 25%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
+                    <path d="M 70% 40% Q 65% 30% 60% 25%" fill="none" stroke="url(#route-gradient)" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
 
                     {/* Animated Packets */}
                     <motion.circle r="4" fill="#ffc107" filter="blur(1px)"
                         initial={{ cx: "70%", cy: "40%" }}
-                        animate={{ cx: ["70%", "25%"], cy: ["40%", "35%"] }}
+                        animate={{ cx: ["70%", "30%"], cy: ["40%", "85%"] }}
                         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                     />
                     <motion.circle r="4" fill="#ffc107" filter="blur(1px)"
-                        initial={{ cx: "45%", cy: "45%" }}
-                        animate={{ cx: ["45%", "45%"], cy: ["45%", "30%"] }}
+                        initial={{ cx: "50%", cy: "60%" }}
+                        animate={{ cx: ["50%", "60%"], cy: ["60%", "25%"] }}
                         transition={{ duration: 2.5, repeat: Infinity, ease: "linear", delay: 1 }}
                     />
                     <motion.circle r="4" fill="#ffc107" filter="blur(1px)"
-                        initial={{ cx: "85%", cy: "35%" }}
-                        animate={{ cx: ["85%", "25%"], cy: ["35%", "35%"] }}
-                        transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 0.5 }}
+                        initial={{ cx: "70%", cy: "40%" }}
+                        animate={{ cx: ["70%", "60%"], cy: ["40%", "25%"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear", delay: 0.5 }}
                     />
                 </svg>
 

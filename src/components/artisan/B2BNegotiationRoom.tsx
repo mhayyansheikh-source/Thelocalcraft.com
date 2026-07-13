@@ -4,12 +4,15 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MessagesSquare, Handshake, ShieldCheck, DollarSign, ChevronLeft } from 'lucide-react'
 
+import { useCurrency } from '@/context/CurrencyContext'
+
 export function B2BNegotiationRoom() {
+    const { formatPrice } = useCurrency()
     const [activeDeal, setActiveDeal] = useState<any>(null)
 
     const mockupDeals = [
-        { id: 1, buyer: 'Macy\'s Curated', volume: 500, price: 120, status: 'negotiating', lastMessage: "Can we adjust the price per unit to $110?" },
-        { id: 2, buyer: 'West Elm Global', volume: 2000, price: 85, status: 'approved', lastMessage: "Deal signed. Awaiting dispatch." },
+        { id: 1, buyer: 'Khaadi Home', volume: 500, price: 12000, status: 'negotiating', lastMessage: "Can we adjust the price per unit to Rs 11,000?" },
+        { id: 2, buyer: 'Habitt', volume: 2000, price: 8500, status: 'approved', lastMessage: "Deal signed. Awaiting dispatch." },
     ]
 
     return (
@@ -17,7 +20,7 @@ export function B2BNegotiationRoom() {
             <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
                 <div>
                     <span className="badge bg-primary text-white mb-2 rounded-pill px-3 py-2 fw-bold letter-spacing-1 shadow-sm">B2B NEGOTIATION ROOM</span>
-                    <h2 className="fw-bolder display-6 mb-1 text-white text-shadow">Global Wholesale</h2>
+                    <h2 className="fw-bolder display-6 mb-1 text-white text-shadow">National Wholesale</h2>
                     <p className="text-white-50 mb-0 fs-5">Manage bulk orders, negotiate prices, and secure enterprise contracts.</p>
                 </div>
             </header>
@@ -64,7 +67,7 @@ export function B2BNegotiationRoom() {
                                             <ChevronLeft size={16} /> Back to Deals
                                         </button>
                                         <h5 className="fw-bold text-white mb-1">{activeDeal.buyer}</h5>
-                                        <p className="text-white-50 small mb-0">Volume: {activeDeal.volume} units | Target Price: ${activeDeal.price}/unit</p>
+                                        <p className="text-white-50 small mb-0">Volume: {activeDeal.volume} units | Target Price: {formatPrice(activeDeal.price)}/unit</p>
                                     </div>
                                     <button className="btn btn-success rounded-pill fw-bold px-4 shadow-lg d-flex align-items-center gap-2">
                                         <ShieldCheck size={18} /> Sign Covenant
@@ -80,7 +83,7 @@ export function B2BNegotiationRoom() {
                                         </div>
                                         {activeDeal.status === 'negotiating' && (
                                             <div className="align-self-end bg-primary bg-opacity-25 p-3 rounded-4 rounded-bottom-0 mw-75 border border-primary border-opacity-25">
-                                                <p className="text-white mb-0 text-sm">I can do $115 to maintain the quality of the raw materials.</p>
+                                                <p className="text-white mb-0 text-sm">I can do Rs 11,500 to maintain the quality of the raw materials.</p>
                                             </div>
                                         )}
                                     </div>

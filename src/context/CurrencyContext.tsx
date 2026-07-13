@@ -9,20 +9,17 @@ interface CurrencyContextType {
     rate: number
     symbol: string
     toggleCurrency: () => void
-    formatPrice: (priceInUsd: number) => string
+    formatPrice: (priceInBase: number) => string
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined)
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [currency, setCurrency] = useState<"USD" | "PKR">("USD")
-    const [rate, setRate] = useState(280) // Default 1 USD = 280 PKR
-    const [symbol, setSymbol] = useState("$")
+    const [currency, setCurrency] = useState<"USD" | "PKR">("PKR")
+    const [rate, setRate] = useState(300) // Default 1 base unit = 300 PKR
+    const [symbol, setSymbol] = useState("Rs ")
 
     useEffect(() => {
-        // Hydrate from localStorage
-        const stored = localStorage.getItem("app_currency") as "USD" | "PKR"
-        if (stored) setCurrency(stored)
         
         // Fetch current rate from Firebase
         async function fetchRate() {
@@ -36,19 +33,16 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, [])
 
     useEffect(() => {
-        localStorage.setItem("app_currency", currency)
-        setSymbol(currency === "USD" ? "$" : "PKR ")
-    }, [currency])
+        setSymbol("Rs ")
+    }, [])
 
     const toggleCurrency = () => {
-        setCurrency(prev => prev === "USD" ? "PKR" : "USD")
+        // Locked to PKR for national operations
+        setCurrency("PKR")
     }
 
-    const formatPrice = (priceInUsd: number) => {
-        if (currency === "USD") {
-            return `USD ${priceInUsd.toFixed(2)}`
-        }
-        const converted = priceInUsd * rate
+    const formatPrice = (priceInBase: number) => {
+        const converted = priceInBase * rate
         return `Rs ${converted.toLocaleString()}`
     }
 

@@ -183,7 +183,7 @@ export default function ApplyPage() {
                         <h2 className="fw-bold text-white ls-2">THE LOCAL CRAFT</h2>
                     </Link>
                     <h1 className="display-4 fw-bold text-white mb-3">Digitize Your Heritage.</h1>
-                    <p className="lead text-white-50 mb-0">Join an exclusive collective of master artisans reaching a global audience.</p>
+                    <p className="lead text-white-50 mb-0">Join an exclusive collective of master artisans reaching a national audience.</p>
                 </div>
             </div>
 
@@ -493,7 +493,7 @@ export default function ApplyPage() {
                                             <div className="mt-1 text-white-50"><CheckCircle size={20} /></div>
                                             <div>
                                                 <h6 className="fw-bold mb-1">Welcome to The Local Craft</h6>
-                                                <p className="small text-white-50 mb-0">Global storefront activated.</p>
+                                                <p className="small text-white-50 mb-0">National storefront activated.</p>
                                             </div>
                                         </div>
                                     </div>

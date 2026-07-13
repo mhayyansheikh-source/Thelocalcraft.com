@@ -197,7 +197,7 @@ export default function Homepage() {
                 <div className="container">
                     <div className="text-center mb-5">
                         <h2 className="fw-bold text-white mb-3" style={{ letterSpacing: "-1.5px", fontSize: "clamp(2rem, 5vw, 3rem)" }}>Built for <span className="text-info">Scale</span></h2>
-                        <p className="text-white-50 mx-auto" style={{ maxWidth: "600px", fontSize: "1.1rem" }}>B2B tools that redefine how global retailers source authentic heritage craft.</p>
+                        <p className="text-white-50 mx-auto" style={{ maxWidth: "600px", fontSize: "1.1rem" }}>B2B tools that redefine how national retailers source authentic heritage craft.</p>
                     </div>
 
                     <div className="d-flex overflow-auto pb-4 hide-scrollbar snap-x align-items-stretch" style={{ scrollSnapType: "x mandatory", gap: "1.5rem" }}>
@@ -216,7 +216,7 @@ export default function Homepage() {
                             },
                             {
                                 icon: Truck,
-                                title: "Global Supply Map",
+                                title: "National Supply Map",
                                 color: "warning",
                                 desc: "Real-time visibility into the exact geographic origin of your inventory, from the village kiln to your warehouse."
                             }

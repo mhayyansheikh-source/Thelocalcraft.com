@@ -42,12 +42,9 @@ export default function ProductDetailPage() {
     const [checkoutComplete, setCheckoutComplete] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const { addToCart } = useCart()
-    const { rate: exchangeRate } = useCurrency()
+    const { formatPrice } = useCurrency()
     const [shippingDetails, setShippingDetails] = useState({ name: "", phone: "", address: "", city: "" })
     const [impactFundTip, setImpactFundTip] = useState<number>(0)
-
-    // Currency state
-    const [pkrTotal, setPkrTotal] = useState<number>(0)
 
     // View mode state
     const [viewMode, setViewMode] = useState<'image' | '3d'>('image')
@@ -131,11 +128,13 @@ export default function ProductDetailPage() {
         </div>
     )
 
-    useEffect(() => {
-        if (exchangeRate && product) {
-            setPkrTotal(product.price * exchangeRate)
-        }
-    }, [product, exchangeRate])
+    if (loading) return (
+        <div className="bg-dark text-white min-vh-100 d-flex align-items-center justify-content-center">
+            <div className="spinner-border text-warning" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    )
 
     const handleCheckoutClick = () => {
         setShowModal(true)
@@ -176,11 +175,11 @@ export default function ProductDetailPage() {
             waMessage += `- Phone: ${shippingDetails.phone}\n`
             waMessage += `- Address: ${shippingDetails.address}, ${shippingDetails.city}\n\n`
             waMessage += `*Order Item:*\n`
-            waMessage += `▪ 1x ${product.title} (Rs. ${product.price})\n`
+            waMessage += `▪ 1x ${product.title} (${formatPrice(product.price)})\n`
             if (impactFundTip > 0) {
-                waMessage += `▪ Direct-to-Artisan Impact Fund: Rs. ${impactFundTip}\n`
+                waMessage += `▪ Direct-to-Artisan Impact Fund: ${formatPrice(impactFundTip)}\n`
             }
-            waMessage += `\n*Total Amount:* Rs. ${(product.price + impactFundTip).toLocaleString()}\n`
+            waMessage += `\n*Total Amount:* ${formatPrice(product.price + impactFundTip)}\n`
             waMessage += `-------------------------\n`
             waMessage += `*Status:* Pending COD Dispatch`
 
@@ -343,8 +342,7 @@ export default function ProductDetailPage() {
 
                         <h1 className="display-4 fw-bold mb-3">{product.title}</h1>
                         <div className="mb-4 d-flex align-items-center gap-3">
-                            <div className="display-5 text-warning fw-bold">${product.price?.toFixed(2)}</div>
-                            {exchangeRate && <div className="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fs-6 fw-normal">~ Rs {pkrTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>}
+                            <div className="display-5 text-warning fw-bold">{formatPrice(product.price)}</div>
                         </div>
 
                         <p className="lead text-white-70 mb-5 pb-4 border-bottom border-white-10" style={{ lineHeight: "1.8" }}>
@@ -410,7 +408,7 @@ export default function ProductDetailPage() {
                             <div className="p-4 mt-4 rounded-5 border border-success border-opacity-50 bg-success bg-opacity-10 d-flex flex-column align-items-center justify-content-center text-center animate-fade-in shadow-lg">
                                 <CheckCircle size={48} className="text-success mb-3 pulse-animation" />
                                 <h4 className="fw-bold text-white mb-2">Order Confirmed (Cash on Delivery)</h4>
-                                <p className="text-white-50 mb-0">Your piece of tradition is being prepared by {product.artisans?.full_name || 'the artisan'}. You will pay upon delivery. Thank you for supporting global heritage!</p>
+                                <p className="text-white-50 mb-0">Your piece of tradition is being prepared by {product.artisans?.full_name || 'the artisan'}. You will pay upon delivery. Thank you for supporting Pakistani heritage!</p>
                             </div>
                         ) : (
                             <div className="d-flex flex-column gap-3 mt-4">
@@ -685,7 +683,7 @@ export default function ProductDetailPage() {
                                                 className={`btn btn-sm rounded-pill fw-bold ${impactFundTip === tip ? "btn-warning text-dark" : "btn-outline-light border-opacity-25 text-white-50"} flex-grow-1 transition-all`}
                                                 onClick={() => setImpactFundTip(tip)}
                                             >
-                                                {tip === 0 ? "No Tip" : `+$${tip}`}
+                                                {tip === 0 ? "No Tip" : `+${formatPrice(tip)}`}
                                             </button>
                                         ))}
                                     </div>

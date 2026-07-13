@@ -43,8 +43,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { DynamicLightingBackground } from "@/components/artisan/DynamicLightingBackground"
 import { B2BNegotiationRoom } from "@/components/artisan/B2BNegotiationRoom"
+import { useCurrency } from "@/context/CurrencyContext"
 
 export default function ArtisanDashboard() {
+    const { formatPrice } = useCurrency()
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [orders, setOrders] = useState<any[]>([])
@@ -404,7 +406,7 @@ export default function ArtisanDashboard() {
     }
 
     const handleDeleteCraft = async (id: string) => {
-        if (!confirm("Are you sure you want to permanently remove this piece from the global catalog?")) return
+        if (!confirm("Are you sure you want to permanently remove this piece from the national catalog?")) return
         try {
             await deleteDoc(doc(db, 'products', id)); const error = null;
             if (error) throw error
@@ -542,7 +544,7 @@ export default function ArtisanDashboard() {
                         </div>
                         <h2 className="fw-bold mb-3 text-white">Verification Pending</h2>
                         <p className="text-white-50 mx-auto mb-5" style={{ maxWidth: '400px', lineHeight: '1.6' }}>
-                            Your artisan account is currently under review by our heritage verification team. We will notify you once your global access is approved.
+                            Your artisan account is currently under review by our heritage verification team. We will notify you once your national access is approved.
                         </p>
                         <button onClick={handleLogout} className="btn btn-warning rounded-pill px-5 py-3 fw-bold shadow-lg hover-scale transition-all d-flex align-items-center gap-2 mx-auto">
                             <LogOut size={20} /> Leave Portal
@@ -619,7 +621,7 @@ export default function ArtisanDashboard() {
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
                                     <div>
                                         <h1 className="display-4 fw-bold mb-2">Marhaba, <span className="text-warning">{profile?.full_name?.split(' ')[0] || "Master"}.</span></h1>
-                                        <p className="text-white-50 opacity-75 lead mb-0">Your heritage portal is active. Centuries of tradition are now reaching a global audience.</p>
+                                        <p className="text-white-50 opacity-75 lead mb-0">Your heritage portal is active. Centuries of tradition are now reaching a nationwide audience.</p>
                                     </div>
                                     <div className="d-flex gap-3">
                                         <button className="btn btn-warning rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
@@ -788,7 +790,7 @@ export default function ArtisanDashboard() {
                                                                     <div className="small text-white-50">{item.orders?.customer_address?.substring(0, 20)}...</div>
                                                                 </td>
                                                                 <td data-label="Qty" className="bg-transparent py-3 text-white-50">{item.quantity}</td>
-                                                                <td data-label="Total Earnings" className="bg-transparent py-3 fw-bold text-warning">${(item.price_at_time * item.quantity).toFixed(2)}</td>
+                                                                <td data-label="Total Earnings" className="bg-transparent py-3 fw-bold text-warning">{formatPrice(item.price_at_time * item.quantity)}</td>
                                                                 <td data-label="Status" className="bg-transparent py-3 pe-4 text-end">
                                                                     <select
                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${item.orders?.status === 'pending' ? 'bg-warning text-dark' : item.orders?.status === 'processing' ? 'bg-info text-dark' : item.orders?.status === 'shipped' ? 'bg-primary text-white' : item.orders?.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
@@ -861,7 +863,7 @@ export default function ArtisanDashboard() {
                                         </div>
 
                                         <button type="submit" disabled={isSaving} className="btn btn-warning rounded-pill py-3 fw-bold mt-2 shadow-lg d-flex align-items-center justify-content-center gap-2 hover-translate-y transition-all">
-                                            {isSaving ? <Loader size={20} className="spin" /> : <>Save Global Avatar <Sparkles size={18} /></>}
+                                            {isSaving ? <Loader size={20} className="spin" /> : <>Save National Avatar <Sparkles size={18} /></>}
                                         </button>
                                     </form>
                                 </div>
@@ -871,9 +873,9 @@ export default function ArtisanDashboard() {
                                 <header className="mb-4 d-flex justify-content-between align-items-center">
                                     <div>
                                         <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
-                                            <Package className="text-warning" size={32} /> Global Inventory
+                                            <Package className="text-warning" size={32} /> National Inventory
                                         </h2>
-                                        <p className="text-white-50 mb-0">Present your heritage crafts to buyers worldwide.</p>
+                                        <p className="text-white-50 mb-0">Present your heritage crafts to buyers nationwide.</p>
                                     </div>
                                     {!showAddCraft && (
                                         <button onClick={() => {
@@ -889,7 +891,7 @@ export default function ArtisanDashboard() {
                                 {showAddCraft ? (
                                     <div className="p-4 p-md-5 rounded-5 border border-white-10 bg-white bg-opacity-5 animate-fade-in">
                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
-                                            <h4 className="fw-bold m-0">{editingCraftId ? "Update Masterpiece Details" : "Publish to Global Network"}</h4>
+                                            <h4 className="fw-bold m-0">{editingCraftId ? "Update Masterpiece Details" : "Publish to National Network"}</h4>
                                             <button onClick={() => setShowAddCraft(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
                                                 Cancel
                                             </button>
@@ -904,7 +906,7 @@ export default function ArtisanDashboard() {
                                                     </div>
                                                 </div>
                                                 <div className="col-md-4">
-                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Price (USD)</label>
+                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Price (PKR)</label>
                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
                                                         <span className="input-group-text bg-transparent border-0 text-warning"><DollarSign size={16} /></span>
                                                         <input type="number" step="0.01" min="0" required value={craftForm.price} onChange={e => setCraftForm({ ...craftForm, price: parseFloat(e.target.value) })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="0.00" />
@@ -967,7 +969,7 @@ export default function ArtisanDashboard() {
 
                                             <div className="mt-3">
                                                 <button type="submit" disabled={isSavingCraft} className="btn btn-warning rounded-pill px-5 py-3 fw-bold shadow-lg d-inline-flex align-items-center gap-2 hover-scale">
-                                                    {isSavingCraft ? <Loader size={20} className="spin" /> : <>{editingCraftId ? "Update Publish Settings" : "Publish to World"} <Sparkles size={18} /></>}
+                                                    {isSavingCraft ? <Loader size={20} className="spin" /> : <>{editingCraftId ? "Update Publish Settings" : "Publish"} <Sparkles size={18} /></>}
                                                 </button>
                                             </div>
                                         </form>
@@ -978,7 +980,7 @@ export default function ArtisanDashboard() {
                                             <div className="col-12 text-center py-5 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 mt-4">
                                                 <Package size={48} className="text-white-50 mb-3 opacity-50" />
                                                 <h4 className="fw-bold mb-2">Blank Canvas Active</h4>
-                                                <p className="text-white-50 mb-4">You have not published any masterworks to the global nexus.</p>
+                                                <p className="text-white-50 mb-4">You have not published any masterworks to the national nexus.</p>
                                                 <button onClick={() => setShowAddCraft(true)} className="btn btn-warning rounded-pill px-4 py-3 fw-bold shadow-lg hover-scale text-dark">
                                                     Begin Publishing <Plus size={18} className="ms-1" />
                                                 </button>
@@ -996,7 +998,7 @@ export default function ArtisanDashboard() {
                                                                 </div>
                                                             )}
                                                             <div className="position-absolute top-0 end-0 m-3 px-3 py-1 bg-dark bg-opacity-75 backdrop-blur-md rounded-pill fw-bold text-warning border border-warning border-opacity-25 shadow-sm">
-                                                                ${prod.price?.toFixed(2)}
+                                                                {formatPrice(prod.price)}
                                                             </div>
                                                         </div>
                                                         <div className="p-4 flex-grow-1 d-flex flex-column">
@@ -1185,7 +1187,7 @@ export default function ArtisanDashboard() {
 
                                             <div className="p-4 rounded-4 bg-info bg-opacity-10 border border-info border-opacity-20">
                                                 <p className="small text-info mb-0 d-flex align-items-center gap-2">
-                                                    <Sparkles size={16} /> Heritage tip: Vertical (9:16) videos get 3x more global engagement.
+                                                    <Sparkles size={16} /> Heritage tip: Vertical (9:16) videos get 3x more national engagement.
                                                 </p>
                                             </div>
 
@@ -1235,7 +1237,7 @@ export default function ArtisanDashboard() {
                                             <div className="col-12 py-5 text-center text-white-50 bg-white bg-opacity-5 rounded-5 border border-white-5">
                                                 <Video size={48} className="mb-3 opacity-25" />
                                                 <h5 className="text-white fw-bold">Studio Silence</h5>
-                                                <p>Your studio story stream is currently quiet. Connect with global buyers by sharing a moment.</p>
+                                                <p>Your studio story stream is currently quiet. Connect with nationwide buyers by sharing a moment.</p>
                                             </div>
                                         )}
                                     </div>

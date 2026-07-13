@@ -48,7 +48,7 @@ export default function StoriesPage() {
                 <header className="py-5 text-center">
                     <h1 className="display-4 fw-bold mb-3">Documentary <span className="text-warning">Library</span></h1>
                     <p className="text-white-50 mx-auto" style={{ maxWidth: "600px" }}>
-                        Hear the voice of heritage. Our AI-powered storytellers translate the raw emotions of the artisan into global narratives.
+                        Hear the voice of heritage. Our AI-powered storytellers translate the raw emotions of the artisan into national narratives.
                     </p>
                 </header>
 

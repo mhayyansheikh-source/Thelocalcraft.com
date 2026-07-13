@@ -109,10 +109,9 @@ export default async function RegionalSiloPage({ params }: { params: { region: s
                         <div className="text-center py-5 border border-white-10 rounded-5 bg-white bg-opacity-5">
                             <Sparkles size={48} className="text-white-50 mb-4 opacity-50" />
                             <h3 className="fw-bold mb-2">Silo Expansion in Progress</h3>
-                            <p className="text-white-50">Our master artisans from {displayRegion} are currently preparing new heritage pieces for the global network. Check back shortly.</p>
-                            <Link href="/explore" className="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold mt-3 hover-text-white transition-all">
-                                Explore Global Catalog
-                            </Link>
+                            <p className="text-white-50">Our master artisans from {displayRegion} are currently preparing new heritage pieces for the national network. Check back shortly.</p>
+                            <Link href="/explore" className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2 hover-scale">
+                                Explore National Catalog <ArrowRight size={16} />                          </Link>
                         </div>
                     ) : (
                         <div className="row g-4 animate-fade-in-up">

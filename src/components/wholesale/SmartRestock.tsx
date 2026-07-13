@@ -2,18 +2,21 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Zap, TrendingUp, AlertTriangle, PackagePlus, ArrowRight } from 'lucide-react'
 
+import { useCurrency } from '@/context/CurrencyContext'
+
 export function SmartRestock() {
+    const { formatPrice } = useCurrency()
     const predictions = [
-        { item: 'Moroccan Ceramic Bowls', stock: 12, predictedOutage: '7 days', restockQty: 50, discount: '15%' },
-        { item: 'Handwoven Persian Rug (2x3)', stock: 3, predictedOutage: '14 days', restockQty: 10, discount: '5%' },
-        { item: 'Teakwood Accent Chair', stock: 1, predictedOutage: '3 days', restockQty: 5, discount: '10%' },
+        { item: 'Multani Blue Pottery Bowls', stock: 12, predictedOutage: '7 days', restockQty: 50, discount: '15%' },
+        { item: 'Handwoven Hala Rug (2x3)', stock: 3, predictedOutage: '14 days', restockQty: 10, discount: '5%' },
+        { item: 'Chinioti Rosewood Chair', stock: 1, predictedOutage: '3 days', restockQty: 5, discount: '10%' },
     ]
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="animate-fade-in">
             <header className="mb-5">
                 <h2 className="display-4 fw-bold mb-2">Predictive <span className="text-warning">Restocking.</span></h2>
-                <p className="text-white-50 lead">AI-driven purchase orders based on your sales velocity and global trends.</p>
+                <p className="text-white-50 lead">AI-driven purchase orders based on your sales velocity and national trends.</p>
             </header>
             
             <div className="row g-4 mb-4">
@@ -114,7 +117,7 @@ export function SmartRestock() {
 
                 <div className="mt-4 pt-3 border-top border-white-10 d-flex justify-content-between align-items-center">
                     <div>
-                        <p className="text-white-50 mb-0 small">Total Estimated Cost: <span className="text-white fw-bold fs-5">$4,250.00</span></p>
+                        <p className="text-white-50 mb-0 small">Total Estimated Cost: <span className="text-white fw-bold fs-5">{formatPrice(425000)}</span></p>
                     </div>
                     <button className="btn btn-warning rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2">
                         <PackagePlus size={18} /> 1-Click Smart Restock

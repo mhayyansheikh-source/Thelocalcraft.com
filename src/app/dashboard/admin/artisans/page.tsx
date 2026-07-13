@@ -286,7 +286,7 @@ export default function AdminArtisanMissionControl() {
             <Command.Dialog 
                 open={cmdOpen} 
                 onOpenChange={setCmdOpen}
-                label="Global Command Menu"
+                label="National Command Menu"
                 className="position-fixed top-50 start-50 translate-middle w-100 bg-dark rounded-4 shadow-lg border border-white-20 overflow-hidden z-3"
                 style={{ maxWidth: '600px', transform: 'translate(-50%, -50%)' }}
             >

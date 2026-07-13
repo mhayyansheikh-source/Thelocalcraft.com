@@ -131,7 +131,7 @@ export default function LoginPage() {
                             </div>
                             <h1 className="display-4 fw-bold mb-2">Heritage Portal</h1>
                             <p className="text-white-50">
-                                {role === 'admin' ? 'Manage global marketplace operations.' : role === 'artisan' ? 'Manage your craft, stories, and global presence.' : 'Access your heritage orders and saved items.'}
+                                {role === 'admin' ? 'Manage national marketplace operations.' : role === 'artisan' ? 'Manage your craft, stories, and national presence.' : 'Access your heritage orders and saved items.'}
                             </p>
                         </div>
 
