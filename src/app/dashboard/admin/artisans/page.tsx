@@ -5,7 +5,8 @@ import { collection, query, getDocs, doc, updateDoc, onSnapshot } from 'firebase
 import { db } from '@/lib/firebase/config'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Command } from 'cmdk'
-import { Search, Filter, CheckCircle, XCircle, PauseCircle, Trash2, User, MapPin, Briefcase, ChevronRight, ChevronLeft, Check } from 'lucide-react'
+import { Search, Filter, CheckCircle, XCircle, PauseCircle, Trash2, User, MapPin, Briefcase, ChevronRight, ChevronLeft, Check, X } from 'lucide-react'
+import Link from 'next/link'
 
 // Define the Artisan type based on the new schema
 type ArtisanProfile = {
@@ -103,13 +104,18 @@ export default function AdminArtisanMissionControl() {
             
             {/* Header */}
             <header className="p-4 border-bottom border-white-10 d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 className="h4 fw-bold mb-1">Curation Mission Control</h1>
-                    <p className="text-white-50 small mb-0">Review and manage The Local Craft artisan collective.</p>
+                <div className="d-flex align-items-center gap-3">
+                    <Link href="/dashboard/admin" className="btn btn-dark rounded-circle p-2 d-flex align-items-center justify-content-center text-white-50 hover-text-white transition-all border border-white-10 hover-bg-white-10">
+                        <X size={20} />
+                    </Link>
+                    <div>
+                        <h1 className="h4 fw-bold mb-1 text-uppercase text-white ls-1" style={{ letterSpacing: "1px" }}>Curation Mission Control</h1>
+                        <p className="text-white-50 small mb-0">Review and manage The Local Craft artisan collective.</p>
+                    </div>
                 </div>
                 <div className="d-flex align-items-center gap-3">
-                    <div className="bg-white bg-opacity-5 border border-white-10 rounded-pill px-3 py-1 d-flex align-items-center gap-2 small text-white-50">
-                        Press <kbd className="bg-white bg-opacity-10 rounded px-1">⌘</kbd> <kbd className="bg-white bg-opacity-10 rounded px-1">K</kbd> for command palette
+                    <div className="d-none d-md-flex bg-white bg-opacity-5 border border-white-10 rounded-pill px-3 py-1 align-items-center gap-2 small text-white-50">
+                        Press <kbd className="bg-white bg-opacity-10 rounded px-1 text-white border-0">⌘</kbd> <kbd className="bg-white bg-opacity-10 rounded px-1 text-white border-0">K</kbd> for command palette
                     </div>
                 </div>
             </header>
