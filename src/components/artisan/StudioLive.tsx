@@ -108,12 +108,12 @@ export const StudioLive = () => {
                         <X size={32} />
                     </button>
 
-                    <div className="row w-100 h-100 g-0 flex-column flex-lg-row">
+                    <div className="row w-100 h-100 g-0 flex-column flex-lg-row overflow-y-auto overflow-y-lg-hidden">
                         {/* THE VIDEO PLAYER */}
-                        <div className="col-12 col-lg-5 h-50 h-lg-100 bg-black d-flex align-items-center justify-content-center position-relative">
+                        <div className="col-12 col-lg-5 bg-black d-flex align-items-center justify-content-center position-relative h-lg-100" style={{ minHeight: "60vh" }}>
                             <video 
                                 src={selectedFeed.video_url} 
-                                className="h-100 w-100 object-fit-contain shadow-2xl" 
+                                className="w-100 h-100 object-fit-contain shadow-2xl position-absolute top-0 start-0" 
                                 autoPlay 
                                 controls={false}
                                 loop
@@ -157,8 +157,8 @@ export const StudioLive = () => {
                         </div>
 
                         {/* ENGAGEMENT / COMMERCE SIDEBAR (Responsive) */}
-                        <div className="col-12 col-lg-7 h-50 h-lg-100 d-flex align-items-center justify-content-center p-4 p-lg-5 overflow-y-auto" style={{ background: "var(--surface-color)", borderTop: "1px solid var(--border-color)", borderLeft: "1px solid var(--border-color)" }}>
-                            <div className="text-center max-w-lg pb-5 pb-lg-0">
+                        <div className="col-12 col-lg-7 h-auto h-lg-100 d-flex align-items-center justify-content-center p-4 p-lg-5 overflow-y-auto flex-grow-1" style={{ background: "var(--surface-color)", borderTop: "1px solid var(--border-color)", borderLeft: "1px solid var(--border-color)", minHeight: "40vh" }}>
+                            <div className="text-center max-w-lg pb-5 pb-lg-0 w-100">
                                 <Maximize2 size={48} className="text-warning mb-3 opacity-50 d-none d-lg-inline-block" />
                                 <h1 className="display-6 display-lg-4 fw-bold mb-3 mb-lg-4">Direct Link to <span className="text-warning">Provenance.</span></h1>
                                 <p className="text-white-50 lead mb-5 opacity-75" style={{ lineHeight: "1.8" }}>

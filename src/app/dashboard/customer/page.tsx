@@ -20,11 +20,18 @@ import {
     ArrowRight,
     QrCode,
     Phone,
-    Clock
+    Clock,
+    Box,
+    Link as LinkIcon,
+    Flame
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { QRCodeSVG } from "qrcode.react"
+
+import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
+import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
+import { VillageDrops } from "@/components/wholesale/VillageDrops"
 
 export default function CustomerDashboard() {
     const [user, setUser] = useState<any>(null)
@@ -32,7 +39,7 @@ export default function CustomerDashboard() {
     const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
-    const [activeTab, setActiveTab] = useState('orders') // orders, settings
+    const [activeTab, setActiveTab] = useState<'orders' | 'settings' | 'showroom' | 'ledger' | 'drops'>('orders')
     const [isSaving, setIsSaving] = useState(false)
 
     // A generic metadata form. Since customer auth records initially just created 'role', 
@@ -218,9 +225,9 @@ export default function CustomerDashboard() {
             <main className="container flex-grow-1 py-5 mt-5">
                 <div className="row g-5">
                     {/* SIDEBAR NAVIGATION */}
-                    <div className="col-lg-3">
-                        <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 sticky-top" style={{ top: "100px", zIndex: 10 }}>
-                            <div className="text-center mb-4">
+                    <aside className="col-12 col-lg-3 mb-4 mb-lg-0">
+                        <div className="p-3 p-lg-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 sticky-top" style={{ top: "100px", zIndex: 10 }}>
+                            <div className="d-flex flex-column align-items-center align-items-lg-center d-lg-block text-center mb-4">
                                 <div className="d-inline-flex p-3 rounded-circle bg-warning bg-opacity-10 text-warning mb-3">
                                     <User size={32} />
                                 </div>
@@ -231,28 +238,50 @@ export default function CustomerDashboard() {
                                 </span>
                             </div>
 
-                            <div className="d-flex flex-column gap-2 border-top border-white-10 pt-4">
+                            <nav className="d-flex flex-row flex-lg-column gap-2 border-top border-white-10 pt-3 pt-lg-4 overflow-x-auto text-nowrap custom-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 <button
-                                    className={`btn text-start p-3 rounded-4 transition-all d-flex align-items-center gap-3 ${activeTab === 'orders' ? 'bg-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
+                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'orders' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
                                     onClick={() => setActiveTab('orders')}
                                 >
-                                    <Package size={20} /> Order History
+                                    <Package size={20} /> <span className="d-none d-lg-inline">Order History</span><span className="d-lg-none">Orders</span>
                                 </button>
                                 <button
-                                    className={`btn text-start p-3 rounded-4 transition-all d-flex align-items-center gap-3 ${activeTab === 'settings' ? 'bg-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
+                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'showroom' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
+                                    onClick={() => setActiveTab('showroom')}
+                                >
+                                    <Box size={20} /> <span className="d-none d-lg-inline">AR Showroom</span><span className="d-lg-none">Showroom</span>
+                                </button>
+                                <button
+                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'ledger' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
+                                    onClick={() => setActiveTab('ledger')}
+                                >
+                                    <LinkIcon size={20} /> <span className="d-none d-lg-inline">Provenance Ledger</span><span className="d-lg-none">Ledger</span>
+                                </button>
+                                <button
+                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'drops' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
+                                    onClick={() => setActiveTab('drops')}
+                                >
+                                    <Flame size={20} /> <span className="d-none d-lg-inline">Village Drops</span><span className="d-lg-none">Drops</span>
+                                </button>
+                                
+                                <div className="d-none d-lg-block border-bottom border-white-10 my-2 mx-4"></div>
+                                <div className="d-lg-none border-end border-white-10 my-2 mx-1 flex-shrink-0"></div>
+
+                                <button
+                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'settings' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
                                     onClick={() => setActiveTab('settings')}
                                 >
-                                    <Settings size={20} /> Shipping Defaults
+                                    <Settings size={20} /> <span className="d-none d-lg-inline">Shipping Defaults</span><span className="d-lg-none">Settings</span>
                                 </button>
                                 <button
-                                    className="btn btn-link text-danger text-decoration-none text-start p-3 rounded-4 hover-bg-danger-10 transition-all d-flex align-items-center gap-3 mt-4 border border-danger border-opacity-10"
+                                    className="btn btn-outline-danger border-opacity-20 text-start py-2 py-lg-3 px-4 rounded-pill hover-bg-danger hover-text-white transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 mt-lg-auto flex-shrink-0"
                                     onClick={handleLogout}
                                 >
-                                    <LogOut size={20} /> Sign Out
+                                    <LogOut size={20} /> <span className="d-none d-lg-inline">Sign Out</span><span className="d-lg-none">Logout</span>
                                 </button>
-                            </div>
+                            </nav>
                         </div>
-                    </div>
+                    </aside>
 
                     {/* MAIN CONTENT AREA */}
                     <div className="col-lg-9">
@@ -375,6 +404,12 @@ export default function CustomerDashboard() {
                                     </form>
                                 </div>
                             </div>
+                        ) : activeTab === 'showroom' ? (
+                            <VirtualShowroom />
+                        ) : activeTab === 'ledger' ? (
+                            <BlockchainLedger />
+                        ) : activeTab === 'drops' ? (
+                            <VillageDrops />
                         ) : null}
                     </div>
                 </div>

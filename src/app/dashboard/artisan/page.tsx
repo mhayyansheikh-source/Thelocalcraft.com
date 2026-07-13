@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { db, auth } from "@/lib/firebase/config"
@@ -35,10 +36,13 @@ import {
     AlertCircle,
     Clock,
     BookOpen,
-    Video
+    Video,
+    Handshake
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { DynamicLightingBackground } from "@/components/artisan/DynamicLightingBackground"
+import { B2BNegotiationRoom } from "@/components/artisan/B2BNegotiationRoom"
 
 export default function ArtisanDashboard() {
     const [user, setUser] = useState<any>(null)
@@ -50,7 +54,7 @@ export default function ArtisanDashboard() {
     const [isGeneratingStory, setIsGeneratingStory] = useState(false)
     const [recordedStory, setRecordedStory] = useState<string | null>(null)
     const router = useRouter()
-    const [activeTab, setActiveTab] = useState<"dashboard" | "settings" | "crafts" | "wiki" | "live">("dashboard")
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'settings' | 'crafts' | 'wiki' | 'live' | 'wholesale'>('dashboard')
     const [isSaving, setIsSaving] = useState(false)
     const [settingForm, setSettingForm] = useState({
         full_name: "",
@@ -251,10 +255,15 @@ export default function ArtisanDashboard() {
             setIsGeneratingStory(true)
 
             try {
-                // Invoke Supabase Edge Function to expand and improve via Opensource AI First
-                const data = null as any; const error = null; // Supabase func removed
+                const response = await fetch('/api/ai/story', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ transcript }),
+                });
 
-                if (error) throw error
+                if (!response.ok) throw new Error('API Error');
+
+                const data = await response.json();
 
                 if (data?.story) {
                     setRecordedStory(data.story.replace(/^"|"$/g, ''))
@@ -567,65 +576,44 @@ export default function ArtisanDashboard() {
     }
 
     return (
-        <div className="bg-dark text-white min-vh-100 d-flex flex-column">
+        <div className="text-white min-vh-100 d-flex flex-column position-relative">
+            <DynamicLightingBackground />
             <Navbar />
 
-            <main className="container-fluid flex-grow-1 pt-5 mt-5 px-lg-5">
-                <div className="row g-5 h-100">
-                    {/* SIDEBAR */}
-                    <aside className="col-lg-3 d-none d-lg-block">
-                        <div className="sticky-top pt-4 h-100" style={{ top: "100px" }}>
-                            <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 d-flex flex-column">
-                                <div className="d-flex align-items-center gap-3 mb-5 pb-4 border-bottom border-white border-opacity-10">
-                                    <div className="rounded-circle border border-warning border-opacity-25 p-1">
-                                        <img
-                                            src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.full_name || user?.email)}&background=random&color=fff`}
-                                            className="rounded-circle w-100 h-100 object-fit-cover shadow-lg"
-                                            style={{ width: "60px", height: "60px" }}
-                                            alt="Profile"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h6 className="fw-bold mb-0 text-white truncate-1">{profile?.full_name || "Artisan Master"}</h6>
-                                        <div className="small text-warning d-flex align-items-center gap-1 mt-1">
-                                            <Award size={14} /> {gamification.tier}
-                                        </div>
-                                    </div>
-                                </div>
+            <main className="container-fluid flex-grow-1 pt-5 mt-5 px-lg-5 position-relative z-1">
+                <div className="d-flex flex-column gap-5 h-100 pb-5">
+                    {/* FLOATING WORKBENCH NAV */}
+                    <nav className="d-flex align-items-center justify-content-lg-center sticky-top z-3 px-3 overflow-x-auto custom-scrollbar" style={{ top: '80px', WebkitOverflowScrolling: 'touch' }}>
+                        <motion.div 
+                            initial={{ y: -20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="p-2 rounded-pill border border-white-10 shadow-lg d-flex flex-nowrap gap-2 backdrop-blur-lg mx-auto mx-lg-0"
+                            style={{ background: 'rgba(10, 10, 10, 0.65)', minWidth: 'max-content' }}
+                        >
+                            <button onClick={() => setActiveTab("dashboard")} className={`btn ${activeTab === 'dashboard' ? 'btn-warning shadow-lg text-dark' : 'btn-link text-white-50 text-decoration-none hover-text-white'} rounded-pill py-2 px-4 fw-bold d-flex align-items-center gap-2 transition-all flex-shrink-0`}>
+                                <LayoutDashboard size={18} /> Studio
+                            </button>
+                            <button onClick={() => setActiveTab("crafts")} className={`btn ${activeTab === 'crafts' ? 'btn-warning shadow-lg text-dark' : 'btn-link text-white-50 text-decoration-none hover-text-white'} rounded-pill py-2 px-4 fw-bold d-flex align-items-center gap-2 transition-all flex-shrink-0`}>
+                                <Package size={18} /> Inventory
+                            </button>
+                            <button onClick={() => setActiveTab("live")} className={`btn ${activeTab === 'live' ? 'btn-danger shadow-lg text-white pulse-animation' : 'btn-link text-white-50 text-decoration-none hover-text-white'} rounded-pill py-2 px-4 fw-bold d-flex align-items-center gap-2 transition-all flex-shrink-0`}>
+                                <Video size={18} /> Broadcast
+                            </button>
+                            <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-primary shadow-lg text-white' : 'btn-link text-white-50 text-decoration-none hover-text-white'} rounded-pill py-2 px-4 fw-bold d-flex align-items-center gap-2 transition-all flex-shrink-0`}>
+                                <Handshake size={18} /> Wholesale
+                            </button>
+                            <div className="border-end border-white-10 mx-2"></div>
+                            <button onClick={() => setActiveTab("settings")} className={`btn ${activeTab === 'settings' ? 'btn-warning shadow-lg text-dark' : 'btn-link text-white-50 text-decoration-none hover-text-white'} rounded-pill py-2 px-4 fw-bold d-flex align-items-center gap-2 transition-all flex-shrink-0`}>
+                                <Settings size={18} /> Settings
+                            </button>
+                            <button onClick={handleLogout} className="btn btn-link text-danger text-decoration-none rounded-pill py-2 px-3 fw-bold d-flex align-items-center gap-2 hover-bg-danger hover-text-white transition-all flex-shrink-0">
+                                <LogOut size={18} />
+                            </button>
+                        </motion.div>
+                    </nav>
 
-                                <nav className="d-flex flex-column gap-2 mb-auto pb-5">
-                                    <button onClick={() => setActiveTab("dashboard")} className={`btn ${activeTab === 'dashboard' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <LayoutDashboard size={20} /> Dashboard
-                                    </button>
-                                    <button onClick={() => setActiveTab("crafts")} className={`btn ${activeTab === 'crafts' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Package size={20} /> My Crafts
-                                    </button>
-                                    <button className="btn btn-link text-white-50 text-decoration-none rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-white-5 transition-all">
-                                        <TrendingUp size={20} /> Impact Metrics
-                                    </button>
-                                    <button onClick={() => setActiveTab("wiki")} className={`btn ${activeTab === 'wiki' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <BookOpen size={20} /> Craftpedia Wiki
-                                    </button>
-                                    <button onClick={() => setActiveTab("live")} className={`btn ${activeTab === 'live' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Video size={20} /> Live Studio
-                                    </button>
-                                    <button onClick={() => setActiveTab("settings")} className={`btn ${activeTab === 'settings' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Settings size={20} /> Studio Settings
-                                    </button>
-                                </nav>
-
-                                <button
-                                    onClick={handleLogout}
-                                    className="btn btn-outline-danger border-opacity-20 rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-danger mt-auto"
-                                >
-                                    <LogOut size={20} /> Leave Portal
-                                </button>
-                            </div>
-                        </div>
-                    </aside>
-
-                    {/* MAIN CONTENT */}
-                    <div className="col-lg-9 py-4">
+                    {/* MAIN CONTENT WORKBENCH */}
+                    <div className="flex-grow-1 w-100 mx-auto" style={{ maxWidth: '1400px' }}>
                         {activeTab === 'dashboard' ? (
                             <>
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
@@ -1253,9 +1241,9 @@ export default function ArtisanDashboard() {
                                     </div>
                                 )}
                             </div>
-                        ) : (
-                            null
-                        )}
+                        ) : activeTab === 'wholesale' ? (
+                            <B2BNegotiationRoom />
+                        ) : null}
                     </div>
                 </div>
             </main>

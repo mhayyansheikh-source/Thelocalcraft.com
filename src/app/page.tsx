@@ -8,7 +8,7 @@ import { VibeExplorer } from "@/components/search/VibeExplorer"
 import { StatusBadge } from "@/components/artisan/StatusBadge"
 import { ArtisanStoryViewer } from "@/components/artisan/ArtisanStoryViewer"
 import { StudioLive } from "@/components/artisan/StudioLive"
-import { ArrowRight, Sparkles, Shield, Truck, Award, ShoppingBag } from "lucide-react"
+import { ArrowRight, Sparkles, Shield, Truck, Award, ShoppingBag, Box, Link as LinkIcon, Flame, Globe, Building, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
 export default function Homepage() {
@@ -50,9 +50,12 @@ export default function Homepage() {
                         <p className="lead text-white-50 mb-5 mx-auto opacity-75" style={{ maxWidth: "700px", fontSize: "clamp(1.1rem, 3vw, 1.25rem)", lineHeight: "1.6" }}>
                             Pure craftsmanship, delivered directly to you.
                         </p>
-                        <div className="d-grid d-md-flex justify-content-md-center mx-auto">
-                            <Link href="/explore" className="btn btn-accent fs-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none">
+                        <div className="d-flex flex-column flex-md-row justify-content-md-center align-items-center gap-3 mx-auto">
+                            <Link href="/explore" className="btn btn-accent fs-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none px-5 py-3 w-100 w-md-auto">
                                 Shop Collection <ArrowRight size={20} />
+                            </Link>
+                            <Link href="/dashboard/wholesale" className="btn btn-outline-light fs-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none px-5 py-3 w-100 w-md-auto bg-dark bg-opacity-50" style={{ backdropFilter: "blur(10px)" }}>
+                                Partner Wholesale <Building size={20} />
                             </Link>
                         </div>
                     </div>
@@ -67,12 +70,12 @@ export default function Homepage() {
                             {
                                 icon: Shield,
                                 title: "Verified Heritage",
-                                desc: "Authenticated by heritage experts."
+                                desc: "Strict curation and authenticity."
                             },
                             {
-                                icon: Truck,
-                                title: "Global Passage",
-                                desc: "Premium tracked shipping."
+                                icon: LinkIcon,
+                                title: "Blockchain Provenance",
+                                desc: "Immutable digital ledger for every piece."
                             },
                             {
                                 icon: Award,
@@ -100,6 +103,140 @@ export default function Homepage() {
 
                     <div className="mt-5">
                         <StudioLive />
+                    </div>
+                </div>
+            </section>
+
+            {/* IMMERSIVE HERITAGE (CONSUMER INNOVATION) */}
+            <section className="py-responsive bg-dark position-relative border-top border-white-10">
+                <div className="container">
+                    <div className="row g-5 align-items-center">
+                        <div className="col-lg-6">
+                            <div className="d-flex align-items-center gap-3 text-warning mb-4">
+                                <span className="small text-uppercase fw-bold" style={{ letterSpacing: "4px", fontSize: "0.75rem" }}>Consumer Innovation</span>
+                                <div className="flex-grow-1" style={{ height: "1px", background: "linear-gradient(to right, rgba(245, 114, 36, 0.4), transparent)" }} />
+                            </div>
+                            <h2 className="fw-bold mb-4 text-white" style={{ letterSpacing: "-2px", fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
+                                Experience <span className="text-warning">Heritage</span> Like Never Before
+                            </h2>
+                            <p className="text-white-50 mb-5" style={{ fontSize: "1.1rem", lineHeight: "1.8" }}>
+                                We merge ancient craftsmanship with frontier technology. Try pieces in your space before purchasing and verify their entire origin story.
+                            </p>
+                            
+                            <div className="d-flex flex-column gap-4">
+                                <div className="d-flex gap-3 align-items-start">
+                                    <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-4 shadow">
+                                        <Box size={24} />
+                                    </div>
+                                    <div>
+                                        <h5 className="fw-bold text-white mb-2">Augmented Reality Showroom</h5>
+                                        <p className="text-white-50 mb-0 small" style={{ lineHeight: "1.6" }}>Use your camera to place life-sized artifacts in your living room. See the texture and scale perfectly.</p>
+                                    </div>
+                                </div>
+                                <div className="d-flex gap-3 align-items-start">
+                                    <div className="p-3 bg-info bg-opacity-10 text-info rounded-4 shadow">
+                                        <LinkIcon size={24} />
+                                    </div>
+                                    <div>
+                                        <h5 className="fw-bold text-white mb-2">Blockchain Provenance Ledger</h5>
+                                        <p className="text-white-50 mb-0 small" style={{ lineHeight: "1.6" }}>Every purchase comes with an immutable digital certificate. Trace the exact artisan, materials, and journey of your piece.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="position-relative p-2 rounded-5 border border-white-10 bg-white bg-opacity-5" style={{ minHeight: "450px" }}>
+                                <div className="position-absolute top-50 start-50 translate-middle text-center w-100 p-4">
+                                    <Box size={64} className="text-white-50 mb-4 opacity-50 mx-auto" />
+                                    <h4 className="fw-bold text-white mb-3">AR Experience Active</h4>
+                                    <p className="text-white-50 small">Scan any product from our catalog to launch the immersive showroom on your mobile device.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* EXCLUSIVE VILLAGE DROPS */}
+            <section className="py-responsive bg-dark position-relative border-top border-white-10">
+                <div className="container text-center mb-5">
+                    <Flame className="text-danger mb-3" size={48} />
+                    <h2 className="fw-bold text-white" style={{ letterSpacing: "-1.5px", fontSize: "clamp(2rem, 5vw, 3rem)" }}>Village Drops</h2>
+                    <p className="text-white-50 mx-auto" style={{ maxWidth: "600px", fontSize: "1.1rem" }}>Exclusive, limited-edition runs straight from artisan collectives. Fund the craft, own the legacy.</p>
+                </div>
+                
+                <div className="container">
+                    <div className="row g-4 justify-content-center">
+                        <div className="col-12 col-md-8 col-lg-6">
+                            <div className="p-4 rounded-5 border border-danger border-opacity-25 bg-danger bg-opacity-10 position-relative overflow-hidden transition-all hover-translate-up text-center">
+                                <div className="position-absolute top-0 end-0 p-3">
+                                    <span className="badge bg-danger text-white rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2">
+                                        <div className="bg-white rounded-circle blink" style={{ width: "8px", height: "8px", animation: "pulse 2s infinite" }} /> LIVE
+                                    </span>
+                                </div>
+                                <h3 className="fw-bold text-white mt-4 mb-3">Multan Blue Pottery Collection 01</h3>
+                                <p className="text-white-70 mb-4 px-md-4">Only 50 pieces will be crafted by Master Artisan Ustad Alam. Secure your spot in the drop.</p>
+                                <div className="progress bg-dark mb-3 rounded-pill" style={{ height: "12px" }}>
+                                    <div className="progress-bar bg-danger rounded-pill" style={{ width: "85%" }}></div>
+                                </div>
+                                <div className="d-flex justify-content-between text-white-50 small fw-bold text-uppercase ls-1 mb-4">
+                                    <span>85% Funded</span>
+                                    <span>Ending Soon</span>
+                                </div>
+                                <Link href="/explore" className="btn btn-outline-danger border-2 rounded-pill px-5 py-3 fw-bold shadow hover-scale w-100">
+                                    Participate Now
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ENTERPRISE & SYNDICATES (WHOLESALE FOCUS) */}
+            <section className="py-responsive bg-dark position-relative border-top border-white-10">
+                <div className="container">
+                    <div className="text-center mb-5">
+                        <h2 className="fw-bold text-white mb-3" style={{ letterSpacing: "-1.5px", fontSize: "clamp(2rem, 5vw, 3rem)" }}>Built for <span className="text-info">Scale</span></h2>
+                        <p className="text-white-50 mx-auto" style={{ maxWidth: "600px", fontSize: "1.1rem" }}>B2B tools that redefine how global retailers source authentic heritage craft.</p>
+                    </div>
+
+                    <div className="d-flex overflow-auto pb-4 hide-scrollbar snap-x align-items-stretch" style={{ scrollSnapType: "x mandatory", gap: "1.5rem" }}>
+                        {[
+                            {
+                                icon: Globe,
+                                title: "Wholesale Syndicates",
+                                color: "info",
+                                desc: "Join forces with other retailers to pool purchasing power and unlock massive volume discounts on heritage crafts."
+                            },
+                            {
+                                icon: Box,
+                                title: "Smart Restock AI",
+                                color: "success",
+                                desc: "Our predictive algorithms analyze demand signals to automate your inventory replenishment before you run out."
+                            },
+                            {
+                                icon: Truck,
+                                title: "Global Supply Map",
+                                color: "warning",
+                                desc: "Real-time visibility into the exact geographic origin of your inventory, from the village kiln to your warehouse."
+                            }
+                        ].map((feature, idx) => (
+                            <div key={idx} className="col-10 col-md-5 col-lg-4 flex-shrink-0" style={{ scrollSnapAlign: "center" }}>
+                                <div className={`p-5 h-100 rounded-5 border border-${feature.color} border-opacity-25 bg-white bg-opacity-5 transition-all hover-translate-y d-flex flex-column`}>
+                                    <div className={`mb-4 d-inline-block rounded-circle p-3 bg-${feature.color} bg-opacity-10 text-${feature.color}`}>
+                                        <feature.icon size={32} />
+                                    </div>
+                                    <h4 className="fw-bold text-white mb-3">{feature.title}</h4>
+                                    <p className="text-white-50 mb-0 flex-grow-1" style={{ lineHeight: "1.6" }}>{feature.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-5">
+                        <Link href="/dashboard/wholesale" className="btn btn-info text-dark rounded-pill px-5 py-3 fw-bold shadow-lg d-inline-flex align-items-center gap-2 hover-scale">
+                            Explore B2B Solutions <ArrowRight size={20} />
+                        </Link>
                     </div>
                 </div>
             </section>

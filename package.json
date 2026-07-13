@@ -12,18 +12,23 @@
         "preview": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && opennextjs-cloudflare preview"
     },
     "dependencies": {
+        "@ai-sdk/openai-compatible": "^3.0.9",
         "@popperjs/core": "^2.11.8",
         "@vercel/blob": "^2.5.0",
+        "ai": "^7.0.26",
         "bootstrap": "^5.3.3",
         "clsx": "^2.1.0",
+        "cmdk": "^1.1.1",
         "firebase": "^12.15.0",
         "firebase-admin": "^14.1.0",
+        "framer-motion": "^12.42.2",
         "lucide-react": "^0.364.0",
         "next": "^14.2.35",
         "picomatch": "^4.0.5",
         "qrcode.react": "^4.2.0",
         "react": "^18",
         "react-dom": "^18",
+        "react-dropzone": "^17.0.0",
         "tailwind-merge": "^2.2.2"
     },
     "devDependencies": {

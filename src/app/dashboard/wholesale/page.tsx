@@ -25,10 +25,23 @@ import {
     Database,
     ChevronRight,
     ArrowRight,
-    Search
+    Search,
+    Map,
+    Zap,
+    Users,
+    Box,
+    Link as LinkIcon,
+    Flame
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+
+import { SupplyMap } from "@/components/wholesale/SupplyMap"
+import { SmartRestock } from "@/components/wholesale/SmartRestock"
+import { Syndicate } from "@/components/wholesale/Syndicate"
+import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
+import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
+import { VillageDrops } from "@/components/wholesale/VillageDrops"
 
 export default function WholesaleDashboard() {
     const [user, setUser] = useState<any>(null)
@@ -38,7 +51,7 @@ export default function WholesaleDashboard() {
     const [commissions, setCommissions] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const router = useRouter()
-    const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "commission" | "settings">("dashboard")
+    const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "commission" | "settings" | "map" | "restock" | "syndicate" | "showroom" | "ledger" | "drops">("dashboard")
 
     useEffect(() => {
         let unsubscribe: any;
@@ -135,11 +148,11 @@ export default function WholesaleDashboard() {
 
             <main className="container-fluid flex-grow-1 pt-5 mt-5 px-lg-5">
                 <div className="row g-5 h-100">
-                    {/* SIDEBAR */}
-                    <aside className="col-lg-3 d-none d-lg-block">
-                        <div className="sticky-top pt-4 h-100" style={{ top: "100px" }}>
-                            <div className="p-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 d-flex flex-column shadow-2xl">
-                                <div className="d-flex align-items-center gap-3 mb-5 pb-4 border-bottom border-white border-opacity-10">
+                    {/* SIDEBAR / TOP NAV ON MOBILE */}
+                    <aside className="col-12 col-lg-3 mb-4 mb-lg-0">
+                        <div className="sticky-top pt-lg-4 h-100" style={{ top: "100px", zIndex: 10 }}>
+                            <div className="p-3 p-lg-4 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 h-100 d-flex flex-column shadow-2xl backdrop-blur-lg">
+                                <div className="d-flex align-items-center gap-3 mb-4 mb-lg-5 pb-3 pb-lg-4 border-bottom border-white border-opacity-10">
                                     <div className="rounded-circle border border-warning border-opacity-25 p-1 bg-warning bg-opacity-10">
                                         <div className="rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: "50px", height: "50px" }}>
                                             {profile?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase()}
@@ -153,23 +166,45 @@ export default function WholesaleDashboard() {
                                     </div>
                                 </div>
 
-                                <nav className="d-flex flex-column gap-2 mb-auto pb-5">
-                                    <button onClick={() => setActiveTab("dashboard")} className={`btn ${activeTab === 'dashboard' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <LayoutDashboard size={20} /> Portal Overview
+                                <nav className="d-flex flex-row flex-lg-column gap-2 mb-lg-auto pb-lg-5 overflow-x-auto text-nowrap custom-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
+                                    <button onClick={() => setActiveTab("dashboard")} className={`btn ${activeTab === 'dashboard' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <LayoutDashboard size={20} /> <span className="d-none d-md-inline d-lg-inline">Portal Overview</span><span className="d-md-none">Overview</span>
                                     </button>
-                                    <button onClick={() => setActiveTab("orders")} className={`btn ${activeTab === 'orders' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <ShoppingBag size={20} /> Order History
+                                    <button onClick={() => setActiveTab("map")} className={`btn ${activeTab === 'map' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Map size={20} /> <span className="d-none d-md-inline d-lg-inline">Supply Map</span><span className="d-md-none">Map</span>
                                     </button>
-                                    <button onClick={() => setActiveTab("commission")} className={`btn ${activeTab === 'commission' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <DollarSign size={20} /> Commission Log
+                                    <button onClick={() => setActiveTab("restock")} className={`btn ${activeTab === 'restock' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Zap size={20} /> <span className="d-none d-md-inline d-lg-inline">Smart Restock</span><span className="d-md-none">Restock</span>
                                     </button>
-                                    <button onClick={() => setActiveTab("settings")} className={`btn ${activeTab === 'settings' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Settings size={20} /> Business Settings
+                                    <button onClick={() => setActiveTab("syndicate")} className={`btn ${activeTab === 'syndicate' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Users size={20} /> <span className="d-none d-md-inline d-lg-inline">Syndicates</span><span className="d-md-none">Syndicates</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab("showroom")} className={`btn ${activeTab === 'showroom' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Box size={20} /> <span className="d-none d-md-inline d-lg-inline">AR Showroom</span><span className="d-md-none">Showroom</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab("ledger")} className={`btn ${activeTab === 'ledger' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <LinkIcon size={20} /> <span className="d-none d-md-inline d-lg-inline">Provenance Ledger</span><span className="d-md-none">Ledger</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab("drops")} className={`btn ${activeTab === 'drops' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Flame size={20} /> <span className="d-none d-md-inline d-lg-inline">Village Drops</span><span className="d-md-none">Drops</span>
+                                    </button>
+                                    
+                                    <div className="d-none d-lg-block border-bottom border-white-10 my-2 mx-4"></div>
+                                    <div className="d-lg-none border-end border-white-10 my-2 mx-1 flex-shrink-0"></div>
+
+                                    <button onClick={() => setActiveTab("orders")} className={`btn ${activeTab === 'orders' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <ShoppingBag size={20} /> <span className="d-none d-md-inline d-lg-inline">Order History</span><span className="d-md-none">Orders</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab("commission")} className={`btn ${activeTab === 'commission' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <DollarSign size={20} /> <span className="d-none d-md-inline d-lg-inline">Commission Log</span><span className="d-md-none">Earnings</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab("settings")} className={`btn ${activeTab === 'settings' ? 'btn-warning shadow-lg text-dark' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start transition-all flex-shrink-0`}>
+                                        <Settings size={20} /> <span className="d-none d-md-inline d-lg-inline">Business Settings</span><span className="d-md-none">Settings</span>
                                     </button>
                                 </nav>
 
-                                <button onClick={handleLogout} className="btn btn-outline-danger border-opacity-20 rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-danger hover-text-white mt-auto transition-all">
-                                    <LogOut size={20} /> Terminate Session
+                                <button onClick={handleLogout} className="btn btn-outline-danger border-opacity-20 rounded-pill py-2 py-lg-3 px-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 w-100 text-start hover-bg-danger hover-text-white mt-3 mt-lg-auto transition-all">
+                                    <LogOut size={20} /> <span className="d-none d-md-inline d-lg-inline">Terminate Session</span><span className="d-md-none">Logout</span>
                                 </button>
                             </div>
                         </div>
@@ -248,43 +283,69 @@ export default function WholesaleDashboard() {
                                         </button>
                                     </div>
 
-                                    <div className="rounded-5 border border-white-10 bg-white bg-opacity-5 overflow-hidden shadow-xl">
+                                    <div className="rounded-5 border border-white-10 bg-white bg-opacity-5 overflow-hidden shadow-xl p-3 p-md-0">
                                         {orders.length === 0 ? (
                                             <div className="p-5 text-center text-white-50">
                                                 <Package size={32} className="mb-3 opacity-25 mx-auto" />
                                                 <p className="mb-0">No active network orders. Your referral pipeline is ready.</p>
                                             </div>
                                         ) : (
-                                            <div className="table-responsive">
-                                                <table className="table table-dark table-hover mb-0 bg-transparent align-middle">
-                                                    <thead>
-                                                        <tr className="border-bottom border-white-10 opacity-75">
-                                                            <th className="bg-transparent fw-bold py-3 ps-4">Ref ID</th>
-                                                            <th className="bg-transparent fw-bold py-3">Customer Entity</th>
-                                                            <th className="bg-transparent fw-bold py-3">Order Value</th>
-                                                            <th className="bg-transparent fw-bold py-3 text-center">Status</th>
-                                                            <th className="bg-transparent fw-bold py-3 pe-4 text-end">Commission</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {orders.map(order => (
-                                                            <tr key={order.id} className="border-bottom border-white border-opacity-5">
-                                                                <td data-label="Ref ID" className="bg-transparent py-3 ps-md-4 font-monospace small text-white-50">{order.id.split('-')[0] || order.id}</td>
-                                                                <td data-label="Customer Entity" className="bg-transparent py-3 fw-bold">{order.customer_name}</td>
-                                                                <td data-label="Order Value" className="bg-transparent py-3 text-white-50">${order.total_amount?.toFixed(2)}</td>
-                                                                <td data-label="Status" className="bg-transparent py-3 text-center text-md-center text-start">
-                                                                    <span className={`badge rounded-pill px-3 py-2 ${order.status === 'pending' ? 'bg-warning text-dark' : 'bg-success bg-opacity-10 text-success'}`}>
-                                                                        {order.status}
-                                                                    </span>
-                                                                </td>
-                                                                <td data-label="Commission" className="bg-transparent py-3 pe-md-4 text-start text-md-end fw-bold text-warning">
-                                                                    +${((order.total_amount || 0) * 0.1).toFixed(2)}
-                                                                </td>
+                                            <>
+                                                <div className="d-none d-md-block table-responsive">
+                                                    <table className="table table-dark table-hover mb-0 bg-transparent align-middle">
+                                                        <thead>
+                                                            <tr className="border-bottom border-white-10 opacity-75">
+                                                                <th className="bg-transparent fw-bold py-3 ps-4">Ref ID</th>
+                                                                <th className="bg-transparent fw-bold py-3">Customer Entity</th>
+                                                                <th className="bg-transparent fw-bold py-3">Order Value</th>
+                                                                <th className="bg-transparent fw-bold py-3 text-center">Status</th>
+                                                                <th className="bg-transparent fw-bold py-3 pe-4 text-end">Commission</th>
                                                             </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            {orders.map(order => (
+                                                                <tr key={order.id} className="border-bottom border-white border-opacity-5">
+                                                                    <td className="bg-transparent py-3 ps-md-4 font-monospace small text-white-50">{order.id.split('-')[0] || order.id}</td>
+                                                                    <td className="bg-transparent py-3 fw-bold">{order.customer_name}</td>
+                                                                    <td className="bg-transparent py-3 text-white-50">${order.total_amount?.toFixed(2)}</td>
+                                                                    <td className="bg-transparent py-3 text-center text-md-center">
+                                                                        <span className={`badge rounded-pill px-3 py-2 ${order.status === 'pending' ? 'bg-warning text-dark' : 'bg-success bg-opacity-10 text-success'}`}>
+                                                                            {order.status}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="bg-transparent py-3 pe-md-4 text-end fw-bold text-warning">
+                                                                        +${((order.total_amount || 0) * 0.1).toFixed(2)}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div className="d-flex flex-column gap-3 d-md-none">
+                                                    {orders.map(order => (
+                                                        <div key={order.id} className="p-3 rounded-4 border border-white-10 bg-black bg-opacity-50 d-flex flex-column gap-2">
+                                                            <div className="d-flex justify-content-between align-items-start">
+                                                                <span className="text-white fw-bold">{order.customer_name}</span>
+                                                                <span className={`badge rounded-pill px-3 py-2 ${order.status === 'pending' ? 'bg-warning text-dark' : 'bg-success bg-opacity-10 text-success'}`}>
+                                                                    {order.status}
+                                                                </span>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between align-items-center small mt-2">
+                                                                <span className="text-white-50">Ref ID:</span>
+                                                                <span className="font-monospace text-white-50">{order.id.split('-')[0] || order.id}</span>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between align-items-center small">
+                                                                <span className="text-white-50">Order Value:</span>
+                                                                <span className="text-white">${order.total_amount?.toFixed(2)}</span>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between align-items-center small border-top border-white-10 pt-2 mt-1">
+                                                                <span className="text-white-50 text-warning">Commission:</span>
+                                                                <span className="text-warning fw-bold">+${((order.total_amount || 0) * 0.1).toFixed(2)}</span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -296,8 +357,8 @@ export default function WholesaleDashboard() {
                                     <p className="text-white-50 lead">Verified audit of your growth earnings across the platform.</p>
                                 </header>
 
-                                <div className="rounded-5 border border-white-10 bg-white bg-opacity-5 overflow-hidden shadow-2xl">
-                                    <div className="table-responsive">
+                                <div className="rounded-5 border border-white-10 bg-white bg-opacity-5 overflow-hidden shadow-2xl p-3 p-md-0">
+                                    <div className="d-none d-md-block table-responsive">
                                         <table className="table table-dark table-hover mb-0 bg-transparent align-middle">
                                             <thead>
                                                 <tr className="border-bottom border-white-10 text-white-50 small text-uppercase ls-1">
@@ -311,23 +372,23 @@ export default function WholesaleDashboard() {
                                             <tbody>
                                                 {commissions.map(c => (
                                                     <tr key={c.id} className="border-bottom border-white border-opacity-5">
-                                                        <td data-label="Transaction Node" className="bg-transparent py-3 ps-md-4 fw-bold">
+                                                        <td className="bg-transparent py-3 ps-md-4 fw-bold">
                                                             <div className="d-flex align-items-center gap-2">
                                                                 <Database size={14} className="text-warning" />
                                                                 {c.id.split('-')[0] || c.id}
                                                             </div>
                                                         </td>
-                                                        <td data-label="Order Depth" className="bg-transparent py-3">
+                                                        <td className="bg-transparent py-3">
                                                             <div className="small font-monospace text-white-50">#{c.orders?.id?.split('-')[0] || 'N/A'}</div>
                                                             <div className="small fw-bold">{c.orders?.customer_name}</div>
                                                         </td>
-                                                        <td data-label="Value Shared" className="bg-transparent py-3 text-warning fw-bold">
+                                                        <td className="bg-transparent py-3 text-warning fw-bold">
                                                             ${Number(c.amount || 0).toFixed(2)}
                                                         </td>
-                                                        <td data-label="Timestamp" className="bg-transparent py-3 text-white-50 small">
+                                                        <td className="bg-transparent py-3 text-white-50 small">
                                                             {c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}
                                                         </td>
-                                                        <td data-label="System Status" className="bg-transparent py-3 pe-md-4 text-start text-md-end">
+                                                        <td className="bg-transparent py-3 pe-md-4 text-end">
                                                             <span className={`badge rounded-pill px-3 py-2 ${c.status === 'paid' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
                                                                 {c.status === 'paid' ? 'Settled' : 'Pending Settlement'}
                                                             </span>
@@ -343,6 +404,42 @@ export default function WholesaleDashboard() {
                                                 )}
                                             </tbody>
                                         </table>
+                                    </div>
+                                    <div className="d-flex flex-column gap-3 d-md-none">
+                                        {commissions.length === 0 && (
+                                            <div className="text-center py-5 text-white-50">
+                                                Commission register is empty.
+                                            </div>
+                                        )}
+                                        {commissions.map(c => (
+                                            <div key={c.id} className="p-3 rounded-4 border border-white-10 bg-black bg-opacity-50 d-flex flex-column gap-2">
+                                                <div className="d-flex justify-content-between align-items-start">
+                                                    <div className="d-flex align-items-center gap-2 fw-bold">
+                                                        <Database size={14} className="text-warning" />
+                                                        {c.id.split('-')[0] || c.id}
+                                                    </div>
+                                                    <span className={`badge rounded-pill px-3 py-2 ${c.status === 'paid' ? 'bg-success text-white' : 'bg-warning text-dark'}`}>
+                                                        {c.status === 'paid' ? 'Settled' : 'Pending'}
+                                                    </span>
+                                                </div>
+                                                <div className="d-flex justify-content-between align-items-center small mt-2">
+                                                    <span className="text-white-50">Order:</span>
+                                                    <span className="font-monospace text-white-50">#{c.orders?.id?.split('-')[0] || 'N/A'}</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between align-items-center small">
+                                                    <span className="text-white-50">Customer:</span>
+                                                    <span className="text-white fw-bold">{c.orders?.customer_name}</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between align-items-center small">
+                                                    <span className="text-white-50">Date:</span>
+                                                    <span className="text-white-50">{c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between align-items-center small border-top border-white-10 pt-2 mt-1">
+                                                    <span className="text-white-50 text-warning">Value Shared:</span>
+                                                    <span className="text-warning fw-bold">${Number(c.amount || 0).toFixed(2)}</span>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -372,6 +469,18 @@ export default function WholesaleDashboard() {
                                     </div>
                                 </div>
                             </div>
+                        ) : activeTab === 'map' ? (
+                            <SupplyMap />
+                        ) : activeTab === 'restock' ? (
+                            <SmartRestock />
+                        ) : activeTab === 'syndicate' ? (
+                            <Syndicate />
+                        ) : activeTab === 'showroom' ? (
+                            <VirtualShowroom />
+                        ) : activeTab === 'ledger' ? (
+                            <BlockchainLedger />
+                        ) : activeTab === 'drops' ? (
+                            <VillageDrops />
                         ) : null}
                     </div>
                 </div>

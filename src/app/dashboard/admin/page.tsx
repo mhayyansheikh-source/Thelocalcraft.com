@@ -26,10 +26,22 @@ import {
     Loader,
     CheckCircle,
     XCircle,
-    Briefcase
+    Briefcase,
+    Map,
+    Zap,
+    Box,
+    Link as LinkIcon,
+    Flame
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+
+import { SupplyMap } from "@/components/wholesale/SupplyMap"
+import { SmartRestock } from "@/components/wholesale/SmartRestock"
+import { Syndicate } from "@/components/wholesale/Syndicate"
+import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
+import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
+import { VillageDrops } from "@/components/wholesale/VillageDrops"
 
 export default function AdminDashboard() {
     const [user, setUser] = useState<any>(null)
@@ -39,7 +51,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
-    const [activeTab, setActiveTab] = useState<"core" | "categories" | "users" | "wholesale">("core")
+    const [activeTab, setActiveTab] = useState<"core" | "categories" | "users" | "wholesale" | "map" | "restock" | "syndicate" | "showroom" | "ledger" | "drops">("core")
     const [categories, setCategories] = useState<any[]>([])
     const [pendingUsers, setPendingUsers] = useState<any[]>([])
     const [wholesaleApps, setWholesaleApps] = useState<any[]>([])
@@ -269,11 +281,32 @@ export default function AdminDashboard() {
                                     <button onClick={() => setActiveTab("categories")} className={`btn ${activeTab === 'categories' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
                                         <FolderTree size={20} /> Heritage Categories
                                     </button>
+                                    <Link href="/dashboard/admin/artisans" className="btn btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5 rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all">
+                                        <User size={20} /> Artisan Curation
+                                    </Link>
                                     <button onClick={() => setActiveTab("users")} className={`btn ${activeTab === 'users' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
                                         <Users size={20} /> Identity Access {pendingUsers.length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{pendingUsers.length}</span>}
                                     </button>
                                     <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
                                         <Briefcase size={20} /> Wholesale Management {wholesaleApps.filter(a => a.status === 'pending').length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{wholesaleApps.filter(a => a.status === 'pending').length}</span>}
+                                    </button>
+                                    <button onClick={() => setActiveTab("map")} className={`btn ${activeTab === 'map' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <Map size={20} /> Supply Map
+                                    </button>
+                                    <button onClick={() => setActiveTab("restock")} className={`btn ${activeTab === 'restock' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <Zap size={20} /> Smart Restock
+                                    </button>
+                                    <button onClick={() => setActiveTab("syndicate")} className={`btn ${activeTab === 'syndicate' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <Users size={20} /> Syndicates
+                                    </button>
+                                    <button onClick={() => setActiveTab("showroom")} className={`btn ${activeTab === 'showroom' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <Box size={20} /> AR Showroom
+                                    </button>
+                                    <button onClick={() => setActiveTab("ledger")} className={`btn ${activeTab === 'ledger' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <LinkIcon size={20} /> Provenance Ledger
+                                    </button>
+                                    <button onClick={() => setActiveTab("drops")} className={`btn ${activeTab === 'drops' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
+                                        <Flame size={20} /> Village Drops
                                     </button>
                                     <button className="btn btn-link text-white-50 text-decoration-none rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-white-5 transition-all">
                                         <Database size={20} /> Supabase Nodes
@@ -301,11 +334,32 @@ export default function AdminDashboard() {
                                 <button onClick={() => setActiveTab("categories")} className={`btn ${activeTab === 'categories' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
                                     <FolderTree size={16} /> Categories
                                 </button>
+                                <Link href="/dashboard/admin/artisans" className="btn btn-outline-light border-opacity-25 rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2 text-decoration-none">
+                                    <User size={16} /> Artisan Curation
+                                </Link>
                                 <button onClick={() => setActiveTab("users")} className={`btn ${activeTab === 'users' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
                                     <Users size={16} /> Identity {pendingUsers.length > 0 && `(${pendingUsers.length})`}
                                 </button>
                                 <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
                                     <Briefcase size={16} /> Wholesale {wholesaleApps.filter(a => a.status === 'pending').length > 0 && `(${wholesaleApps.filter(a => a.status === 'pending').length})`}
+                                </button>
+                                <button onClick={() => setActiveTab("map")} className={`btn ${activeTab === 'map' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Map size={16} /> Map
+                                </button>
+                                <button onClick={() => setActiveTab("restock")} className={`btn ${activeTab === 'restock' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Zap size={16} /> Restock
+                                </button>
+                                <button onClick={() => setActiveTab("syndicate")} className={`btn ${activeTab === 'syndicate' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Users size={16} /> Syndicates
+                                </button>
+                                <button onClick={() => setActiveTab("showroom")} className={`btn ${activeTab === 'showroom' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Box size={16} /> Showroom
+                                </button>
+                                <button onClick={() => setActiveTab("ledger")} className={`btn ${activeTab === 'ledger' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <LinkIcon size={16} /> Ledger
+                                </button>
+                                <button onClick={() => setActiveTab("drops")} className={`btn ${activeTab === 'drops' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
+                                    <Flame size={16} /> Drops
                                 </button>
                             </div>
                         </div>
@@ -326,18 +380,20 @@ export default function AdminDashboard() {
 
                                 <div className="row g-4 mb-5 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                                     <div className="col-md-4">
-                                        <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
-                                            <div className="d-flex align-items-center justify-content-between mb-4">
-                                                <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Network Artisans</h6>
-                                                <div className="p-2 bg-info bg-opacity-10 text-info rounded-circle">
-                                                    <Users size={20} />
+                                        <Link href="/dashboard/admin/artisans" className="text-decoration-none">
+                                            <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
+                                                <div className="d-flex align-items-center justify-content-between mb-4">
+                                                    <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Network Artisans</h6>
+                                                    <div className="p-2 bg-info bg-opacity-10 text-info rounded-circle">
+                                                        <Users size={20} />
+                                                    </div>
+                                                </div>
+                                                <div className="display-4 fw-bold text-white">{stats.artisans}</div>
+                                                <div className="text-success small mt-2 d-flex align-items-center justify-content-start gap-1">
+                                                    Manage Curation
                                                 </div>
                                             </div>
-                                            <div className="display-4 fw-bold text-white">{stats.artisans}</div>
-                                            <div className="text-success small mt-2 d-flex align-items-center justify-content-start gap-1">
-                                                Active globally
-                                            </div>
-                                        </div>
+                                        </Link>
                                     </div>
 
                                     <div className="col-md-4">
@@ -711,6 +767,18 @@ export default function AdminDashboard() {
                                     </table>
                                 </div>
                             </div>
+                        ) : activeTab === 'map' ? (
+                            <SupplyMap />
+                        ) : activeTab === 'restock' ? (
+                            <SmartRestock />
+                        ) : activeTab === 'syndicate' ? (
+                            <Syndicate />
+                        ) : activeTab === 'showroom' ? (
+                            <VirtualShowroom />
+                        ) : activeTab === 'ledger' ? (
+                            <BlockchainLedger />
+                        ) : activeTab === 'drops' ? (
+                            <VillageDrops />
                         ) : null}
                     </div>
                 </div>
