@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { ProductCard } from "@/components/search/ProductCard"
-import { MapPin, Sparkles, Map } from "lucide-react"
+import { MapPin, Sparkles, Map, ArrowRight } from "lucide-react"
 import { db } from "@/lib/firebase/config"
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore"
 
