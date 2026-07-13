@@ -32,8 +32,10 @@ import { QRCodeSVG } from "qrcode.react"
 import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
 import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
 import { VillageDrops } from "@/components/wholesale/VillageDrops"
+import { useCurrency } from "@/context/CurrencyContext"
 
 export default function CustomerDashboard() {
+    const { formatPrice } = useCurrency()
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [orders, setOrders] = useState<any[]>([])
@@ -318,7 +320,7 @@ export default function CustomerDashboard() {
                                                     <div className="d-flex align-items-center gap-4">
                                                         <div className="text-end d-none d-sm-block">
                                                             <div className="small text-white-50">Total Value</div>
-                                                            <div className="fw-bold text-warning">${order.total_amount?.toFixed(2)}</div>
+                                                            <div className="fw-bold text-warning">{formatPrice(order.total_amount)}</div>
                                                         </div>
                                                         <span className={`badge px-3 py-2 rounded-pill fw-bold fs-6 ${order.status === 'pending' ? 'bg-warning text-dark' : order.status === 'processing' ? 'bg-info text-dark' : order.status === 'shipped' ? 'bg-primary text-white' : order.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'}`}>
                                                             {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : ''}
@@ -346,7 +348,7 @@ export default function CustomerDashboard() {
                                                                 />
                                                                 <div className="flex-grow-1 min-w-0">
                                                                     <h6 className="fw-bold mb-1 text-truncate">{item.product?.title || "Unknown Art"}</h6>
-                                                                    <div className="small text-white-50">Qty: {item.quantity} · ${item.price_at_time?.toFixed(2)}</div>
+                                                                    <div className="small text-white-50">Qty: {item.quantity} · {formatPrice(item.price_at_time)}</div>
                                                                 </div>
                                                             </div>
                                                             {/* Digital Provenance QR Code */}
