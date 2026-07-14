@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
-import { ArtisanStoryViewer } from "@/components/artisan/ArtisanStoryViewer"
+
 import { db } from "@/lib/firebase/config"
 import { collection, getDocs, doc, getDoc } from "firebase/firestore"
 import { PlayCircle, Film, BookOpen, Quote } from "lucide-react"
@@ -100,7 +100,10 @@ export default function StoriesPage() {
                                 <div className="position-absolute -top-10 -right-10 opacity-10">
                                     <Quote size={120} />
                                 </div>
-                                <ArtisanStoryViewer artisanId={activeArtisanId} />
+                                <div className="text-white-50 text-center py-5">
+                                    <p>Story viewer is currently under construction.</p>
+                                    <p>Artisan ID: {activeArtisanId}</p>
+                                </div>
                             </div>
                         ) : (
                             <div className="h-100 d-flex flex-column align-items-center justify-content-center p-5 rounded-5 border border-white border-opacity-10 bg-white bg-opacity-5 text-center">

@@ -6,37 +6,14 @@ import { Footer } from "@/components/layout/Footer"
 import { db, auth } from "@/lib/firebase/config"
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, setDoc, addDoc, deleteDoc, orderBy } from "firebase/firestore"
 import { signOut, onAuthStateChanged } from "firebase/auth"
-import {
-    LayoutDashboard,
-    Package,
-    Settings,
-    LogOut,
-    Mic,
-    Loader,
-    CheckCircle,
-    AlertCircle,
-    Clock,
-    Plus,
-    Edit2,
-    Trash2,
-    Image as ImageIcon,
-    DollarSign
-} from "lucide-react"
-import Link from "next/link"
+import { LayoutDashboard, Package, Settings, LogOut, Plus, Edit2, Trash2, Image as ImageIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useCurrency } from "@/context/CurrencyContext"
 
 export default function ArtisanDashboard() {
-    const { formatPrice } = useCurrency()
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-    
-    // Voice to text
-    const [isRecording, setIsRecording] = useState(false)
-    const [isGeneratingStory, setIsGeneratingStory] = useState(false)
     
     const router = useRouter()
     const [activeTab, setActiveTab] = useState<'dashboard' | 'crafts' | 'settings'>('dashboard')
@@ -66,7 +43,6 @@ export default function ArtisanDashboard() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setLoading(true)
-            setError(null)
             try {
                 if (!user) {
                     router.push("/login")
@@ -83,11 +59,6 @@ export default function ArtisanDashboard() {
                     if (profileData.role !== "artisan") {
                         await signOut(auth)
                         router.push("/login")
-                        return
-                    }
-
-                    if (profileData.status === 'pending' || profileData.status === 'rejected') {
-                        setLoading(false)
                         return
                     }
 
@@ -125,73 +96,11 @@ export default function ArtisanDashboard() {
                 setLoading(false)
             } catch (err: any) {
                 console.error("Dashboard Load Error:", err)
-                setError("Failed to load dashboard")
                 setLoading(false)
             }
         })
         return () => unsubscribe()
     }, [router])
-
-    const handleVoiceToStory = () => {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-        if (!SpeechRecognition) {
-            alert("Your browser does not support voice dictation.")
-            return
-        }
-
-        const recognition = new SpeechRecognition()
-        recognition.lang = 'en-US'
-        recognition.interimResults = false
-        recognition.maxAlternatives = 1
-
-        setIsRecording(true)
-        recognition.start()
-
-        recognition.onresult = async (event: any) => {
-            const transcript = event.results[0][0].transcript
-            setIsRecording(false)
-            setIsGeneratingStory(true)
-
-            try {
-                const response = await fetch('/api/ai/story', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ transcript }),
-                });
-
-                if (!response.ok) throw new Error('API Error');
-
-                const data = await response.json();
-                
-                let finalStory = ""
-                if (data?.story) {
-                    finalStory = data.story.replace(/^"|"$/g, '')
-                } else {
-                    finalStory = transcript
-                }
-                
-                // Open add craft form with the story filled in
-                setShowAddCraft(true)
-                setEditingCraftId(null)
-                setCraftForm(prev => ({ ...prev, description: finalStory }))
-                
-            } catch (err: any) {
-                console.warn("AI Generation Failed", err)
-                // Fallback to exactly what they said
-                setShowAddCraft(true)
-                setEditingCraftId(null)
-                setCraftForm(prev => ({ ...prev, description: transcript }))
-            } finally {
-                setIsGeneratingStory(false)
-            }
-        }
-
-        recognition.onerror = (event: any) => {
-            console.error("Speech Recognition Error", event.error)
-            setIsRecording(false)
-            alert("Microphone capture failed.")
-        }
-    }
 
     const handleOrderStatusChange = async (orderId: string, newStatus: string) => {
         if (!orderId) return;
@@ -285,44 +194,16 @@ export default function ArtisanDashboard() {
         </div>
     )
 
-    if (error) return (
-        <div className="bg-dark text-white min-vh-100 d-flex flex-column align-items-center justify-content-center">
-            <AlertCircle size={48} className="text-danger mb-3" />
-            <h2 className="mb-4">{error}</h2>
-            <button onClick={() => window.location.reload()} className="btn btn-danger">Retry</button>
-        </div>
-    )
-
-    if (profile?.status === 'pending') return (
-        <div className="bg-dark text-white min-vh-100 d-flex flex-column align-items-center justify-content-center p-4 text-center">
-            <Clock size={64} className="text-warning mb-4" />
-            <h2>Account Pending Approval</h2>
-            <p className="mb-4">We are reviewing your account. Please check back later.</p>
-            <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
-        </div>
-    )
-
     return (
         <div className="bg-dark text-white min-vh-100 d-flex flex-column">
             <Navbar />
 
             <main className="container flex-grow-1 pt-5 mt-5 pb-5">
-                {/* SIMPLE HEADER */}
                 <header className="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
                         <h1 className="fw-bold mb-1">Welcome, {profile?.full_name?.split(' ')[0] || "Artisan"}</h1>
                         <p className="text-white-50 mb-0">Manage your shop and orders</p>
                     </div>
-                    
-                    <button 
-                        onClick={handleVoiceToStory}
-                        disabled={isRecording || isGeneratingStory}
-                        className={`btn ${isRecording ? 'btn-danger' : 'btn-warning'} btn-lg rounded-pill px-4 fw-bold shadow-lg d-flex align-items-center gap-2`}
-                    >
-                        {isRecording ? <><Mic className="pulse-animation"/> Listening...</> : 
-                         isGeneratingStory ? <><Loader className="spin"/> Please wait...</> :
-                         <><Mic /> Tap to Speak Product</>}
-                    </button>
                 </header>
 
                 {/* SIMPLE TABS */}
@@ -374,7 +255,7 @@ export default function ArtisanDashboard() {
                                                 </div>
                                                 <div>
                                                     <h5 className="mb-1">{order.product?.title || "Unknown Product"}</h5>
-                                                    <p className="mb-0 text-white-50">Qty: {order.quantity} • Total: {formatPrice((order.price_at_time || 0) * order.quantity)}</p>
+                                                    <p className="mb-0 text-white-50">Qty: {order.quantity} • Total: ${(order.price_at_time || 0) * order.quantity}</p>
                                                 </div>
                                             </div>
                                             <div>
@@ -420,12 +301,12 @@ export default function ArtisanDashboard() {
                                         </div>
                                         <div className="row g-3 mb-3">
                                             <div className="col-6">
-                                                <label className="form-label text-white-50">Price (Rs)</label>
-                                                <input type="number" className="form-control bg-dark text-white border-white-20" required value={craftForm.price} onChange={e => setCraftForm({...craftForm, price: e.target.value})} />
+                                                <label className="form-label text-white-50">Price ($)</label>
+                                                <input type="number" className="form-control bg-dark text-white border-white-20" required value={craftForm.price} onChange={e => setCraftForm({...craftForm, price: Number(e.target.value)})} />
                                             </div>
                                             <div className="col-6">
                                                 <label className="form-label text-white-50">Stock Quantity</label>
-                                                <input type="number" className="form-control bg-dark text-white border-white-20" required value={craftForm.stock} onChange={e => setCraftForm({...craftForm, stock: e.target.value})} />
+                                                <input type="number" className="form-control bg-dark text-white border-white-20" required value={craftForm.stock} onChange={e => setCraftForm({...craftForm, stock: Number(e.target.value)})} />
                                             </div>
                                         </div>
                                         <div className="mb-4">
@@ -460,7 +341,7 @@ export default function ArtisanDashboard() {
                                                 )}
                                                 <div className="p-3 flex-grow-1 d-flex flex-column">
                                                     <h5 className="mb-1">{product.title}</h5>
-                                                    <div className="text-warning fw-bold mb-2">{formatPrice(product.price)}</div>
+                                                    <div className="text-warning fw-bold mb-2">${product.price}</div>
                                                     <div className="text-white-50 small mb-3 flex-grow-1 line-clamp-2">{product.description}</div>
                                                     <div className="d-flex justify-content-between align-items-center pt-3 border-top border-white-10 mt-auto">
                                                         <span className="small text-white-50">Stock: {product.stock}</span>

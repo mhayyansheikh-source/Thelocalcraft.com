@@ -29,7 +29,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { QRCodeSVG } from "qrcode.react"
 
-import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
+
 import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
 import { VillageDrops } from "@/components/wholesale/VillageDrops"
 import { useCurrency } from "@/context/CurrencyContext"
@@ -248,12 +248,6 @@ export default function CustomerDashboard() {
                                     <Package size={20} /> <span className="d-none d-lg-inline">Order History</span><span className="d-lg-none">Orders</span>
                                 </button>
                                 <button
-                                    className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'showroom' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
-                                    onClick={() => setActiveTab('showroom')}
-                                >
-                                    <Box size={20} /> <span className="d-none d-lg-inline">AR Showroom</span><span className="d-lg-none">Showroom</span>
-                                </button>
-                                <button
                                     className={`btn text-start py-2 py-lg-3 px-4 rounded-pill transition-all d-flex align-items-center justify-content-center justify-content-lg-start gap-2 gap-lg-3 flex-shrink-0 ${activeTab === 'ledger' ? 'btn-warning text-dark fw-bold shadow-lg' : 'btn-link text-white-50 text-decoration-none hover-bg-white-5 hover-text-white'}`}
                                     onClick={() => setActiveTab('ledger')}
                                 >
@@ -406,8 +400,6 @@ export default function CustomerDashboard() {
                                     </form>
                                 </div>
                             </div>
-                        ) : activeTab === 'showroom' ? (
-                            <VirtualShowroom />
                         ) : activeTab === 'ledger' ? (
                             <BlockchainLedger />
                         ) : activeTab === 'drops' ? (
