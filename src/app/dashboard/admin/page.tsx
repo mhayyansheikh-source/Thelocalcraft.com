@@ -13,7 +13,6 @@ import {
     Users,
     Settings,
     LogOut,
-    Database,
     Activity,
     Globe,
     ShoppingBag,
@@ -26,22 +25,10 @@ import {
     Loader,
     CheckCircle,
     XCircle,
-    Briefcase,
-    Map,
-    Zap,
-    Box,
-    Link as LinkIcon,
-    Flame
+    Briefcase
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-import { SupplyMap } from "@/components/wholesale/SupplyMap"
-import { SmartRestock } from "@/components/wholesale/SmartRestock"
-import { Syndicate } from "@/components/wholesale/Syndicate"
-import { VirtualShowroom } from "@/components/wholesale/VirtualShowroom"
-import { BlockchainLedger } from "@/components/wholesale/BlockchainLedger"
-import { VillageDrops } from "@/components/wholesale/VillageDrops"
 import { useCurrency } from "@/context/CurrencyContext"
 
 export default function AdminDashboard() {
@@ -53,7 +40,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
-    const [activeTab, setActiveTab] = useState<"core" | "categories" | "users" | "wholesale" | "map" | "restock" | "syndicate" | "showroom" | "ledger" | "drops">("core")
+    const [activeTab, setActiveTab] = useState<"core" | "categories" | "users" | "wholesale">("core")
     const [categories, setCategories] = useState<any[]>([])
     const [pendingUsers, setPendingUsers] = useState<any[]>([])
     const [wholesaleApps, setWholesaleApps] = useState<any[]>([])
@@ -278,40 +265,19 @@ export default function AdminDashboard() {
 
                                 <nav className="d-flex flex-column gap-2 mb-auto pb-5">
                                     <button onClick={() => setActiveTab("core")} className={`btn ${activeTab === 'core' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <LayoutDashboard size={20} /> System Core
+                                        <LayoutDashboard size={20} /> Dashboard
                                     </button>
                                     <button onClick={() => setActiveTab("categories")} className={`btn ${activeTab === 'categories' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <FolderTree size={20} /> Heritage Categories
+                                        <FolderTree size={20} /> Categories
                                     </button>
                                     <Link href="/dashboard/admin/artisans" className="btn btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5 rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all">
-                                        <User size={20} /> Artisan Curation
+                                        <User size={20} /> Artisans
                                     </Link>
                                     <button onClick={() => setActiveTab("users")} className={`btn ${activeTab === 'users' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Users size={20} /> Identity Access {pendingUsers.length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{pendingUsers.length}</span>}
+                                        <Users size={20} /> Pending Users {pendingUsers.length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{pendingUsers.length}</span>}
                                     </button>
                                     <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Briefcase size={20} /> Wholesale Management {wholesaleApps.filter(a => a.status === 'pending').length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{wholesaleApps.filter(a => a.status === 'pending').length}</span>}
-                                    </button>
-                                    <button onClick={() => setActiveTab("map")} className={`btn ${activeTab === 'map' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Map size={20} /> Supply Map
-                                    </button>
-                                    <button onClick={() => setActiveTab("restock")} className={`btn ${activeTab === 'restock' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Zap size={20} /> Smart Restock
-                                    </button>
-                                    <button onClick={() => setActiveTab("syndicate")} className={`btn ${activeTab === 'syndicate' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Users size={20} /> Syndicates
-                                    </button>
-                                    <button onClick={() => setActiveTab("showroom")} className={`btn ${activeTab === 'showroom' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Box size={20} /> AR Showroom
-                                    </button>
-                                    <button onClick={() => setActiveTab("ledger")} className={`btn ${activeTab === 'ledger' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <LinkIcon size={20} /> Provenance Ledger
-                                    </button>
-                                    <button onClick={() => setActiveTab("drops")} className={`btn ${activeTab === 'drops' ? 'btn-danger shadow-lg text-white' : 'btn-link border border-transparent text-white-50 text-decoration-none hover-bg-white-5'} rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start transition-all`}>
-                                        <Flame size={20} /> Village Drops
-                                    </button>
-                                    <button className="btn btn-link text-white-50 text-decoration-none rounded-pill py-3 px-4 fw-bold d-flex align-items-center gap-3 w-100 text-start hover-bg-white-5 transition-all">
-                                        <Database size={20} /> Supabase Nodes
+                                        <Briefcase size={20} /> Wholesale Apps {wholesaleApps.filter(a => a.status === 'pending').length > 0 && <span className="badge bg-white text-danger fw-bold ms-auto rounded-pill">{wholesaleApps.filter(a => a.status === 'pending').length}</span>}
                                     </button>
                                 </nav>
 
@@ -331,37 +297,19 @@ export default function AdminDashboard() {
                         <div className="d-lg-none mb-4 overflow-hidden mx-n3 px-3 mx-sm-0 px-sm-0">
                             <div className="d-flex overflow-x-auto pb-2 gap-2 hide-scrollbar pe-4" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                 <button onClick={() => setActiveTab("core")} className={`btn ${activeTab === 'core' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <LayoutDashboard size={16} /> Core
+                                    <LayoutDashboard size={16} /> Dashboard
                                 </button>
                                 <button onClick={() => setActiveTab("categories")} className={`btn ${activeTab === 'categories' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
                                     <FolderTree size={16} /> Categories
                                 </button>
                                 <Link href="/dashboard/admin/artisans" className="btn btn-outline-light border-opacity-25 rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2 text-decoration-none">
-                                    <User size={16} /> Artisan Curation
+                                    <User size={16} /> Artisans
                                 </Link>
                                 <button onClick={() => setActiveTab("users")} className={`btn ${activeTab === 'users' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Users size={16} /> Identity {pendingUsers.length > 0 && `(${pendingUsers.length})`}
+                                    <Users size={16} /> Users {pendingUsers.length > 0 && `(${pendingUsers.length})`}
                                 </button>
                                 <button onClick={() => setActiveTab("wholesale")} className={`btn ${activeTab === 'wholesale' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Briefcase size={16} /> Wholesale {wholesaleApps.filter(a => a.status === 'pending').length > 0 && `(${wholesaleApps.filter(a => a.status === 'pending').length})`}
-                                </button>
-                                <button onClick={() => setActiveTab("map")} className={`btn ${activeTab === 'map' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Map size={16} /> Map
-                                </button>
-                                <button onClick={() => setActiveTab("restock")} className={`btn ${activeTab === 'restock' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Zap size={16} /> Restock
-                                </button>
-                                <button onClick={() => setActiveTab("syndicate")} className={`btn ${activeTab === 'syndicate' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Users size={16} /> Syndicates
-                                </button>
-                                <button onClick={() => setActiveTab("showroom")} className={`btn ${activeTab === 'showroom' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Box size={16} /> Showroom
-                                </button>
-                                <button onClick={() => setActiveTab("ledger")} className={`btn ${activeTab === 'ledger' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <LinkIcon size={16} /> Ledger
-                                </button>
-                                <button onClick={() => setActiveTab("drops")} className={`btn ${activeTab === 'drops' ? 'btn-danger' : 'btn-outline-light border-opacity-25'} rounded-pill px-4 py-2 text-nowrap fw-bold flex-shrink-0 d-flex align-items-center gap-2`}>
-                                    <Flame size={16} /> Drops
+                                    <Briefcase size={16} /> Wholesale Apps {wholesaleApps.filter(a => a.status === 'pending').length > 0 && `(${wholesaleApps.filter(a => a.status === 'pending').length})`}
                                 </button>
                             </div>
                         </div>
@@ -370,13 +318,8 @@ export default function AdminDashboard() {
                             <>
                                 <header className="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-4 animate-fade-in">
                                     <div>
-                                        <h1 className="fw-bold mb-2 text-uppercase" style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)", letterSpacing: "-1px" }}>Central <span className="text-danger">Command.</span></h1>
-                                        <p className="text-white-50 opacity-75 lead mb-0" style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}>System operations are nominal. AI safeguards and national logistics are actively tracking.</p>
-                                    </div>
-                                    <div className="d-flex gap-3">
-                                        <button className="btn btn-danger rounded-pill px-4 py-3 fw-bold d-flex align-items-center gap-2 shadow-lg hover-translate-y transition-all">
-                                            <Activity size={18} /> Diagnostics
-                                        </button>
+                                        <h1 className="fw-bold mb-2 text-uppercase" style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)", letterSpacing: "-1px" }}>Admin <span className="text-danger">Dashboard</span></h1>
+                                        <p className="text-white-50 opacity-75 lead mb-0" style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}>Welcome back. Here is an overview of your platform.</p>
                                     </div>
                                 </header>
 
@@ -385,7 +328,7 @@ export default function AdminDashboard() {
                                         <Link href="/dashboard/admin/artisans" className="text-decoration-none">
                                             <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                                 <div className="d-flex align-items-center justify-content-between mb-4">
-                                                    <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Network Artisans</h6>
+                                                    <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Total Artisans</h6>
                                                     <div className="p-2 bg-info bg-opacity-10 text-info rounded-circle">
                                                         <Users size={20} />
                                                     </div>
@@ -401,14 +344,14 @@ export default function AdminDashboard() {
                                     <div className="col-md-4">
                                         <div className="p-4 rounded-4 h-100 hover-translate-y transition-all" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                             <div className="d-flex align-items-center justify-content-between mb-4">
-                                                <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Transaction Node</h6>
+                                                <h6 className="text-white-50 mb-0 fw-bold ls-1 text-uppercase small">Total Orders</h6>
                                                 <div className="p-2 bg-warning bg-opacity-10 text-warning rounded-circle">
                                                     <ShoppingBag size={20} />
                                                 </div>
                                             </div>
                                             <div className="display-4 fw-bold text-white">{stats.orders}</div>
                                             <div className="text-white-50 small mt-2 d-flex align-items-center justify-content-start gap-1">
-                                                Orders scaling nominal
+                                                Active platform orders
                                             </div>
                                         </div>
                                     </div>
@@ -416,14 +359,14 @@ export default function AdminDashboard() {
                                     <div className="col-md-4">
                                         <div className="p-4 rounded-4 border border-danger border-opacity-25 bg-danger bg-opacity-10 h-100 hover-translate-y transition-all">
                                             <div className="d-flex align-items-center justify-content-between mb-4">
-                                                <h6 className="text-danger opacity-75 mb-0 fw-bold ls-1 text-uppercase small">National Pipeline</h6>
+                                                <h6 className="text-danger opacity-75 mb-0 fw-bold ls-1 text-uppercase small">Total Revenue</h6>
                                                 <div className="p-2 bg-danger bg-opacity-25 text-white rounded-circle">
                                                     <Activity size={20} />
                                                 </div>
                                             </div>
                                             <div className="display-4 fw-bold text-white">{formatPrice(stats.revenue)}</div>
                                             <div className="text-white-50 small mt-2 d-flex align-items-center justify-content-start gap-1">
-                                                Captured revenue metrics
+                                                Platform total revenue
                                             </div>
                                         </div>
                                     </div>
@@ -435,33 +378,32 @@ export default function AdminDashboard() {
 
                                     <div className="position-relative z-1">
                                         <h4 className="fw-bold mb-4 d-flex align-items-center gap-2">
-                                            <Globe className="text-danger" /> Live Network Stream
+                                            <Globe className="text-danger" /> Recent Orders
                                         </h4>
 
                                         {recentOrders.length === 0 ? (
                                             <div className="text-center py-5">
-                                                <Database size={32} className="mb-3 opacity-25 mx-auto text-white-50" />
-                                                <p className="text-white-50">Log stream empty. Waiting for transaction payloads.</p>
+                                                <p className="text-white-50">No recent orders found.</p>
                                             </div>
                                         ) : (
                                             <div className="table-responsive">
                                                 <table className="table table-dark table-borderless table-hover align-middle mb-0">
                                                     <thead>
                                                         <tr className="border-bottom border-white-10 text-white-50 small text-uppercase ls-1">
-                                                            <th className="py-3 font-weight-bold">Order UID</th>
-                                                            <th className="py-3 font-weight-bold">Customer Entity</th>
-                                                            <th className="py-3 font-weight-bold">Routing Addr</th>
-                                                            <th className="py-3 font-weight-bold text-end">Payload Value</th>
+                                                            <th className="py-3 font-weight-bold">Order ID</th>
+                                                            <th className="py-3 font-weight-bold">Customer Name</th>
+                                                            <th className="py-3 font-weight-bold">Address</th>
+                                                            <th className="py-3 font-weight-bold text-end">Amount</th>
                                                             <th className="py-3 font-weight-bold text-center">Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {recentOrders.map(order => (
                                                             <tr key={order.id} className="border-bottom border-white border-opacity-5">
-                                                                <td className="py-3 font-monospace small text-white-50" data-label="Order UID">{order.id.split('-')[0]}</td>
-                                                                <td className="py-3 fw-bold" data-label="Customer Entity">{order.customer_name}</td>
-                                                                <td className="py-3 text-white-50 small text-truncate" style={{ maxWidth: "200px" }} data-label="Routing Addr">{order.customer_address}</td>
-                                                                <td className="py-3 fw-bold text-warning text-end" data-label="Payload Value">{formatPrice(order.total_amount || 0)}</td>
+                                                                <td className="py-3 font-monospace small text-white-50" data-label="Order ID">{order.id.split('-')[0]}</td>
+                                                                <td className="py-3 fw-bold" data-label="Customer Name">{order.customer_name}</td>
+                                                                <td className="py-3 text-white-50 small text-truncate" style={{ maxWidth: "200px" }} data-label="Address">{order.customer_address}</td>
+                                                                <td className="py-3 fw-bold text-warning text-end" data-label="Amount">{formatPrice(order.total_amount || 0)}</td>
                                                                 <td className="py-3 text-center" data-label="Status">
                                                                     <select
                                                                         className={`form-select form-select-sm text-center d-inline w-auto fw-bold shadow-sm ${order.status === 'pending' ? 'bg-warning text-dark' : order.status === 'processing' ? 'bg-info text-dark' : order.status === 'shipped' ? 'bg-primary text-white' : order.status === 'cancelled' ? 'bg-danger text-white' : 'bg-success text-white'} border-0 rounded-pill`}
@@ -490,9 +432,9 @@ export default function AdminDashboard() {
                                 <header className="mb-4 d-flex justify-content-between align-items-center">
                                     <div>
                                         <h2 className="display-6 fw-bold mb-2 d-flex align-items-center gap-3">
-                                            <FolderTree className="text-danger" size={32} /> Category Registry
+                                            <FolderTree className="text-danger" size={32} /> Manage Categories
                                         </h2>
-                                        <p className="text-white-50 mb-0">Define strict heritage structural paths for platform filtering.</p>
+                                        <p className="text-white-50 mb-0">Add and edit product categories here.</p>
                                     </div>
                                     {!showCatForm && (
                                         <button onClick={() => {
@@ -500,7 +442,7 @@ export default function AdminDashboard() {
                                             setCatForm({ name: "", description: "", image_url: "", heritage_site: "" })
                                             setShowCatForm(true)
                                         }} className="btn btn-danger rounded-pill px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-lg hover-scale">
-                                            <Plus size={18} /> Append Category
+                                            <Plus size={18} /> Add Category
                                         </button>
                                     )}
                                 </header>
@@ -508,7 +450,7 @@ export default function AdminDashboard() {
                                 {showCatForm ? (
                                     <div className="p-4 p-md-5 rounded-5 animate-fade-in relative z-1" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-white-10">
-                                            <h4 className="fw-bold m-0">{editingCatId ? "Modify Infrastructure" : "Deploy Validation Path"}</h4>
+                                            <h4 className="fw-bold m-0">{editingCatId ? "Edit Category" : "Add Category"}</h4>
                                             <button onClick={() => setShowCatForm(false)} className="btn btn-outline-light rounded-pill px-3 m-0 border-opacity-20 text-white-50 hover-text-white transition-all">
                                                 Cancel
                                             </button>
@@ -516,11 +458,11 @@ export default function AdminDashboard() {
                                         <form onSubmit={handleSaveCategory} className="d-flex flex-column gap-4">
                                             <div className="row g-4">
                                                 <div className="col-md-6">
-                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Registry Key / Name</label>
+                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Category Name</label>
                                                     <input type="text" required value={catForm.name} onChange={e => setCatForm({ ...catForm, name: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="e.g. Copperware" />
                                                 </div>
                                                 <div className="col-md-6">
-                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Heritage Mapping Site</label>
+                                                    <label className="form-label small text-white-50 text-uppercase ls-1">Location</label>
                                                     <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
                                                         <span className="input-group-text bg-transparent border-0 text-white-50"><MapPin size={16} /></span>
                                                         <input type="text" value={catForm.heritage_site} onChange={e => setCatForm({ ...catForm, heritage_site: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="e.g. Peshawar" />
@@ -529,7 +471,7 @@ export default function AdminDashboard() {
                                             </div>
 
                                             <div>
-                                                <label className="form-label small text-white-50 text-uppercase ls-1">Thumbnail Stream Addr (URL)</label>
+                                                <label className="form-label small text-white-50 text-uppercase ls-1">Image URL</label>
                                                 <div className="input-group p-1 rounded-4 bg-dark bg-opacity-50 border border-white-10">
                                                     <span className="input-group-text bg-transparent border-0 text-white-50"><ImageIcon size={16} /></span>
                                                     <input type="url" required value={catForm.image_url} onChange={e => setCatForm({ ...catForm, image_url: e.target.value })} className="form-control bg-transparent border-0 text-white shadow-none" placeholder="https://..." />
@@ -537,13 +479,13 @@ export default function AdminDashboard() {
                                             </div>
 
                                             <div>
-                                                <label className="form-label small text-white-50 text-uppercase ls-1">Core Description</label>
-                                                <textarea rows={3} required value={catForm.description} onChange={e => setCatForm({ ...catForm, description: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="Historical parameters..."></textarea>
+                                                <label className="form-label small text-white-50 text-uppercase ls-1">Description</label>
+                                                <textarea rows={3} required value={catForm.description} onChange={e => setCatForm({ ...catForm, description: e.target.value })} className="form-control bg-dark bg-opacity-50 border border-white-10 text-white rounded-4 p-3 shadow-none" placeholder="Enter description..."></textarea>
                                             </div>
 
                                             <div className="mt-3">
                                                 <button type="submit" disabled={isSavingCat} className="btn btn-danger rounded-pill px-5 py-3 fw-bold shadow-lg d-inline-flex align-items-center gap-2 hover-scale">
-                                                    {isSavingCat ? <Loader size={20} className="spin" /> : <>Execute Transaction <Database size={18} /></>}
+                                                    {isSavingCat ? <Loader size={20} className="spin" /> : <>Save Category</>}
                                                 </button>
                                             </div>
                                         </form>
@@ -553,16 +495,15 @@ export default function AdminDashboard() {
                                         <table className="table table-dark table-borderless table-hover align-middle mb-0">
                                             <thead>
                                                 <tr className="border-bottom border-white-10 text-white-50 small text-uppercase ls-1 bg-white bg-opacity-5">
-                                                    <th className="py-3 px-4 font-weight-bold">Registry</th>
-                                                    <th className="py-3 font-weight-bold">Heritage Link</th>
-                                                    <th className="py-3 font-weight-bold">Nodes Connected</th>
-                                                    <th className="py-3 font-weight-bold text-end pe-4">System Actions</th>
+                                                    <th className="py-3 px-4 font-weight-bold">Category Name</th>
+                                                    <th className="py-3 font-weight-bold">Location</th>
+                                                    <th className="py-3 font-weight-bold text-end pe-4">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {categories.map(cat => (
                                                     <tr key={cat.id} className="border-bottom border-white border-opacity-5 hover-bg-white-5 transition-all">
-                                                        <td className="py-3 px-4" data-label="Registry">
+                                                        <td className="py-3 px-4" data-label="Category Name">
                                                             <div className="d-flex align-items-center gap-3">
                                                                 {cat.image_url && (
                                                                     <div className="rounded-3 overflow-hidden bg-white bg-opacity-10 d-none d-sm-block flex-shrink-0" style={{ width: "40px", height: "40px" }}>
@@ -575,24 +516,21 @@ export default function AdminDashboard() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="py-3 text-white-50" data-label="Heritage Link">
+                                                        <td className="py-3 text-white-50" data-label="Location">
                                                             {cat.heritage_site ? (
                                                                 <span className="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-2">
                                                                     <MapPin size={10} className="me-1" /> {cat.heritage_site}
                                                                 </span>
                                                             ) : (
-                                                                <span className="small opacity-50">Null pointer</span>
+                                                                <span className="small opacity-50">No location</span>
                                                             )}
                                                         </td>
-                                                        <td className="py-3 font-monospace small text-white-50" data-label="Nodes Connected">
-                                                            Auto-scaling
-                                                        </td>
-                                                        <td className="py-3 pe-4 text-end" data-label="System Actions">
+                                                        <td className="py-3 pe-4 text-end" data-label="Actions">
                                                             <div className="d-flex align-items-center justify-content-end gap-2">
                                                                 <button onClick={() => editCategory(cat)} className="btn btn-sm btn-outline-light border-white-20 rounded-pill px-3 py-1 hover-bg-white-10 hover-text-white transition-all d-flex align-items-center gap-1">
                                                                     <Edit2 size={14} /> Update
                                                                 </button>
-                                                                <button onClick={() => handleDeleteCategory(cat.id)} className="btn btn-sm bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill p-2 hover-bg-danger hover-text-white transition-all" title="Purge Node">
+                                                                <button onClick={() => handleDeleteCategory(cat.id)} className="btn btn-sm bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill p-2 hover-bg-danger hover-text-white transition-all" title="Delete">
                                                                     <Trash2 size={14} />
                                                                 </button>
                                                             </div>
@@ -601,8 +539,8 @@ export default function AdminDashboard() {
                                                 ))}
                                                 {categories.length === 0 && (
                                                     <tr>
-                                                        <td colSpan={4} className="text-center py-5 text-white-50">
-                                                            No categories registered in national index.
+                                                        <td colSpan={3} className="text-center py-5 text-white-50">
+                                                            No categories found.
                                                         </td>
                                                     </tr>
                                                 )}
@@ -619,8 +557,8 @@ export default function AdminDashboard() {
                                             <Briefcase className="text-danger" size={32} />
                                         </div>
                                         <div>
-                                            <h1 className="display-6 fw-bold mb-1">Wholesale Command</h1>
-                                            <p className="text-white-50 lead fs-6 mb-0">Manage B2B partners and commission settlements.</p>
+                                            <h1 className="display-6 fw-bold mb-1">Wholesale Applications</h1>
+                                            <p className="text-white-50 lead fs-6 mb-0">Review and approve wholesale applications and commissions.</p>
                                         </div>
                                     </div>
                                 </header>
@@ -668,7 +606,7 @@ export default function AdminDashboard() {
                                 </div>
 
                                 <div className="mb-4">
-                                    <h4 className="fw-bold mb-4">Commission Register</h4>
+                                    <h4 className="fw-bold mb-4">Commissions</h4>
                                     <div className="table-responsive rounded-4 overflow-hidden shadow-lg" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
                                         <table className="table table-dark table-borderless align-middle mb-0">
                                             <thead>
@@ -676,7 +614,7 @@ export default function AdminDashboard() {
                                                     <th className="py-3 px-4">Partner</th>
                                                     <th className="py-3">Earnings</th>
                                                     <th className="py-3">Status</th>
-                                                    <th className="py-3 text-end pe-4">Order Ref</th>
+                                                    <th className="py-3 text-end pe-4">Order ID</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -689,7 +627,7 @@ export default function AdminDashboard() {
                                                         <td className="py-3" data-label="Status">
                                                             <span className={`badge rounded-pill px-2 ${comm.status === 'paid' ? 'bg-success' : 'bg-warning text-dark'}`}>{comm.status}</span>
                                                         </td>
-                                                        <td className="py-3 pe-4 text-end text-white-50 small font-monospace" data-label="Order Ref">#{comm.orders?.id?.split('-')[0]}</td>
+                                                        <td className="py-3 pe-4 text-end text-white-50 small font-monospace" data-label="Order ID">#{comm.orders?.id?.split('-')[0]}</td>
                                                     </tr>
                                                 ))}
                                                 {allCommissions.length === 0 && (
@@ -708,8 +646,8 @@ export default function AdminDashboard() {
                                             <Users className="text-danger" size={32} />
                                         </div>
                                         <div>
-                                            <h1 className="display-6 fw-bold mb-1">Identity Access</h1>
-                                            <p className="text-white-50 lead fs-6 mb-0">Manage platform onboarding approvals.</p>
+                                            <h1 className="display-6 fw-bold mb-1">Pending Users</h1>
+                                            <p className="text-white-50 lead fs-6 mb-0">Review and approve new user registrations.</p>
                                         </div>
                                     </div>
                                 </header>
@@ -718,10 +656,10 @@ export default function AdminDashboard() {
                                     <table className="table table-dark table-borderless table-hover align-middle mb-0">
                                         <thead>
                                             <tr className="border-bottom border-white-10 text-white-50 small text-uppercase ls-1 bg-white bg-opacity-5">
-                                                <th className="py-3 px-4 font-weight-bold">User Identity</th>
-                                                <th className="py-3 font-weight-bold">Role Attempt</th>
+                                                <th className="py-3 px-4 font-weight-bold">User Name</th>
+                                                <th className="py-3 font-weight-bold">Requested Role</th>
                                                 <th className="py-3 font-weight-bold">Created On</th>
-                                                <th className="py-3 font-weight-bold text-end pe-4">Approval Override</th>
+                                                <th className="py-3 font-weight-bold text-end pe-4">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -733,7 +671,7 @@ export default function AdminDashboard() {
                                                                 <User size={18} />
                                                             </div>
                                                             <div className="text-start">
-                                                                <div className="fw-bold">{u.full_name || u.username || 'Anonymous Node'}</div>
+                                                                <div className="fw-bold">{u.full_name || u.username || 'Unknown User'}</div>
                                                                 <div className="small text-white-50 font-monospace" style={{ fontSize: '10px' }}>{u.id}</div>
                                                             </div>
                                                         </div>
@@ -761,7 +699,7 @@ export default function AdminDashboard() {
                                             {pendingUsers.length === 0 && (
                                                 <tr>
                                                     <td colSpan={4} className="text-center py-5 text-white-50">
-                                                        No pending access requests. System is completely synchronized.
+                                                        No pending user approvals.
                                                     </td>
                                                 </tr>
                                             )}
@@ -769,18 +707,6 @@ export default function AdminDashboard() {
                                     </table>
                                 </div>
                             </div>
-                        ) : activeTab === 'map' ? (
-                            <SupplyMap />
-                        ) : activeTab === 'restock' ? (
-                            <SmartRestock />
-                        ) : activeTab === 'syndicate' ? (
-                            <Syndicate />
-                        ) : activeTab === 'showroom' ? (
-                            <VirtualShowroom />
-                        ) : activeTab === 'ledger' ? (
-                            <BlockchainLedger />
-                        ) : activeTab === 'drops' ? (
-                            <VillageDrops />
                         ) : null}
                     </div>
                 </div>
