@@ -22,8 +22,23 @@ export function ArtisanStoryViewer({ artisanId }: { artisanId: string }) {
         async function fetchStory() {
             const q = query(collection(db, "artisan_stories"), where("artisan_id", "==", artisanId))
             const snap = await getDocs(q)
+            let foundStory = false
             if (!snap.empty) {
                 setStory(snap.docs[0].data() as ArtisanStory)
+                foundStory = true
+            } else {
+                // Fallback to profile's maker_story
+                const profSnap = await getDocs(query(collection(db, "profiles"), where("__name__", "==", artisanId)))
+                if (!profSnap.empty) {
+                    const profData = profSnap.docs[0].data()
+                    if (profData.onboarding_evidence?.maker_story) {
+                        setStory({ translated_story: profData.onboarding_evidence.maker_story, audio_url: "" })
+                        foundStory = true
+                    }
+                }
+            }
+            if (!foundStory) {
+                setStory({ translated_story: "This master artisan's story is currently being curated and translated from their native dialect.", audio_url: "" })
             }
             setLoading(false)
         }

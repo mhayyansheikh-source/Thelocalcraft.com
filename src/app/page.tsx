@@ -11,8 +11,23 @@ import { StudioLive } from "@/components/artisan/StudioLive"
 import { ArrowRight, Sparkles, Shield, Truck, Award, ShoppingBag, Box, Link as LinkIcon, Flame, Globe, Building, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
+import { db } from "@/lib/firebase/config"
+import { collection, query, where, getDocs, limit } from "firebase/firestore"
+
 export default function Homepage() {
     const [email, setEmail] = useState("")
+    const [featuredArtisans, setFeaturedArtisans] = useState<any[]>([])
+
+    React.useEffect(() => {
+        async function fetchFeatured() {
+            const q = query(collection(db, 'profiles'), where('role', '==', 'artisan'), limit(2))
+            const snap = await getDocs(q)
+            if (!snap.empty) {
+                setFeaturedArtisans(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+            }
+        }
+        fetchFeatured()
+    }, [])
 
     const handleNewsletter = (e: React.FormEvent) => {
         e.preventDefault()
@@ -278,8 +293,11 @@ export default function Homepage() {
                                     <span className="small text-white-50 fw-bold text-uppercase" style={{ fontSize: "0.7rem", letterSpacing: "1px" }}>Direct Artisan Connection Live</span>
                                 </div>
                                 <div className="d-flex gap-3">
-                                    <StatusBadge artisanId="multan-pottery-1" />
-                                    <StatusBadge artisanId="sindh-ajrak-2" />
+                                    {featuredArtisans.length > 0 ? featuredArtisans.map(a => (
+                                        <StatusBadge key={a.id} artisanId={a.id} />
+                                    )) : (
+                                        <p className="text-white-50 small mb-0">Connecting to artisan workshops...</p>
+                                    )}
                                 </div>
                             </div>
 
@@ -296,7 +314,9 @@ export default function Homepage() {
                                         border: "1px solid var(--border-color)"
                                     }}>
 
-                                    <ArtisanStoryViewer artisanId="featured-artisan-1" />
+                                    {featuredArtisans.length > 0 && (
+                                        <ArtisanStoryViewer artisanId={featuredArtisans[0].id} />
+                                    )}
 
                                     {/* Fallback pattern if story is loading/missing */}
                                     <div className="p-5 text-center d-flex flex-column align-items-center justify-content-center" style={{ minHeight: "350px" }}>

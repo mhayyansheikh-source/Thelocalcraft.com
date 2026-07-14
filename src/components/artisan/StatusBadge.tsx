@@ -7,11 +7,13 @@ import { doc, onSnapshot } from "firebase/firestore";
 
 export function StatusBadge({ artisanId }: { artisanId: string }) {
     const [isOnline, setIsOnline] = useState(false);
+    const [name, setName] = useState("");
 
     useEffect(() => {
         const unsub = onSnapshot(doc(db, "profiles", artisanId), (docSnap) => {
             if (docSnap.exists()) {
                 setIsOnline(docSnap.data().is_online || false);
+                setName(docSnap.data().full_name || "");
             }
         });
 
@@ -24,8 +26,8 @@ export function StatusBadge({ artisanId }: { artisanId: string }) {
                 className={`badge-dot ${isOnline ? "bg-success" : "bg-secondary"}`}
                 style={{ width: "10px", height: "10px", borderRadius: "50%", display: "inline-block" }}
             />
-            <span className={isOnline ? "text-success font-weight-bold" : "text-muted"}>
-                {isOnline ? "Artisan Online" : "Artisan Offline"}
+            <span className={isOnline ? "text-success font-weight-bold" : "text-muted"} style={{ fontSize: "0.85rem" }}>
+                <span className="fw-bold">{name || "Artisan"}</span> is {isOnline ? "Online" : "Offline"}
             </span>
         </div>
     );
