@@ -202,8 +202,9 @@ export default function AdminArtisanMissionControl() {
                                             <span className="d-flex align-items-center gap-1"><Briefcase size={16} /> {selectedArtisan.specialty}</span>
                                             <span className="d-flex align-items-center gap-1"><MapPin size={16} /> {selectedArtisan.location}</span>
                                             {selectedArtisan.portfolio_url && (
-                                                <a href={selectedArtisan.portfolio_url} target="_blank" rel="noreferrer" className="text-warning text-decoration-none">View Portfolio</a>
+                                                <a href={selectedArtisan.portfolio_url} target="_blank" rel="noreferrer" className="text-warning text-decoration-none">View External Portfolio</a>
                                             )}
+                                            <a href={`/artisans/${selectedArtisan.id}`} target="_blank" rel="noreferrer" className="text-success text-decoration-none fw-bold ms-3">View Real Platform Profile →</a>
                                         </div>
                                     </div>
                                     <div className="d-flex gap-2">

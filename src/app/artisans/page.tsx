@@ -107,7 +107,7 @@ export default function ArtisansPage() {
                                         </div>
                                     </div>
 
-                                    <a href={`/explore?artisan=${artisan.id}`} className="btn btn-warning rounded-pill w-100 mt-4 fw-bold shadow-sm hover-scale transition-all d-flex align-items-center justify-content-center gap-2">
+                                    <a href={`/artisans/${artisan.id}`} className="btn btn-warning rounded-pill w-100 mt-4 fw-bold shadow-sm hover-scale transition-all d-flex align-items-center justify-content-center gap-2">
                                         View Stories & Art
                                     </a>
                                 </div>
