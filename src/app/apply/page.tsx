@@ -6,7 +6,7 @@ import { useDropzone } from "react-dropzone"
 import { upload } from "@vercel/blob/client"
 import { auth, db } from "@/lib/firebase/config"
 import { createUserWithEmailAndPassword } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
+import { doc, setDoc, collection, getDocs, query, orderBy } from "firebase/firestore"
 import { ArrowRight, User, Mail, Lock, Briefcase, MapPin, Loader, CheckCircle, UploadCloud, X, ChevronRight, Image as ImageIcon, Link as LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -22,7 +22,22 @@ export default function ApplyPage() {
     const [step, setStep] = useState(1)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [categories, setCategories] = useState<any[]>([])
     const router = useRouter()
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const q = query(collection(db, 'categories'), orderBy('created_at', 'desc'))
+                const snapshot = await getDocs(q)
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                setCategories(data)
+            } catch (err) {
+                console.error("Failed to fetch categories:", err)
+            }
+        }
+        fetchCategories()
+    }, [])
 
     const [formData, setFormData] = useState({
         // Step 1
@@ -238,12 +253,9 @@ export default function ApplyPage() {
                                                 <span className="input-group-text bg-transparent border-0 text-warning"><Briefcase size={18} /></span>
                                                 <select name="specialty" value={formData.specialty} onChange={handleChange} className="form-select bg-transparent border-0 text-white shadow-none">
                                                     <option value="" className="text-dark">Select Craft...</option>
-                                                    <option value="Pottery & Ceramics" className="text-dark">Pottery & Ceramics</option>
-                                                    <option value="Textiles & Weaving" className="text-dark">Textiles & Weaving</option>
-                                                    <option value="Woodwork" className="text-dark">Woodwork</option>
-                                                    <option value="Metalwork" className="text-dark">Metalwork</option>
-                                                    <option value="Leatherwork" className="text-dark">Leatherwork</option>
-                                                    <option value="Embroidery" className="text-dark">Embroidery</option>
+                                                    {categories.map(cat => (
+                                                        <option key={cat.id} value={cat.name} className="text-dark">{cat.name}</option>
+                                                    ))}
                                                 </select>
                                             </div>
                                         </div>
